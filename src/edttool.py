@@ -47,14 +47,9 @@ def init_transport(transport, xtra_args, trace):
     return transport;
 
 def run_test(args, transport, trace):
-    from importlib import import_module;
-    try:
-        test = import_module("tests.%s"%args.test)
-    except Exception as e:
-        print("Could not load test %s. Does it exist?"% args.test)
-        raise e;
+    test_mod = try_to_import(args.test, "test", "tests.");
 
-    test_spec = test.spec();
+    test_spec = test_mod.spec();
     trace.trace(4, test_spec);
 
     if test_spec.number_devices > transport.n_devices:
@@ -62,7 +57,7 @@ def run_test(args, transport, trace):
                         "connected to %i"%
                         (test_spec.number_devices, transport.n_devices));
 
-    result = test.main(args, transport, trace);
+    result = test_mod.main(args, transport, trace);
     return result;
 
 class Trace():
