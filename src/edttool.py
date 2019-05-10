@@ -13,7 +13,7 @@ def parse_arguments():
 
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
-    #NWTSIM & BabbleSim transport related arguments
+    #BabbleSim transport related arguments
 
     parser.add_argument("-s", "--sim_id", help="When connecting to a simulated device, simulation id");
 
@@ -25,12 +25,7 @@ def parse_arguments():
 
 def init_transport(args, trace):
     #Initialize the transport and connect to devices
-    if (args.transport == "nwtsim"):
-        from components.edttt_nwtsim import EDTTT;
-        transport = EDTTT(args, trace);
-        transport.connect();
-        return transport;
-    elif (args.transport == "bsim"):
+    if (args.transport == "bsim"):
         from components.edttt_bsim import EDTTT;
         transport = EDTTT(args, trace);
         transport.connect();
