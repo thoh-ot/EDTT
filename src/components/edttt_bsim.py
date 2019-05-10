@@ -52,10 +52,14 @@ class EDTTT:
     Connected = False;
     n_devices = 0;
 
-    def __init__(self, args, TraceClass):
-
+    def __init__(self, pending_args, TraceClass):
         self.Trace = TraceClass;
-        #TODO: add some nice check and raise a proper error if an arg is missing 
+        import argparse
+        parser = argparse.ArgumentParser(prog="BabbleSim transport options:", add_help=False)
+        parser.add_argument("-s", "--sim_id", required=True, help="When connecting to a simulated device, simulation id");
+        parser.add_argument("-d", "--bridge-device-nbr", required=True, help="When connecting to a simulated device, device number of the PTT bridge");
+        (args, discard) = parser.parse_known_args(pending_args)
+
         self.device_nbr = args.bridge_device_nbr;
         self.sim_id = args.sim_id;
 

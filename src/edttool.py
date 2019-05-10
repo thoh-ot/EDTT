@@ -1,11 +1,18 @@
 #! /usr/bin/env python2
+import os;
+
 def parse_arguments():
     import argparse
-    parser = argparse.ArgumentParser(description="Zephyr EDTT (Embedded Device Test Tool)")
+    parser = argparse.ArgumentParser(description="Zephyr EDTT (Embedded Device Test Tool)",
+                                     epilog="Note: A transport can have its own options")
 
     parser.add_argument("-v", "--verbose", default=2, type=int, help="Verbosity level");
 
-    parser.add_argument("-t", "--transport", required=True, help="Type of transport to connect to device");
+    parser.add_argument("-t", "--transport", required=True,
+                        help="Type of transport to connect to the devices (the "
+                             "transport module must either exist as "
+                             "src/components/edtt_<transport>.py, or be a path "
+                             "to an importable transport module");
 
     parser.add_argument("-T", "--test", required=True, help="Which test to run (from src/tests)");
 
@@ -13,25 +20,31 @@ def parse_arguments():
 
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
-    #BabbleSim transport related arguments
+    return parser.parse_known_args()
 
-    parser.add_argument("-s", "--sim_id", help="When connecting to a simulated device, simulation id");
+def try_to_import(module_path, type, def_path):
+    try:
+        if (("." not in module_path) and ("/" not in module_path)):
+            from importlib import import_module;
+            loaded_module = import_module(def_path + module_path)
+        else: #The user seems to want to load the module from a place off-tree
+            #If the user forgot Let's fill in the extension
+            if module_path[-3:] != ".py":
+              module_path = module_path + ".py"
+            import imp;
+            loaded_module = imp.load_source('%s', module_path);
 
-    parser.add_argument("-d","--bridge-device-nbr", help="When connecting to a simulated device, device number of the PTT bridge");
+        return loaded_module;
+    except ImportError as e:
+        print("\n Could not load the %s %s . Does it exist?\n"% (type, module_path))
+        raise;
 
-    parser.add_argument("-D","--num-devices", help="When connecting to a target proxies, number of PTT proxies to connect to");
-
-    return parser.parse_args()
-
-def init_transport(args, trace):
-    #Initialize the transport and connect to devices
-    if (args.transport == "bsim"):
-        from components.edttt_bsim import EDTTT;
-        transport = EDTTT(args, trace);
-        transport.connect();
-        return transport;
-    else:
-        raise Exception("Unknown transport %s\n"%args.transport)
+# Initialize the transport and connect to devices
+def init_transport(transport, xtra_args, trace):
+    transport_module = try_to_import(transport, "transport", "components.edttt_");
+    transport = transport_module.EDTTT(xtra_args, trace);
+    transport.connect();
+    return transport;
 
 def run_test(args, transport, trace):
     from importlib import import_module;
@@ -63,13 +76,14 @@ class Trace():
 def main():
     transport = None;
     try:
-        args = parse_arguments();
+        (args, xtra_args) = parse_arguments();
+        
         import random;
         random.seed(args.seed);
 
         trace = Trace(args.verbose); #TODO: replace with Logger
 
-        transport = init_transport(args, trace);
+        transport = init_transport(args.transport, xtra_args, trace);
 
         result = run_test(args, transport, trace);
 
