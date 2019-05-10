@@ -11,6 +11,8 @@ def parse_arguments():
 
     parser.add_argument("-C", "--case", required=False, help="Which subtest to run")
 
+    parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
+
     #NWTSIM & BabbleSim transport related arguments
 
     parser.add_argument("-s", "--sim_id", help="When connecting to a simulated device, simulation id");
@@ -72,6 +74,8 @@ def main():
     transport = None;
     try:
         args = parse_arguments();
+        import random;
+        random.seed(args.seed);
 
         trace = Trace(args.verbose); #TODO: replace with Logger
 
