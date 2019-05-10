@@ -30,11 +30,6 @@ def init_transport(args, trace):
         transport = EDTTT(args, trace);
         transport.connect();
         return transport;
-    elif (args.transport == "target"):
-        from components.edttt_target import EDTTT;
-        transport = EDTTT(args, trace);
-        transport.connect();
-        return transport;
     else:
         raise Exception("Unknown transport %s\n"%args.transport)
 
