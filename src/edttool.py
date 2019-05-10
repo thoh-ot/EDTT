@@ -14,9 +14,11 @@ def parse_arguments():
                              "src/components/edtt_<transport>.py, or be a path "
                              "to an importable transport module");
 
-    parser.add_argument("-T", "--test", required=True, help="Which test to run (from src/tests)");
+    parser.add_argument("-T", "--test", required=True,
+                        help="Which test module to run. This can either be a module in "
+                        " src/tests, or a file path (relative or absolute)");
 
-    parser.add_argument("-C", "--case", required=False, help="Which subtest to run")
+    parser.add_argument("-C", "--case", required=False, help='Which testcase to run in that module (default "all")')
 
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
