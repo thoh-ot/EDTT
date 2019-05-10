@@ -37,7 +37,7 @@ def Create_FIFO_if_not_there(FIFOName):
       raise Exception("Could not create FIFO %s", FIFOName);
 
 
-class PTTT_nwtsim:
+class EDTTT:
     COM_DISCONNECT = 0;
     COM_WAIT       = 1;
     COM_SEND       = 2;

@@ -26,18 +26,18 @@ def parse_arguments():
 def init_transport(args, trace):
     #Initialize the transport and connect to devices
     if (args.transport == "nwtsim"):
-        from components.edttt_nwtsim import PTTT_nwtsim;
-        transport = PTTT_nwtsim(args, trace);
+        from components.edttt_nwtsim import EDTTT;
+        transport = EDTTT(args, trace);
         transport.connect();
         return transport;
     elif (args.transport == "bsim"):
-        from components.edttt_bsim import PTTT_bsim;
-        transport = PTTT_bsim(args, trace);
+        from components.edttt_bsim import EDTTT;
+        transport = EDTTT(args, trace);
         transport.connect();
         return transport;
     elif (args.transport == "target"):
-        from components.edttt_target import PTTT_target_bridge;
-        transport = PTTT_target_bridge(args, trace);
+        from components.edttt_target import EDTTT;
+        transport = EDTTT(args, trace);
         transport.connect();
         return transport;
     else:

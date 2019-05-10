@@ -37,7 +37,7 @@ def Create_FIFO_if_not_there(FIFOName):
        and ( os.access( FIFOName, os.F_OK ) == False ):
       raise Exception("Could not create FIFO %s", FIFOName);
 
-class PTTT_target_bridge:
+class EDTTT:
     n_devices = 0
     devices = [None, None, None]
 
