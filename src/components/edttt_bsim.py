@@ -128,7 +128,7 @@ class EDTTT:
             self.Trace.trace(4,"The PTT bridge disapeared when trying to write "
                              "to it");
             self.cleanup();
-            raise Exception("Disconnected");
+            raise Exception("Abruptly disconnected from bridge");
 
     def ll_recv(self, nbytes):
         try:
@@ -140,7 +140,7 @@ class EDTTT:
            self.Trace.trace(4,"The PTT bridge disapeared when trying to read "
                               "from it");
            self.cleanup();
-           raise Exception("Disconnected");
+           raise Exception("Abruptly disconnected from bridge");
 
     def send(self, idx, message):
         if (idx > self.n_devices -1):
