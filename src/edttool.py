@@ -75,15 +75,11 @@ def run_tests(args, xtra_args, transport, trace):
 
     t = "all" if args.case is None else args.case
 
-    if t.lower() == "all":
-        for _,test_spec in test_specs.iteritems():
-            result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec);
-            passed += 1 if result == 0 else 0;
-            total += 1;
-
-    elif t.lower() == "randomize":
+    if t.lower() == "all" or t.lower() == "randomize":
         tests_list = list(test_specs.iteritems());
-        random.shuffle(tests_list)
+        if t.lower() == "randomize":
+            random.shuffle(tests_list)
+
         for _,test_spec in tests_list:
             result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec);
             passed += 1 if result == 0 else 0;
