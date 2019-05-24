@@ -31,10 +31,17 @@ def create_com_folder(sim_id):
 def Create_FIFO_if_not_there(FIFOName):
     #we try to create a fifo which may already exist, and/or that some other
     #program may be racing to create at the same time
-    if ( os.access( FIFOName, os.F_OK ) == False ) \
-       and ( os.mkfifo(FIFOName,  stat.S_IRWXG | stat.S_IRWXU) != 0) \
-       and ( os.access( FIFOName, os.F_OK ) == False ):
-      raise Exception("Could not create FIFO %s", FIFOName);
+    if ( os.access( FIFOName, os.F_OK ) == False ):
+        try:
+            err = os.mkfifo(FIFOName,  stat.S_IRWXG | stat.S_IRWXU);
+        except OSError as e:
+            if (e.errno == 17): #File already exists => we are done
+                return;
+            else:
+                raise Exception("Could not create FIFO %s", FIFOName);
+
+        if (err != 0) and ( os.access( FIFOName, os.F_OK ) == False ):
+            raise Exception("Could not create FIFO %s", FIFOName);
 
 
 class EDTTT:
