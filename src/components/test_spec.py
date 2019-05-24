@@ -1,10 +1,11 @@
 
 class TestSpec():
     
-    def __init__(self, name = "", number_devices = 2, description = ""):
+    def __init__(self, name = "", number_devices = 2, description = "", test_private =""):
         self.name = name;
         self.number_devices = number_devices;
         self.description = description;
+        self.test_private = test_private;
 
     def __repr__(self):
         return "Test '%s'\n"%self.name + \

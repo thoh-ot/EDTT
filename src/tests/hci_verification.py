@@ -10,6 +10,7 @@ from components.advertiser import *;
 from components.scanner import *;
 from components.initiator import *;
 from components.preambles import *;
+from components.test_spec import TestSpec;
 
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
@@ -1286,37 +1287,134 @@ def hci_dsu_bv_06_c(transport, upperTester, lowerTester, trace):
     trace.trace(2, "Reset to Master test " + ("PASSED" if success else "FAILED"));
     return success;
 
-__tests__ = { "HCI/GEV/BV-01-C": hci_gev_bv_01_c, # [Unsupported Commands on each supported controller]
-                  "HCI/CFC/BV-02-C": hci_cfc_bv_02_c, # [Buffer Size]
-              "HCI/CIN/BV-01-C": hci_cin_bv_01_c, # [Read Local Supported Features Command]
-              "HCI/CIN/BV-03-C": hci_cin_bv_03_c, # [Read Local Supported Commands Command]
-              "HCI/CIN/BV-04-C": hci_cin_bv_04_c, # [Read Local Version Information Command]
-              "HCI/CIN/BV-06-C": hci_cin_bv_06_c, # [White List Size]
-              "HCI/CIN/BV-09-C": hci_cin_bv_09_c, # [Read LE Public Key Validation Feature Bit]
-              "HCI/CCO/BV-07-C": hci_cco_bv_07_c, # [BR/EDR Not Supported]
-              "HCI/CCO/BV-09-C": hci_cco_bv_09_c, # [LE Set Data Length]
-              "HCI/CCO/BV-10-C": hci_cco_bv_10_c, # [LE Read Suggested Default Data Length Command]
-              "HCI/CCO/BV-11-C": hci_cco_bv_11_c, # [LE Write Suggested Default Data Length Command]
-              "HCI/CCO/BV-12-C": hci_cco_bv_12_c, # [LE Remove Device From Resolving List Command]
-              "HCI/CCO/BV-13-C": hci_cco_bv_13_c, # [LE Clear Resolving List Command]
-              "HCI/CCO/BV-14-C": hci_cco_bv_14_c, # [LE Read Resolving List Size Command]
-              "HCI/CCO/BV-15-C": hci_cco_bv_15_c, # [LE Set Default PHY Command]
-            # "HCI/CCO/BV-16-C": hci_cco_bv_16_c, # [LE Read Periodic Advertiser List Size Command]
-            # "HCI/CCO/BV-17-C": hci_cco_bv_17_c, # [LE Add/Remove/Clear Periodic Advertiser List Commands]
-              "HCI/CCO/BV-18-C": hci_cco_bv_18_c, # [LE Read Transmit Power Command]
-              "HCI/DDI/BV-03-C": hci_ddi_bv_03_c, # [Set Advertising Enable]
-              "HCI/DDI/BV-04-C": hci_ddi_bv_04_c, # [Set Scan Enable]
-              "HCI/DDI/BI-02-C": hci_ddi_bi_02_c, # [Reject Invalid Advertising Parameters]
-              "HCI/HFC/BV-04-C": hci_hfc_bv_04_c, # [LE Set Event Mask]
-              "HCI/CM/BV-01-C":  hci_cm_bv_01_c,  # [LE Read Peer Resolvable Address Command]
-              "HCI/CM/BV-02-C":  hci_cm_bv_02_c,  # [LE Read Local Resolvable Address Command]
-              "HCI/CM/BV-03-C":  hci_cm_bv_03_c,  # [LE Read PHY Command]
-              "HCI/DSU/BV-02-C": hci_dsu_bv_02_c, # [Reset in Advertising State]
-              "HCI/DSU/BV-03-C": hci_dsu_bv_03_c, # [Reset to Slave]
-              "HCI/DSU/BV-04-C": hci_dsu_bv_04_c, # [Reset in Scanning State]
-              "HCI/DSU/BV-05-C": hci_dsu_bv_05_c, # [Reset in Initiating State]
-              "HCI/DSU/BV-06-C": hci_dsu_bv_06_c  # [Reset to Master]
-};
+_spec = {};
+_spec["HCI/CCO/BV-07-C"] = \
+    TestSpec(name = "HCI/CCO/BV-07-C", number_devices = 2,
+             description = "[BR/EDRNotSupported]",
+             test_private = hci_cco_bv_07_c);
+_spec["HCI/CCO/BV-09-C"] = \
+    TestSpec(name = "HCI/CCO/BV-09-C", number_devices = 2,
+             description = "[LESetDataLength]",
+             test_private = hci_cco_bv_09_c);
+_spec["HCI/CCO/BV-10-C"] = \
+    TestSpec(name = "HCI/CCO/BV-10-C", number_devices = 2,
+             description = "[LEReadSuggestedDefaultDataLengthCommand]",
+             test_private = hci_cco_bv_10_c);
+_spec["HCI/CCO/BV-11-C"] = \
+    TestSpec(name = "HCI/CCO/BV-11-C", number_devices = 2,
+             description = "[LEWriteSuggestedDefaultDataLengthCommand]",
+             test_private = hci_cco_bv_11_c);
+_spec["HCI/CCO/BV-12-C"] = \
+    TestSpec(name = "HCI/CCO/BV-12-C", number_devices = 2,
+             description = "[LERemoveDeviceFromResolvingListCommand]",
+             test_private = hci_cco_bv_12_c);
+_spec["HCI/CCO/BV-13-C"] = \
+    TestSpec(name = "HCI/CCO/BV-13-C", number_devices = 2,
+             description = "[LEClearResolvingListCommand]",
+             test_private = hci_cco_bv_13_c);
+_spec["HCI/CCO/BV-14-C"] = \
+    TestSpec(name = "HCI/CCO/BV-14-C", number_devices = 2,
+             description = "[LEReadResolvingListSizeCommand]",
+             test_private = hci_cco_bv_14_c);
+_spec["HCI/CCO/BV-15-C"] = \
+    TestSpec(name = "HCI/CCO/BV-15-C", number_devices = 2,
+             description = "[LESetDefaultPHYCommand]",
+             test_private = hci_cco_bv_15_c);
+#_spec["HCI/CCO/BV-16-C"] = \
+#    TestSpec(name = "HCI/CCO/BV-16-C", number_devices = 2,
+#             description = "[LEReadPeriodicAdvertiserListSizeCommand]",
+#             test_private = hci_cco_bv_16_c);
+#_spec["HCI/CCO/BV-17-C"] = \
+#    TestSpec(name = "HCI/CCO/BV-17-C", number_devices = 2,
+#             description = "[LEAdd/Remove/ClearPeriodicAdvertiserListCommands]",
+#             test_private = hci_cco_bv_17_c);
+_spec["HCI/CCO/BV-18-C"] = \
+    TestSpec(name = "HCI/CCO/BV-18-C", number_devices = 2,
+             description = "[LEReadTransmitPowerCommand]",
+             test_private = hci_cco_bv_18_c);
+_spec["HCI/CFC/BV-02-C"] = \
+    TestSpec(name = "HCI/CFC/BV-02-C", number_devices = 2,
+             description = "[BufferSize]",
+             test_private = hci_cfc_bv_02_c);
+_spec["HCI/CIN/BV-01-C"] = \
+    TestSpec(name = "HCI/CIN/BV-01-C", number_devices = 2,
+             description = "[ReadLocalSupportedFeaturesCommand]",
+             test_private = hci_cin_bv_01_c);
+_spec["HCI/CIN/BV-03-C"] = \
+    TestSpec(name = "HCI/CIN/BV-03-C", number_devices = 2,
+             description = "[ReadLocalSupportedCommandsCommand]",
+             test_private = hci_cin_bv_03_c);
+_spec["HCI/CIN/BV-04-C"] = \
+    TestSpec(name = "HCI/CIN/BV-04-C", number_devices = 2,
+             description = "[ReadLocalVersionInformationCommand]",
+             test_private = hci_cin_bv_04_c);
+_spec["HCI/CIN/BV-06-C"] = \
+    TestSpec(name = "HCI/CIN/BV-06-C", number_devices = 2,
+             description = "[WhiteListSize]",
+             test_private = hci_cin_bv_06_c);
+_spec["HCI/CIN/BV-09-C"] = \
+    TestSpec(name = "HCI/CIN/BV-09-C", number_devices = 2,
+             description = "[ReadLEPublicKeyValidationFeatureBit]",
+             test_private = hci_cin_bv_09_c);
+_spec["HCI/CM/BV-01-C"] = \
+    TestSpec(name = "HCI/CM/BV-01-C", number_devices = 2,
+             description = "[LEReadPeerResolvableAddressCommand]",
+             test_private = hci_cm_bv_01_c);
+_spec["HCI/CM/BV-02-C"] = \
+    TestSpec(name = "HCI/CM/BV-02-C", number_devices = 2,
+             description = "[LEReadLocalResolvableAddressCommand]",
+             test_private = hci_cm_bv_02_c);
+_spec["HCI/CM/BV-03-C"] = \
+    TestSpec(name = "HCI/CM/BV-03-C", number_devices = 2,
+             description = "[LEReadPHYCommand]",
+             test_private = hci_cm_bv_03_c);
+_spec["HCI/DDI/BI-02-C"] = \
+    TestSpec(name = "HCI/DDI/BI-02-C", number_devices = 2,
+             description = "[RejectInvalidAdvertisingParameters]",
+             test_private = hci_ddi_bi_02_c);
+_spec["HCI/DDI/BV-03-C"] = \
+    TestSpec(name = "HCI/DDI/BV-03-C", number_devices = 2,
+             description = "[SetAdvertisingEnable]",
+             test_private = hci_ddi_bv_03_c);
+_spec["HCI/DDI/BV-04-C"] = \
+    TestSpec(name = "HCI/DDI/BV-04-C", number_devices = 2,
+             description = "[SetScanEnable]",
+             test_private = hci_ddi_bv_04_c);
+_spec["HCI/DSU/BV-02-C"] = \
+    TestSpec(name = "HCI/DSU/BV-02-C", number_devices = 2,
+             description = "[ResetinAdvertisingState]",
+             test_private = hci_dsu_bv_02_c);
+_spec["HCI/DSU/BV-03-C"] = \
+    TestSpec(name = "HCI/DSU/BV-03-C", number_devices = 2,
+             description = "[ResettoSlave]",
+             test_private = hci_dsu_bv_03_c);
+_spec["HCI/DSU/BV-04-C"] = \
+    TestSpec(name = "HCI/DSU/BV-04-C", number_devices = 2,
+             description = "[ResetinScanningState]",
+             test_private = hci_dsu_bv_04_c);
+_spec["HCI/DSU/BV-05-C"] = \
+    TestSpec(name = "HCI/DSU/BV-05-C", number_devices = 2,
+             description = "[ResetinInitiatingState]",
+             test_private = hci_dsu_bv_05_c);
+_spec["HCI/DSU/BV-06-C"] = \
+    TestSpec(name = "HCI/DSU/BV-06-C", number_devices = 2,
+             description = "[ResettoMaster]",
+             test_private = hci_dsu_bv_06_c);
+_spec["HCI/GEV/BV-01-C"] = \
+    TestSpec(name = "HCI/GEV/BV-01-C", number_devices = 2,
+             description = "[UnsupportedCommandsoneachsupportedcontroller]",
+             test_private = hci_gev_bv_01_c);
+_spec["HCI/HFC/BV-04-C"] = \
+    TestSpec(name = "HCI/HFC/BV-04-C", number_devices = 2,
+             description = "[LESetEventMask]",
+             test_private = hci_hfc_bv_04_c);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
 
 def preamble(transport, trace):
     global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
@@ -1332,83 +1430,15 @@ def preamble(transport, trace):
     success, lowerIRK, lowerRandomAddress = preamble_device_address_set(transport, 1, trace);
     trace.trace(4, "preamble Device Address Set " + ("PASS" if success else "FAIL"));
     return ok and success;          
-    
-def runTest(test, transport, trace):
-    global __tests__;
-    
-    passed = failed = 0;
-
-    if test.lower() == "all":
-        for test in __tests__:
-            trace.trace(2, "Running test '%s'..." % test);
-            success = preamble(transport, trace);
-            trace.trace(4, "");
-            if __tests__[test].__code__.co_argcount > 3:
-                success = success and __tests__[test](transport, 0, 1, trace);
-            else:        
-                success = success and __tests__[test](transport, 0, trace);
-
-            passed += 1 if success else 0;
-            failed += 0 if success else 1;
-
-            trace.trace(4, "");
-        
-    elif test in __tests__:
-        success = preamble(transport, trace);
-        if __tests__[test].__code__.co_argcount > 3:
-            success = success and __tests__[test](transport, 0, 1, trace);
-        else:        
-            success = success and __tests__[test](transport, 0, trace);
-        
-        passed += 1 if success else 0;
-        failed += 0 if success else 1;
-
-    elif os.path.isfile(test):
-        file = open(test, "r");
-        for line in file:
-            test = line.strip().upper();
-            if test in __tests__:
-                success = preamble(transport, trace);
-                trace.trace(4, "");
-                if __tests__[test].__code__.co_argcount > 3:
-                    success = success and __tests__[test](transport, 0, 1, trace);
-                else:        
-                    success = success and __tests__[test](transport, 0, trace);
-
-                passed += 1 if success else 0;
-                failed += 0 if success else 1;
-
-                trace.trace(4, "");
-        file.close();
-
-    else:
-        trace.trace(1, "Test '%s' not found!" % test);
-        
-        failed += 1;
-
-    if (passed + failed) > 1:
-        trace.trace(1, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
-        if passed > 0:
-            trace.trace(1, "PASS%10d" % passed);
-        if failed > 0:
-            trace.trace(1, "FAIL%10d" % failed);
-        trace.trace(1, "%s\nTotal%9d" % ('='*14, passed + failed));
-    
-    return (failed == 0);
 
 """
-    Return the specification which contains information about the test suite
+    Run a test given its test_spec
 """
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Host Controller Interface (HCI) Test Suite",
-                    number_devices = 2,
-                    description = "Qualification of the Host Controller Interface.");
-    return spec;
-        
-"""
-    Run the command...
-"""
-def main(args, transport, trace):
-    success = runTest("all" if args.case is None else args.case, transport, trace);
-    return 0 if success else -1;
+def run_a_test(args, transport, trace, test_spec):
+    success = preamble(transport, trace);
+    test_f = test_spec.test_private;
+    if test_f.__code__.co_argcount > 3:
+        success = success and test_f(transport, 0, 1, trace);
+    else:        
+        success = success and test_f(transport, 0, trace);
+    return not success

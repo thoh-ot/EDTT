@@ -17,6 +17,7 @@ from components.attdata import *;
 from components.smpdata import *;
 from components.pairing import *;
 from components.gattdata import *;
+from components.test_spec import TestSpec;
 
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
@@ -1046,28 +1047,91 @@ def gatt_cl_gar_bv_03_c(transport, upperTester, trace):
     trace.trace(2, "Read Using Characteristic UUID - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
-__tests__ = { 
-    "GAP/GAT/BV-01-C":       gap_gat_bv_01_c,       # [GAP Mandatory Characteristics]
-    "GAP/GAT/BV-02-C":       gap_gat_bv_02_c,       # [GAP Peripheral Privacy Flag Characteristic]
-    "GAP/GAT/BV-03-C":       gap_gat_bv_03_c,       # [GAP Reconnection Address Characteristic]
-    "GAP/GAT/BV-04-C":       gap_gat_bv_04_c,       # [Peripheral Preferred Connection Parameters Characteristic]
-    "GAP/GAT/BV-05-C":       gap_gat_bv_05_c,       # [Writable Device Name]
-    "GAP/IDLE/NAMP/BV-01-C": gap_idle_namp_bv_01_c, # [Name Discovery Procedure GATT Client]
-    "GAP/GAT/BX-01-C":       gap_gat_bx_01_c,       # [Discover All Services]
+_spec = {};
 
-    "GATT/CL/GAD/BV-01-C":   gatt_cl_gad_bv_01_c,   # [Discover All Primary Services - by Client]
-    "GATT/CL/GAD/BV-02-C":   gatt_cl_gad_bv_02_c,   # [Discover Primary Services by Service UUID - by Client]
-    "GATT/CL/GAD/BV-03-C":   gatt_cl_gad_bv_03_c,   # [Find Included Services - by Client]
-    "GATT/CL/GAD/BV-04-C":   gatt_cl_gad_bv_04_c,   # [Discover All Characteristics of a Service - by Client]
-    "GATT/CL/GAD/BV-05-C":   gatt_cl_gad_bv_05_c,   # [Discover Characteristics by UUID - by Client]
-    "GATT/CL/GAD/BV-06-C":   gatt_cl_gad_bv_06_c,   # [Discover All Characteristic Descriptors - by Client]
-    "GATT/CL/GAR/BV-01-C":   gatt_cl_gar_bv_01_c,   # [Read Characteristic Value - by Client]
-    "GATT/CL/GAR/BI-01-C":   gatt_cl_gar_bi_01_c,   # [Read Characteristic Value - Invalid Handle]
-    "GATT/CL/GAR/BI-02-C":   gatt_cl_gar_bi_02_c,   # [Read Characteristic Value - Read Not Permitted]
-    "GATT/CL/GAR/BI-03-C":   gatt_cl_gar_bi_03_c,   # [Read Characteristic Value - Insufficient Authorization]
-    "GATT/CL/GAR/BI-04-C":   gatt_cl_gar_bi_04_c,   # [Read Characteristic Value - Insufficient Authentication]
-    "GATT/CL/GAR/BV-03-C":   gatt_cl_gar_bv_03_c    # [Read Using Characteristic UUID - by Client]
-};
+_spec["GAP/GAT/BV-01-C"] = \
+    TestSpec(name = "GAP/GAT/BV-01-C", number_devices = 1,
+             description = "#[GAPMandatoryCharacteristics]",
+             test_private = gap_gat_bv_01_c);
+_spec["GAP/GAT/BV-02-C"] = \
+    TestSpec(name = "GAP/GAT/BV-02-C", number_devices = 1,
+             description = "#[GAPPeripheralPrivacyFlagCharacteristic]",
+             test_private = gap_gat_bv_02_c);
+_spec["GAP/GAT/BV-03-C"] = \
+    TestSpec(name = "GAP/GAT/BV-03-C", number_devices = 1,
+             description = "#[GAPReconnectionAddressCharacteristic]",
+             test_private = gap_gat_bv_03_c);
+_spec["GAP/GAT/BV-04-C"] = \
+    TestSpec(name = "GAP/GAT/BV-04-C", number_devices = 1,
+             description = "#[PeripheralPreferredConnectionParametersCharacteristic]",
+             test_private = gap_gat_bv_04_c);
+_spec["GAP/GAT/BV-05-C"] = \
+    TestSpec(name = "GAP/GAT/BV-05-C", number_devices = 1,
+             description = "#[WritableDeviceName]",
+             test_private = gap_gat_bv_05_c);
+_spec["GAP/GAT/BX-01-C"] = \
+    TestSpec(name = "GAP/GAT/BX-01-C", number_devices = 1,
+             description = "#[DiscoverAllServices]",
+             test_private = gap_gat_bx_01_c);
+_spec["GAP/IDLE/NAMP/BV-01-C"] = \
+    TestSpec(name = "GAP/IDLE/NAMP/BV-01-C", number_devices = 1,
+             description = "#[NameDiscoveryProcedureGATTClient]",
+             test_private = gap_idle_namp_bv_01_c);
+_spec["GATT/CL/GAD/BV-01-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-01-C", number_devices = 1,
+             description = "#[DiscoverAllPrimaryServices-byClient]",
+             test_private = gatt_cl_gad_bv_01_c);
+_spec["GATT/CL/GAD/BV-02-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-02-C", number_devices = 1,
+             description = "#[DiscoverPrimaryServicesbyServiceUUID-byClient]",
+             test_private = gatt_cl_gad_bv_02_c);
+_spec["GATT/CL/GAD/BV-03-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-03-C", number_devices = 1,
+             description = "#[FindIncludedServices-byClient]",
+             test_private = gatt_cl_gad_bv_03_c);
+_spec["GATT/CL/GAD/BV-04-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-04-C", number_devices = 1,
+             description = "#[DiscoverAllCharacteristicsofaService-byClient]",
+             test_private = gatt_cl_gad_bv_04_c);
+_spec["GATT/CL/GAD/BV-05-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-05-C", number_devices = 1,
+             description = "#[DiscoverCharacteristicsbyUUID-byClient]",
+             test_private = gatt_cl_gad_bv_05_c);
+_spec["GATT/CL/GAD/BV-06-C"] = \
+    TestSpec(name = "GATT/CL/GAD/BV-06-C", number_devices = 1,
+             description = "#[DiscoverAllCharacteristicDescriptors-byClient]",
+             test_private = gatt_cl_gad_bv_06_c);
+_spec["GATT/CL/GAR/BI-01-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BI-01-C", number_devices = 1,
+             description = "#[ReadCharacteristicValue-InvalidHandle]",
+             test_private = gatt_cl_gar_bi_01_c);
+_spec["GATT/CL/GAR/BI-02-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BI-02-C", number_devices = 1,
+             description = "#[ReadCharacteristicValue-ReadNotPermitted]",
+             test_private = gatt_cl_gar_bi_02_c);
+_spec["GATT/CL/GAR/BI-03-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BI-03-C", number_devices = 1,
+             description = "#[ReadCharacteristicValue-InsufficientAuthorization]",
+             test_private = gatt_cl_gar_bi_03_c);
+_spec["GATT/CL/GAR/BI-04-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BI-04-C", number_devices = 1,
+             description = "#[ReadCharacteristicValue-InsufficientAuthentication]",
+             test_private = gatt_cl_gar_bi_04_c);
+_spec["GATT/CL/GAR/BV-01-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BV-01-C", number_devices = 1,
+             description = "#[ReadCharacteristicValue-byClient]",
+             test_private = gatt_cl_gar_bv_01_c);
+_spec["GATT/CL/GAR/BV-03-C"] = \
+    TestSpec(name = "GATT/CL/GAR/BV-03-C", number_devices = 1,
+             description = "#[ReadUsingCharacteristicUUID-byClient]",
+             test_private = gatt_cl_gar_bv_03_c);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
 
 def preamble(transport, trace):
     global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
@@ -1078,73 +1142,15 @@ def preamble(transport, trace):
     trace.trace(4, "preamble Device Address Set " + ("PASS" if success else "FAIL"));
     ok = ok and success;            
     return ok;          
-    
-def runTest(test, transport, trace):
-    global __tests__;
-    
-    passed = failed = 0;
 
-    if test.lower() == "all":
-        for test in __tests__:
-            success = preamble(transport, trace);
-            trace.trace(4, "");
-            success = success and __tests__[test](transport, 0, trace);
-
-            passed += 1 if success else 0;
-            failed += 0 if success else 1;
-
-            trace.trace(4, "");
-
-    elif test in __tests__:
-        success = preamble(transport, trace);
-        success = success and __tests__[test](transport, 0, trace);
-        
-        passed += 1 if success else 0;
-        failed += 0 if success else 1;
-
-    elif os.path.isfile(test):
-        file = open(test, "r");
-        for line in file:
-            test = line.strip().upper();
-            if test in __tests__:
-                success = preamble(transport, trace);
-                trace.trace(4, "");
-                success = success and __tests__[test](transport, 0, trace);
-
-                passed += 1 if success else 0;
-                failed += 0 if success else 1;
-
-                trace.trace(4, "");
-        file.close();
-
+"""
+    Run a test given its test_spec
+"""
+def run_a_test(args, transport, trace, test_spec):
+    success = preamble(transport, trace);
+    test_f = test_spec.test_private;
+    if test_f.__code__.co_argcount > 3:
+        success = success and test_f(transport, 0, 1, trace);
     else:
-        trace.trace(1, "Test '%s' not found!" % test);
-        
-        failed += 1;
-
-    if (passed + failed) > 1:
-        trace.trace(1, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
-        if passed > 0:
-            trace.trace(1, "PASS%10d" % passed);
-        if failed > 0:
-            trace.trace(1, "FAIL%10d" % failed);
-        trace.trace(1, "%s\nTotal%9d" % ('='*14, passed + failed));
-        
-    return (failed == 0);
-
-"""
-    Return the specification which contains information about the test suite
-"""
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Generic Access Profile (GAP) Test Suite",
-                    number_devices = 1,
-                    description = "Qualification of GAP.");
-    return spec;
-
-"""
-    Run the command...
-"""
-def main(args, transport, trace):
-    success = runTest("all" if args.case is None else args.case, transport, trace);
-    return 0 if success else -1;
+        success = success and test_f(transport, 0, trace);
+    return not success

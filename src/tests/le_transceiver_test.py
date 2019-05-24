@@ -2,21 +2,12 @@ from components.basic_commands import le_receiver_test;
 from components.basic_commands import le_transmitter_test;
 from components.basic_commands import le_test_end;
 import time;
-
-"""
-    Return the specification which contains information about the command
-"""
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "LE Transceiver Test",
-                    number_devices = 2,
-                    description = "Test that we can execute the LE Transceiver Test.");
-    return spec;
+from components.test_spec import TestSpec;
 
 """
     Run the command...
 """
-def main(args, transport, trace):
+def LE_Transceiver_Test(transport, trace):
     trace.trace(3, "Starting le transceiver test");
     
     RxCh = 0;
@@ -37,3 +28,23 @@ def main(args, transport, trace):
     success = success and True if TxCount[0] == 0 and TxCount[1] > 3200 else False;    
     trace.trace(3, "LE Transceiver Test " + ("PASSED" if success else "FAILED") + " with %i device(s)" %transport.n_devices);
     return 0 if success else -1;
+
+_spec = {};
+_spec["LE_Transceiver_Test"] = \
+    TestSpec(name = "LE Transceiver Test",
+             number_devices = 2,
+             description = "Test that we can execute the LE Transceiver Test.",
+             test_private = LE_Transceiver_Test);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
+
+"""
+    Run a test given its test_spec
+"""
+def run_a_test(args, transport, trace, test_spec):
+    return not test_spec.test_private(transport, trace);

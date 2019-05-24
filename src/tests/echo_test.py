@@ -1,20 +1,7 @@
 from components.basic_commands import echo;
+from components.test_spec import TestSpec;
 
-"""
-    Return the test spec which contains info about the test
-"""
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Echo test",
-                    number_devices = 1,
-                    description = "Test that we can echo to any connected device");
-    return spec;
-
-
-"""
-    Run the test
-"""
-def main(args, transport, trace):
+def _echo_test(transport, trace):
     trace.trace(3, "Starting echo test");
 
     try:
@@ -25,5 +12,24 @@ def main(args, transport, trace):
         return 1;
 
     trace.trace(3,"Echo test passed with %i device(s)"% transport.n_devices);
-
     return 0;
+
+_spec = {};
+_spec["Echo_test"] = \
+    TestSpec(name = "Echo_test",
+             number_devices = 1,
+             description = "Test that we can echo to any connected device",
+             test_private = _echo_test);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
+
+"""
+    Run a test given its test_spec
+"""
+def run_a_test(args, transport, trace, test_spec):
+    return test_spec.test_private(transport, trace);

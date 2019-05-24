@@ -13,7 +13,8 @@ from components.scanner import *;
 from components.initiator import *;
 from components.preambles import *;
 from components.addata import *;
-from components.attdata import *; 
+from components.attdata import *;
+from components.test_spec import TestSpec;
 
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
@@ -580,15 +581,42 @@ def gap_idle_namp_bv_01_c(transport, upperTester, trace):
     trace.trace(2, "Name Discovery Procedure GATT Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
-__tests__ = { 
-    "GAP/GAT/BV-01-C":       gap_gat_bv_01_c,       # [GAP Mandatory Characteristics]
-    "GAP/GAT/BV-02-C":       gap_gat_bv_02_c,       # [GAP Peripheral Privacy Flag Characteristic]
-    "GAP/GAT/BV-03-C":       gap_gat_bv_03_c,       # [GAP Reconnection Address Characteristic]
-    "GAP/GAT/BV-04-C":       gap_gat_bv_04_c,       # [Peripheral Preferred Connection Parameters Characteristic]
-    "GAP/GAT/BV-05-C":       gap_gat_bv_05_c,       # [Writable Device Name]
-    "GAP/IDLE/NAMP/BV-01-C": gap_idle_namp_bv_01_c, # [Name Discovery Procedure GATT Client]
-    "GAP/GAT/BX-01-C":       gap_gat_bx_01_c        # [Discover All Services]
-};
+_spec = {};
+_spec["GAP/GAT/BV-01-C"] = \
+    TestSpec(name = "GAP/GAT/BV-01-C", number_devices = 2,
+             description = "#[GAPMandatoryCharacteristics]",
+             test_private = gap_gat_bv_01_c);
+_spec["GAP/GAT/BV-02-C"] = \
+    TestSpec(name = "GAP/GAT/BV-02-C", number_devices = 2,
+             description = "#[GAPPeripheralPrivacyFlagCharacteristic]",
+             test_private = gap_gat_bv_02_c);
+_spec["GAP/GAT/BV-03-C"] = \
+    TestSpec(name = "GAP/GAT/BV-03-C", number_devices = 2,
+             description = "#[GAPReconnectionAddressCharacteristic]",
+             test_private = gap_gat_bv_03_c);
+_spec["GAP/GAT/BV-04-C"] = \
+    TestSpec(name = "GAP/GAT/BV-04-C", number_devices = 2,
+             description = "#[PeripheralPreferredConnectionParametersCharacteristic]",
+             test_private = gap_gat_bv_04_c);
+_spec["GAP/GAT/BV-05-C"] = \
+    TestSpec(name = "GAP/GAT/BV-05-C", number_devices = 2,
+             description = "#[WritableDeviceName]",
+             test_private = gap_gat_bv_05_c);
+_spec["GAP/GAT/BX-01-C"] = \
+    TestSpec(name = "GAP/GAT/BX-01-C", number_devices = 2,
+             description = "#[DiscoverAllServices]",
+             test_private = gap_gat_bx_01_c);
+_spec["GAP/IDLE/NAMP/BV-01-C"] = \
+    TestSpec(name = "GAP/IDLE/NAMP/BV-01-C", number_devices = 2,
+             description = "#[NameDiscoveryProcedureGATTClient]",
+             test_private = gap_idle_namp_bv_01_c);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
 
 def preamble(transport, trace):
     global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
@@ -600,72 +628,12 @@ def preamble(transport, trace):
     ok = ok and success;            
     return ok;          
     
-def runTest(test, transport, trace):
-    global __tests__;
-    
-    passed = failed = 0;
-
-    if test.lower() == "all":
-        for test in __tests__:
-            success = preamble(transport, trace);
-            trace.trace(4, "");
-            success = success and __tests__[test](transport, 0, trace);
-
-            passed += 1 if success else 0;
-            failed += 0 if success else 1;
-
-            trace.trace(4, "");
-
-    elif test in __tests__:
-        success = preamble(transport, trace);
-        success = success and __tests__[test](transport, 0, trace);
-        
-        passed += 1 if success else 0;
-        failed += 0 if success else 1;
-
-    elif os.path.isfile(test):
-        file = open(test, "r");
-        for line in file:
-            test = line.strip().upper();
-            if test in __tests__:
-                success = preamble(transport, trace);
-                trace.trace(4, "");
-                success = success and __tests__[test](transport, 0, trace);
-
-                passed += 1 if success else 0;
-                failed += 0 if success else 1;
-
-                trace.trace(4, "");
-        file.close();
-
-    else:
-        trace.trace(1, "Test '%s' not found!" % test);
-        
-        failed += 1;
-
-    if (passed + failed) > 1:
-        trace.trace(1, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
-        if passed > 0:
-            trace.trace(1, "PASS%10d" % passed);
-        if failed > 0:
-            trace.trace(1, "FAIL%10d" % failed);
-        trace.trace(1, "%s\nTotal%9d" % ('='*14, passed + failed));
-        
-    return (failed == 0);
 
 """
-    Return the specification which contains information about the test suite
+    Run a test given its test_spec
 """
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Generic Access Profile (GAP) Test Suite",
-                    number_devices = 1,
-                    description = "Qualification of GAP.");
-    return spec;
-
-"""
-    Run the command...
-"""
-def main(args, transport, trace):
-    success = runTest("all" if args.case is None else args.case, transport, trace);
-    return 0 if success else -1;
+def run_a_test(args, transport, trace, test_spec):
+    success = preamble(transport, trace);
+    test_f = test_spec.test_private;
+    success = success and test_f(transport, 0, trace);
+    return not success

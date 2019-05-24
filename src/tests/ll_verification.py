@@ -14,6 +14,7 @@ from components.advertiser import *;
 from components.scanner import *;
 from components.initiator import *;
 from components.preambles import *;
+from components.test_spec import TestSpec;
 
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
@@ -7147,127 +7148,486 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
     trace.trace(2, "Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
+_spec = {};
+_spec["LL/CON/ADV/BV-01-C"] = \
+    TestSpec(name = "LL/CON/ADV/BV-01-C", number_devices = 2,
+             description = "#[AcceptingConnections]",
+             test_private = ll_con_adv_bv_01_c);
+_spec["LL/CON/ADV/BV-04-C"] = \
+    TestSpec(name = "LL/CON/ADV/BV-04-C", number_devices = 2,
+             description = "#[DirectedAdvertisingConnection]",
+             test_private = ll_con_adv_bv_04_c);
+_spec["LL/CON/ADV/BV-09-C"] = \
+    TestSpec(name = "LL/CON/ADV/BV-09-C", number_devices = 2,
+             description = "#[AcceptingConnections,ChannelSelectionAlgorithm#2]",
+             test_private = ll_con_adv_bv_09_c);
+_spec["LL/CON/ADV/BV-10-C"] = \
+    TestSpec(name = "LL/CON/ADV/BV-10-C", number_devices = 2,
+             description = "#[DirectedAdvertisingConnection,ChannelSelectionAlgorithm#2]",
+             test_private = ll_con_adv_bv_10_c);
+_spec["LL/CON/INI/BV-01-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-01-C", number_devices = 2,
+             description = "#[ConnectionInitiation]",
+             test_private = ll_con_ini_bv_01_c);
+_spec["LL/CON/INI/BV-02-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-02-C", number_devices = 2,
+             description = "#[ConnectingtoDirectedAdvertising]",
+             test_private = ll_con_ini_bv_02_c);
+_spec["LL/CON/INI/BV-06-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-06-C", number_devices = 2,
+             description = "#[InitiationDeviceFiltering:Undirected]",
+             test_private = ll_con_ini_bv_06_c);
+_spec["LL/CON/INI/BV-07-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-07-C", number_devices = 2,
+             description = "#[InitiationDeviceFiltering:Directed]",
+             test_private = ll_con_ini_bv_07_c);
+_spec["LL/CON/INI/BV-08-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-08-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013ConnectionEstablishmentrespondingtoconnectableundirectedadvertising,Initiator]",
+             test_private = ll_con_ini_bv_08_c);
+_spec["LL/CON/INI/BV-09-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-09-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingresolvinglist,Initiator]",
+             test_private = ll_con_ini_bv_09_c);
+_spec["LL/CON/INI/BV-10-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-10-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator]",
+             test_private = ll_con_ini_bv_10_c);
+_spec["LL/CON/INI/BV-11-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-11-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingwithwrongaddressandresolvinglist,Initiator]",
+             test_private = ll_con_ini_bv_11_c);
+_spec["LL/CON/INI/BV-12-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-12-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingwithidentityaddressandresolvinglist,Initiator]",
+             test_private = ll_con_ini_bv_12_c);
+_spec["LL/CON/INI/BV-16-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-16-C", number_devices = 2,
+             description = "#[ConnectionInitiation,ChannelSelectionAlgorithm#2]",
+             test_private = ll_con_ini_bv_16_c);
+_spec["LL/CON/INI/BV-17-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-17-C", number_devices = 2,
+             description = "#[ConnectingtoDirectedAdvertising,ChannelSelectionAlgorithm#2]",
+             test_private = ll_con_ini_bv_17_c);
+_spec["LL/CON/INI/BV-18-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-18-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingresolvinglist,Initiator,IgnoreIdentityAddress]",
+             test_private = ll_con_ini_bv_18_c);
+_spec["LL/CON/INI/BV-19-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-19-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator,IgnoreIdentityAddress]",
+             test_private = ll_con_ini_bv_19_c);
+_spec["LL/CON/INI/BV-20-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-20-C", number_devices = 2,
+             description = "#[DevicePrivacy-ConnectionEstablishmentusingresolvinglist,Initiator,AcceptIdentityAddress]",
+             test_private = ll_con_ini_bv_20_c);
+_spec["LL/CON/INI/BV-21-C"] = \
+    TestSpec(name = "LL/CON/INI/BV-21-C", number_devices = 2,
+             description = "#[DevicePrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator,AcceptIdentityAddress]",
+             test_private = ll_con_ini_bv_21_c);
+_spec["LL/CON/MAS/BI-06-C"] = \
+    TestSpec(name = "LL/CON/MAS/BI-06-C", number_devices = 2,
+             description = "#[AcceptingParameterConnectionRequest-illegalparameters]",
+             test_private = ll_con_mas_bi_06_c);
+_spec["LL/CON/MAS/BV-03-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-03-C", number_devices = 2,
+             description = "#[MasterSendingData]",
+             test_private = ll_con_mas_bv_03_c);
+_spec["LL/CON/MAS/BV-04-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-04-C", number_devices = 2,
+             description = "#[MasterReceivingData]",
+             test_private = ll_con_mas_bv_04_c);
+_spec["LL/CON/MAS/BV-05-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-05-C", number_devices = 2,
+             description = "#[MasterSendingandReceivingData]",
+             test_private = ll_con_mas_bv_05_c);
+_spec["LL/CON/MAS/BV-07-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-07-C", number_devices = 2,
+             description = "#[RequestingParameterUpdate]",
+             test_private = ll_con_mas_bv_07_c);
+_spec["LL/CON/MAS/BV-08-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-08-C", number_devices = 2,
+             description = "#[MasterSendingTermination]",
+             test_private = ll_con_mas_bv_08_c);
+_spec["LL/CON/MAS/BV-09-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-09-C", number_devices = 2,
+             description = "#[MasterAcceptingTermination]",
+             test_private = ll_con_mas_bv_09_c);
+_spec["LL/CON/MAS/BV-13-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-13-C", number_devices = 2,
+             description = "#[FeatureSetupRequest]",
+             test_private = ll_con_mas_bv_13_c);
+_spec["LL/CON/MAS/BV-20-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-20-C", number_devices = 2,
+             description = "#[MasterRequestVersion]",
+             test_private = ll_con_mas_bv_20_c);
+_spec["LL/CON/MAS/BV-21-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-21-C", number_devices = 2,
+             description = "#[MasterRespondVersion]",
+             test_private = ll_con_mas_bv_21_c);
+_spec["LL/CON/MAS/BV-23-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-23-C", number_devices = 2,
+             description = "#[RespondingtoFeatureExchange]",
+             test_private = ll_con_mas_bv_23_c);
+_spec["LL/CON/MAS/BV-24-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-24-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-Accept]",
+             test_private = ll_con_mas_bv_24_c);
+_spec["LL/CON/MAS/BV-25-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-25-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-Reject]",
+             test_private = ll_con_mas_bv_25_c);
+_spec["LL/CON/MAS/BV-26-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-26-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-sameprocedurecollision]",
+             test_private = ll_con_mas_bv_26_c);
+_spec["LL/CON/MAS/BV-27-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-27-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-differentprocedurecollision-channelmapupdate]",
+             test_private = ll_con_mas_bv_27_c);
+_spec["LL/CON/MAS/BV-29-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-29-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-remotelegacyhost]",
+             test_private = ll_con_mas_bv_29_c);
+_spec["LL/CON/MAS/BV-30-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-30-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest-noPreferredPeriodicity]",
+             test_private = ll_con_mas_bv_30_c);
+_spec["LL/CON/MAS/BV-34-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-34-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest-eventmasked]",
+             test_private = ll_con_mas_bv_34_c);
+_spec["LL/CON/MAS/BV-35-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-35-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest-Hostrejects]",
+             test_private = ll_con_mas_bv_35_c);
+_spec["LL/CON/MAS/BV-41-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-41-C", number_devices = 2,
+             description = "#[InitiatingPHYUpdateProcedure]",
+             test_private = ll_con_mas_bv_41_c);
+_spec["LL/CON/MAS/BV-43-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-43-C", number_devices = 2,
+             description = "#[RespondingtoPHYUpdateProcedure]",
+             test_private = ll_con_mas_bv_43_c);
+_spec["LL/CON/MAS/BV-74-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-74-C", number_devices = 2,
+             description = "#[MasterDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE1MPHY]",
+             test_private = ll_con_mas_bv_74_c);
+_spec["LL/CON/MAS/BV-77-C"] = \
+    TestSpec(name = "LL/CON/MAS/BV-77-C", number_devices = 2,
+             description = "#[MasterDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE2MPHY]",
+             test_private = ll_con_mas_bv_77_c);
+_spec["LL/CON/SLA/BI-08-C"] = \
+    TestSpec(name = "LL/CON/SLA/BI-08-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest\u2013IllegalParameters]",
+             test_private = ll_con_sla_bi_08_c);
+_spec["LL/CON/SLA/BV-04-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-04-C", number_devices = 2,
+             description = "#[SlaveSendingData]",
+             test_private = ll_con_sla_bv_04_c);
+_spec["LL/CON/SLA/BV-05-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-05-C", number_devices = 2,
+             description = "#[SlaveReceivingData]",
+             test_private = ll_con_sla_bv_05_c);
+_spec["LL/CON/SLA/BV-06-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-06-C", number_devices = 2,
+             description = "#[SlaveSendingandReceivingData]",
+             test_private = ll_con_sla_bv_06_c);
+_spec["LL/CON/SLA/BV-10-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-10-C", number_devices = 2,
+             description = "#[AcceptingParameterUpdate]",
+             test_private = ll_con_sla_bv_10_c);
+_spec["LL/CON/SLA/BV-11-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-11-C", number_devices = 2,
+             description = "#[Slavesendingtermination]",
+             test_private = ll_con_sla_bv_11_c);
+_spec["LL/CON/SLA/BV-12-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-12-C", number_devices = 2,
+             description = "#[Slaveacceptingtermination]",
+             test_private = ll_con_sla_bv_12_c);
+# _spec["LL/CON/SLA/BV-13-C"] = \
+#     TestSpec(name = "LL/CON/SLA/BV-13-C", number_devices = 2,
+#              description = "##Failing-[Slavesupervisiontimer]TESTFAILS",
+#              test_private = ll_con_sla_bv_13_c);
+_spec["LL/CON/SLA/BV-14-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-14-C", number_devices = 2,
+             description = "#[FeatureSetupResponse]",
+             test_private = ll_con_sla_bv_14_c);
+_spec["LL/CON/SLA/BV-19-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-19-C", number_devices = 2,
+             description = "#[Slaverequestversion]",
+             test_private = ll_con_sla_bv_19_c);
+_spec["LL/CON/SLA/BV-20-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-20-C", number_devices = 2,
+             description = "#[Slaverespondversion]",
+             test_private = ll_con_sla_bv_20_c);
+_spec["LL/CON/SLA/BV-22-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-22-C", number_devices = 2,
+             description = "#[Initiatefeatureexchange]",
+             test_private = ll_con_sla_bv_22_c);
+_spec["LL/CON/SLA/BV-24-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-24-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-Accept]",
+             test_private = ll_con_sla_bv_24_c);
+_spec["LL/CON/SLA/BV-25-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-25-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-Reject]",
+             test_private = ll_con_sla_bv_25_c);
+_spec["LL/CON/SLA/BV-26-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-26-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-sameprocedurecollision]",
+             test_private = ll_con_sla_bv_26_c);
+_spec["LL/CON/SLA/BV-27-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-27-C", number_devices = 2,
+             description = "#[InitiatingConnectionParameterRequest-differentprocedurecollision-channelmapupdate]",
+             test_private = ll_con_sla_bv_27_c);
+_spec["LL/CON/SLA/BV-29-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-29-C", number_devices = 2,
+             description = "#[RespondingtoConnectionParameterRequest-noPreffered_Periodicity]",
+             test_private = ll_con_sla_bv_29_c);
+_spec["LL/CON/SLA/BV-33-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-33-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest-eventmasked]TESTFAILS",
+             test_private = ll_con_sla_bv_33_c);
+_spec["LL/CON/SLA/BV-34-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-34-C", number_devices = 2,
+             description = "#[AcceptingConnectionParameterRequest-hostrejectssur]",
+             test_private = ll_con_sla_bv_34_c);
+_spec["LL/CON/SLA/BV-40-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-40-C", number_devices = 2,
+             description = "#[InitiatingPHYUpdateProcedure]",
+             test_private = ll_con_sla_bv_40_c);
+_spec["LL/CON/SLA/BV-42-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-42-C", number_devices = 2,
+             description = "#[RespondingtoPHYUpdateProcedure]",
+             test_private = ll_con_sla_bv_42_c);
+_spec["LL/CON/SLA/BV-78-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-78-C", number_devices = 2,
+             description = "#[SlaveDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE1MPHY]",
+             test_private = ll_con_sla_bv_78_c);
+_spec["LL/CON/SLA/BV-81-C"] = \
+    TestSpec(name = "LL/CON/SLA/BV-81-C", number_devices = 2,
+             description = "#[SlaveDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE2MPHY]",
+             test_private = ll_con_sla_bv_81_c);
+_spec["LL/DDI/ADV/BV-01-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-01-C", number_devices = 2,
+             description = "#[Non-ConnectableAdvertisingEvents]",
+             test_private = ll_ddi_adv_bv_01_c);
+_spec["LL/DDI/ADV/BV-02-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-02-C", number_devices = 2,
+             description = "#[UndirectedAdvertisingEvents]",
+             test_private = ll_ddi_adv_bv_02_c);
+_spec["LL/DDI/ADV/BV-03-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-03-C", number_devices = 2,
+             description = "#[AdvertisingData:Non-Connectable]",
+             test_private = ll_ddi_adv_bv_03_c);
+_spec["LL/DDI/ADV/BV-04-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-04-C", number_devices = 2,
+             description = "#[AdvertisingData:Undirected]",
+             test_private = ll_ddi_adv_bv_04_c);
+_spec["LL/DDI/ADV/BV-05-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-05-C", number_devices = 2,
+             description = "#[ScanRequest:UndirectedConnectable]",
+             test_private = ll_ddi_adv_bv_05_c);
+_spec["LL/DDI/ADV/BV-06-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-06-C", number_devices = 2,
+             description = "#[ConnectionRequest]",
+             test_private = ll_ddi_adv_bv_06_c);
+_spec["LL/DDI/ADV/BV-07-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-07-C", number_devices = 2,
+             description = "#[ScanRequestConnectionRequest]",
+             test_private = ll_ddi_adv_bv_07_c);
+_spec["LL/DDI/ADV/BV-08-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-08-C", number_devices = 2,
+             description = "#[ScanRequestDeviceFiltering]",
+             test_private = ll_ddi_adv_bv_08_c);
+_spec["LL/DDI/ADV/BV-09-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-09-C", number_devices = 2,
+             description = "#[ConnectionRequestDeviceFiltering]",
+             test_private = ll_ddi_adv_bv_09_c);
+_spec["LL/DDI/ADV/BV-11-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-11-C", number_devices = 2,
+             description = "#[DirectedAdvertisingEvents]",
+             test_private = ll_ddi_adv_bv_11_c);
+_spec["LL/DDI/ADV/BV-15-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-15-C", number_devices = 2,
+             description = "#[DiscoverableAdvertisingEvents]",
+             test_private = ll_ddi_adv_bv_15_c);
+_spec["LL/DDI/ADV/BV-16-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-16-C", number_devices = 2,
+             description = "#[AdvertisingData:Discoverable]",
+             test_private = ll_ddi_adv_bv_16_c);
+_spec["LL/DDI/ADV/BV-17-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-17-C", number_devices = 2,
+             description = "#[ScanRequest:Discoverable]",
+             test_private = ll_ddi_adv_bv_17_c);
+_spec["LL/DDI/ADV/BV-18-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-18-C", number_devices = 2,
+             description = "#[DeviceFiltering:Discoverable]",
+             test_private = ll_ddi_adv_bv_18_c);
+_spec["LL/DDI/ADV/BV-19-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-19-C", number_devices = 2,
+             description = "#[LowDutyCycleDirectedAdvertisingEvents]",
+             test_private = ll_ddi_adv_bv_19_c);
+_spec["LL/DDI/ADV/BV-20-C"] = \
+    TestSpec(name = "LL/DDI/ADV/BV-20-C", number_devices = 2,
+             description = "#[AdvertisingAlwaysUsingtheLE1MPHY]",
+             test_private = ll_ddi_adv_bv_20_c);
+# _spec["LL/DDI/ADV/BV-21-C"] = \
+#     TestSpec(name = "LL/DDI/ADV/BV-21-C", number_devices = 2,
+#              description = "##Failing-[ExtendedAdvertising,LegacyPDUs,Non-Connectable]",
+#              test_private = ll_ddi_adv_bv_21_c);
+_spec["LL/DDI/SCN/BV-01-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-01-C", number_devices = 2,
+             description = "#[PassiveScanning:NonConnectable]",
+             test_private = ll_ddi_scn_bv_01_c);
+_spec["LL/DDI/SCN/BV-02-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-02-C", number_devices = 2,
+             description = "#[PassiveScanningDeviceFiltering]",
+             test_private = ll_ddi_scn_bv_02_c);
+_spec["LL/DDI/SCN/BV-03-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-03-C", number_devices = 2,
+             description = "#[ActiveScanning]",
+             test_private = ll_ddi_scn_bv_03_c);
+_spec["LL/DDI/SCN/BV-04-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-04-C", number_devices = 2,
+             description = "#[ActiveScanningDeviceFiltering]",
+             test_private = ll_ddi_scn_bv_04_c);
+_spec["LL/DDI/SCN/BV-05-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-05-C", number_devices = 2,
+             description = "#[ScanningForAdvertiserTypes]",
+             test_private = ll_ddi_scn_bv_05_c);
+_spec["LL/DDI/SCN/BV-10-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-10-C", number_devices = 2,
+             description = "#[PassiveScanning:UndirectedEvents]",
+             test_private = ll_ddi_scn_bv_10_c);
+_spec["LL/DDI/SCN/BV-11-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-11-C", number_devices = 2,
+             description = "#[PassiveScanning:DirectedEvents]",
+             test_private = ll_ddi_scn_bv_11_c);
+_spec["LL/DDI/SCN/BV-12-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-12-C", number_devices = 2,
+             description = "#[PassiveScanning:DiscoverableEvents]",
+             test_private = ll_ddi_scn_bv_12_c);
+_spec["LL/DDI/SCN/BV-13-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-13-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013PassiveScanning,PeerIRK]",
+             test_private = ll_ddi_scn_bv_13_c);
+_spec["LL/DDI/SCN/BV-14-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-14-C", number_devices = 2,
+             description = "#[NetworkPrivacy-PassiveScanning:DirectedEventstoanaddressdifferentfromthescanner\u2019saddress]",
+             test_private = ll_ddi_scn_bv_14_c);
+_spec["LL/DDI/SCN/BV-15-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-15-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013ActiveScanning,noLocalIRK,noPeerIRK]",
+             test_private = ll_ddi_scn_bv_15_c);
+_spec["LL/DDI/SCN/BV-16-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-16-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013ActiveScanning,LocalIRK,noPeerIRK]",
+             test_private = ll_ddi_scn_bv_16_c);
+_spec["LL/DDI/SCN/BV-17-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-17-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013ActiveScanning,noLocalIRK,PeerIRK]",
+             test_private = ll_ddi_scn_bv_17_c);
+_spec["LL/DDI/SCN/BV-18-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-18-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013ActiveScanning,LocalIRK,PeerIRK]",
+             test_private = ll_ddi_scn_bv_18_c);
+_spec["LL/DDI/SCN/BV-26-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-26-C", number_devices = 2,
+             description = "#[NetworkPrivacy\u2013PassiveScanning,PeerIRK,IgnoreIdentityAddress]",
+             test_private = ll_ddi_scn_bv_26_c);
+_spec["LL/DDI/SCN/BV-28-C"] = \
+    TestSpec(name = "LL/DDI/SCN/BV-28-C", number_devices = 2,
+             description = "#[DevicePrivacy\u2013PassiveScanning,PeerIRK,AcceptIdentityAddress]",
+             test_private = ll_ddi_scn_bv_28_c);
+# _spec["LL/SEC/ADV/BV-01-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-01-C", number_devices = 2,
+#              description = "##Failing-[Advertisingwithstaticaddress]",
+#              test_private = ll_sec_adv_bv_01_c);
+_spec["LL/SEC/ADV/BV-02-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-02-C", number_devices = 2,
+             description = "#[Privacy-NonConnectableUndirectedAdvertising,non-resolvableprivateaddress]",
+             test_private = ll_sec_adv_bv_02_c);
+_spec["LL/SEC/ADV/BV-03-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-03-C", number_devices = 2,
+             description = "#[Privacy-NonConnectableUndirectedAdvertising,ResolvablePrivateAddress]",
+             test_private = ll_sec_adv_bv_03_c);
+_spec["LL/SEC/ADV/BV-04-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-04-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ScannableAdvertising,non-resolvableprivateaddress]",
+             test_private = ll_sec_adv_bv_04_c);
+_spec["LL/SEC/ADV/BV-05-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-05-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ScannableAdvertising,resolvableprivateaddress]",
+             test_private = ll_sec_adv_bv_05_c);
+_spec["LL/SEC/ADV/BV-06-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-06-C", number_devices = 2,
+             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingnoLocalIRK,nopeerIRK]",
+             test_private = ll_sec_adv_bv_06_c);
+_spec["LL/SEC/ADV/BV-07-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-07-C", number_devices = 2,
+             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRK,nopeerIRK]",
+             test_private = ll_sec_adv_bv_07_c);
+# _spec["LL/SEC/ADV/BV-08-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-08-C", number_devices = 2,
+#              description = "##[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRK,peerIRK]",
+#              test_private = ll_sec_adv_bv_08_c);
+_spec["LL/SEC/ADV/BV-09-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-09-C", number_devices = 2,
+             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithoutLocalIRK,peerIRK]",
+             test_private = ll_sec_adv_bv_09_c);
+_spec["LL/SEC/ADV/BV-10-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-10-C", number_devices = 2,
+             description = "#[NetworkPrivace-UndirectedConnectableAdvertisingusingResolvingListandPeerDeviceIdentitynotintheList]",
+             test_private = ll_sec_adv_bv_10_c);
+_spec["LL/SEC/ADV/BV-11-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-11-C", number_devices = 2,
+             description = "#[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK]",
+             test_private = ll_sec_adv_bv_11_c);
+_spec["LL/SEC/ADV/BV-12-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-12-C", number_devices = 2,
+             description = "#[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalIRK,butnotremoteIRK]",
+             test_private = ll_sec_adv_bv_12_c);
+# _spec["LL/SEC/ADV/BV-13-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-13-C", number_devices = 2,
+#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingwithoutlocalIRK,butwithremoteIRK]",
+#              test_private = ll_sec_adv_bv_13_c);
+# _spec["LL/SEC/ADV/BV-14-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-14-C", number_devices = 2,
+#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingwithoutlocalIRK,butwithremoteIRK]",
+#              test_private = ll_sec_adv_bv_14_c);
+_spec["LL/SEC/ADV/BV-15-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-15-C", number_devices = 2,
+             description = "#[NetworkPrivacy-ScannableAdvertising,resolvableprivateaddress,IgnoreIdentityAddress]",
+             test_private = ll_sec_adv_bv_15_c);
+_spec["LL/SEC/ADV/BV-16-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-16-C", number_devices = 2,
+             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRKandPeerIRK,IgnoreIdentityAddress]",
+             test_private = ll_sec_adv_bv_16_c);
+# _spec["LL/SEC/ADV/BV-17-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-17-C", number_devices = 2,
+#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK,IgnoreIdentityAddress]",
+#              test_private = ll_sec_adv_bv_17_c);
+# _spec["LL/SEC/ADV/BV-18-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-18-C", number_devices = 2,
+#              description = "##Failing-[DevicePrivacy-ScannableAdvertising,resolvableprivateaddress,AcceptIdentityAddress]",
+#              test_private = ll_sec_adv_bv_18_c);
+# _spec["LL/SEC/ADV/BV-19-C"] = \
+#     TestSpec(name = "LL/SEC/ADV/BV-19-C", number_devices = 2,
+#              description = "##Failing-[DevicePrivacy-UndirectedConnectableAdvertisingwithLocalIRKandPeerIRK,AcceptIdentityAddress]",
+#              test_private = ll_sec_adv_bv_19_c);
+_spec["LL/SEC/ADV/BV-20-C"] = \
+    TestSpec(name = "LL/SEC/ADV/BV-20-C", number_devices = 2,
+             description = "#[DevicePrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK,AcceptIdentityAddress]",
+             test_private = ll_sec_adv_bv_20_c);
 
-
-__tests__ = { "LL/DDI/ADV/BV-01-C": ll_ddi_adv_bv_01_c, # [Non-Connectable Advertising Events]
-              "LL/DDI/ADV/BV-02-C": ll_ddi_adv_bv_02_c, # [Undirected Advertising Events]
-              "LL/DDI/ADV/BV-03-C": ll_ddi_adv_bv_03_c, # [Advertising Data: Non-Connectable]
-              "LL/DDI/ADV/BV-04-C": ll_ddi_adv_bv_04_c, # [Advertising Data: Undirected]
-              "LL/DDI/ADV/BV-05-C": ll_ddi_adv_bv_05_c, # [Scan Request: Undirected Connectable]
-              "LL/DDI/ADV/BV-06-C": ll_ddi_adv_bv_06_c, # [Connection Request]
-              "LL/DDI/ADV/BV-07-C": ll_ddi_adv_bv_07_c, # [Scan Request Connection Request]
-              "LL/DDI/ADV/BV-08-C": ll_ddi_adv_bv_08_c, # [Scan Request Device Filtering]
-              "LL/DDI/ADV/BV-09-C": ll_ddi_adv_bv_09_c, # [Connection Request Device Filtering]
-              "LL/DDI/ADV/BV-11-C": ll_ddi_adv_bv_11_c, # [Directed Advertising Events]
-              "LL/DDI/ADV/BV-15-C": ll_ddi_adv_bv_15_c, # [Discoverable Advertising Events]
-              "LL/DDI/ADV/BV-16-C": ll_ddi_adv_bv_16_c, # [Advertising Data: Discoverable]
-              "LL/DDI/ADV/BV-17-C": ll_ddi_adv_bv_17_c, # [Scan Request: Discoverable]
-              "LL/DDI/ADV/BV-18-C": ll_ddi_adv_bv_18_c, # [Device Filtering: Discoverable] 
-              "LL/DDI/ADV/BV-19-C": ll_ddi_adv_bv_19_c, # [Low Duty Cycle Directed Advertising Events]
-              "LL/DDI/ADV/BV-20-C": ll_ddi_adv_bv_20_c, # [Advertising Always Using the LE 1M PHY]
-            #   "LL/DDI/ADV/BV-21-C": ll_ddi_adv_bv_21_c, # Failing - [Extended Advertising, Legacy PDUs, Non-Connectable]
-              "LL/DDI/SCN/BV-01-C": ll_ddi_scn_bv_01_c, # [Passive Scanning: Non Connectable]
-              "LL/DDI/SCN/BV-02-C": ll_ddi_scn_bv_02_c, # [Passive Scanning Device Filtering]
-              "LL/DDI/SCN/BV-03-C": ll_ddi_scn_bv_03_c, # [Active Scanning]
-              "LL/DDI/SCN/BV-04-C": ll_ddi_scn_bv_04_c, # [Active Scanning Device Filtering]
-              "LL/DDI/SCN/BV-05-C": ll_ddi_scn_bv_05_c, # [Scanning For Advertiser Types]
-              "LL/DDI/SCN/BV-10-C": ll_ddi_scn_bv_10_c, # [Passive Scanning: Undirected Events]
-              "LL/DDI/SCN/BV-11-C": ll_ddi_scn_bv_11_c, # [Passive Scanning: Directed Events]
-              "LL/DDI/SCN/BV-12-C": ll_ddi_scn_bv_12_c, # [Passive Scanning: Discoverable Events]
-              "LL/DDI/SCN/BV-13-C": ll_ddi_scn_bv_13_c, # [Network Privacy – Passive Scanning, Peer IRK]
-              "LL/DDI/SCN/BV-14-C": ll_ddi_scn_bv_14_c, # [Network Privacy - Passive Scanning: Directed Events to an address different from the scanner’s address]
-              "LL/DDI/SCN/BV-15-C": ll_ddi_scn_bv_15_c, # [Network Privacy – Active Scanning, no Local IRK, no Peer IRK]
-              "LL/DDI/SCN/BV-16-C": ll_ddi_scn_bv_16_c, # [Network Privacy – Active Scanning, Local IRK, no Peer IRK]
-              "LL/DDI/SCN/BV-17-C": ll_ddi_scn_bv_17_c, # [Network Privacy – Active Scanning, no Local IRK, Peer IRK]
-              "LL/DDI/SCN/BV-18-C": ll_ddi_scn_bv_18_c, # [Network Privacy – Active Scanning, Local IRK, Peer IRK]
-              "LL/DDI/SCN/BV-26-C": ll_ddi_scn_bv_26_c, # [Network Privacy – Passive Scanning, Peer IRK, Ignore Identity Address]
-              "LL/DDI/SCN/BV-28-C": ll_ddi_scn_bv_28_c, # [Device Privacy – Passive Scanning, Peer IRK, Accept Identity Address]
-              "LL/CON/ADV/BV-01-C": ll_con_adv_bv_01_c, # [Accepting Connections]
-              "LL/CON/ADV/BV-04-C": ll_con_adv_bv_04_c, # [Directed Advertising Connection]
-              "LL/CON/ADV/BV-09-C": ll_con_adv_bv_09_c, # [Accepting Connections, Channel Selection Algorithm #2]
-              "LL/CON/ADV/BV-10-C": ll_con_adv_bv_10_c, # [Directed Advertising Connection, Channel Selection Algorithm #2]
-              "LL/CON/INI/BV-01-C": ll_con_ini_bv_01_c, # [Connection Initiation]
-              "LL/CON/INI/BV-02-C": ll_con_ini_bv_02_c, # [Connecting to Directed Advertising]
-              "LL/CON/INI/BV-06-C": ll_con_ini_bv_06_c, # [Initiation Device Filtering: Undirected]
-              "LL/CON/INI/BV-07-C": ll_con_ini_bv_07_c, # [Initiation Device Filtering: Directed]
-              "LL/CON/INI/BV-08-C": ll_con_ini_bv_08_c, # [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]
-              "LL/CON/INI/BV-09-C": ll_con_ini_bv_09_c, # [Network Privacy - Connection Establishment using resolving list, Initiator]
-              "LL/CON/INI/BV-10-C": ll_con_ini_bv_10_c, # [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator]
-              "LL/CON/INI/BV-11-C": ll_con_ini_bv_11_c, # [Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator]
-              "LL/CON/INI/BV-12-C": ll_con_ini_bv_12_c, # [Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator]
-              "LL/CON/INI/BV-16-C": ll_con_ini_bv_16_c, # [Connection Initiation, Channel Selection Algorithm #2]
-              "LL/CON/INI/BV-17-C": ll_con_ini_bv_17_c, # [Connecting to Directed Advertising, Channel Selection Algorithm #2]
-              "LL/CON/INI/BV-18-C": ll_con_ini_bv_18_c, # [Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address]
-              "LL/CON/INI/BV-19-C": ll_con_ini_bv_19_c, # [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address]
-              "LL/CON/INI/BV-20-C": ll_con_ini_bv_20_c, # [Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address]
-              "LL/CON/INI/BV-21-C": ll_con_ini_bv_21_c, # [Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address]
-              "LL/CON/SLA/BV-04-C": ll_con_sla_bv_04_c, # [Slave Sending Data]
-              "LL/CON/SLA/BV-05-C": ll_con_sla_bv_05_c, # [Slave Receiving Data]
-              "LL/CON/SLA/BV-06-C": ll_con_sla_bv_06_c, # [Slave Sending and Receiving Data]
-              "LL/CON/SLA/BV-10-C": ll_con_sla_bv_10_c, # [Accepting Parameter Update]
-              "LL/CON/SLA/BV-11-C": ll_con_sla_bv_11_c, # [Slave sending termination]
-              "LL/CON/SLA/BV-12-C": ll_con_sla_bv_12_c, # [Slave accepting termination]
-            #   "LL/CON/SLA/BV-13-C": ll_con_sla_bv_13_c, # Failing - [Slave supervision timer] TEST FAILS
-              "LL/CON/SLA/BV-14-C": ll_con_sla_bv_14_c, # [Feature Setup Response]
-              "LL/CON/SLA/BV-19-C": ll_con_sla_bv_19_c, # [Slave request version]
-              "LL/CON/SLA/BV-20-C": ll_con_sla_bv_20_c, # [Slave respond version]
-              "LL/CON/SLA/BV-22-C": ll_con_sla_bv_22_c, # [Initiate feature exchange]
-              "LL/CON/SLA/BV-24-C": ll_con_sla_bv_24_c, # [Initiating Connection Parameter Request - Accept]
-              "LL/CON/SLA/BV-25-C": ll_con_sla_bv_25_c, # [Initiating Connection Parameter Request - Reject]
-              "LL/CON/SLA/BV-26-C": ll_con_sla_bv_26_c, # [Initiating Connection Parameter Request - same procedure collision]
-              "LL/CON/SLA/BV-27-C": ll_con_sla_bv_27_c, # [Initiating Connection Parameter Request - different procedure collision - channel map update]
-              "LL/CON/SLA/BV-29-C": ll_con_sla_bv_29_c, # [Responding to Connection Parameter Request - no Preffered_Periodicity]
-              "LL/CON/SLA/BV-33-C": ll_con_sla_bv_33_c, # [Accepting Connection Parameter Request - event masked] TEST FAILS
-              "LL/CON/SLA/BV-34-C": ll_con_sla_bv_34_c, # [Accepting Connection Parameter Request - host rejectssur] 
-              "LL/CON/SLA/BV-40-C": ll_con_sla_bv_40_c, # [Initiating PHY Update Procedure]
-              "LL/CON/SLA/BV-42-C": ll_con_sla_bv_42_c, # [Responding to PHY Update Procedure]
-              "LL/CON/SLA/BV-78-C": ll_con_sla_bv_78_c, # [Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]
-              "LL/CON/SLA/BV-81-C": ll_con_sla_bv_81_c, # [Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]
-              "LL/CON/SLA/BI-08-C": ll_con_sla_bi_08_c, # [Accepting Connection Parameter Request – Illegal Parameters]
-              "LL/CON/MAS/BV-03-C": ll_con_mas_bv_03_c, # [Master Sending Data]
-              "LL/CON/MAS/BV-04-C": ll_con_mas_bv_04_c, # [Master Receiving Data]
-              "LL/CON/MAS/BV-05-C": ll_con_mas_bv_05_c, # [Master Sending and Receiving Data]
-              "LL/CON/MAS/BV-07-C": ll_con_mas_bv_07_c, # [Requesting Parameter Update]
-              "LL/CON/MAS/BV-08-C": ll_con_mas_bv_08_c, # [Master Sending Termination]
-              "LL/CON/MAS/BV-09-C": ll_con_mas_bv_09_c, # [Master Accepting Termination]
-              "LL/CON/MAS/BV-13-C": ll_con_mas_bv_13_c, # [Feature Setup Request]
-              "LL/CON/MAS/BV-20-C": ll_con_mas_bv_20_c, # [Master Request Version]
-              "LL/CON/MAS/BV-21-C": ll_con_mas_bv_21_c, # [Master Respond Version]
-              "LL/CON/MAS/BV-23-C": ll_con_mas_bv_23_c, # [Responding to Feature Exchange]
-              "LL/CON/MAS/BV-24-C": ll_con_mas_bv_24_c, # [Initiating Connection Parameter Request - Accept]
-              "LL/CON/MAS/BV-25-C": ll_con_mas_bv_25_c, # [Initiating Connection Parameter Request - Reject]
-              "LL/CON/MAS/BV-26-C": ll_con_mas_bv_26_c, # [Initiating Connection Parameter Request - same procedure collision]
-              "LL/CON/MAS/BV-27-C": ll_con_mas_bv_27_c, # [Initiating Connection Parameter Request - different procedure collision - channel map update]
-              "LL/CON/MAS/BV-29-C": ll_con_mas_bv_29_c, # [Initiating Connection Parameter Request - remote legacy host]
-              "LL/CON/MAS/BV-30-C": ll_con_mas_bv_30_c, # [Accepting Connection Parameter Request - no Preferred Periodicity]
-              "LL/CON/MAS/BV-34-C": ll_con_mas_bv_34_c, # [Accepting Connection Parameter Request - event masked]
-              "LL/CON/MAS/BV-35-C": ll_con_mas_bv_35_c, # [Accepting Connection Parameter Request - Host rejects]
-              "LL/CON/MAS/BV-41-C": ll_con_mas_bv_41_c, # [Initiating PHY Update Procedure]
-              "LL/CON/MAS/BV-43-C": ll_con_mas_bv_43_c, # [Responding to PHY Update Procedure]
-              "LL/CON/MAS/BV-74-C": ll_con_mas_bv_74_c, # [Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]"
-              "LL/CON/MAS/BV-77-C": ll_con_mas_bv_77_c, # [Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]"
-              "LL/CON/MAS/BI-06-C": ll_con_mas_bi_06_c, # [Accepting Parameter Connection Request - illegal parameters]
-            #   "LL/SEC/ADV/BV-01-C": ll_sec_adv_bv_01_c, # Failing - [Advertising with static address]
-              "LL/SEC/ADV/BV-02-C": ll_sec_adv_bv_02_c, # [Privacy - Non Connectable Undirected Advertising, non-resolvable private address]
-              "LL/SEC/ADV/BV-03-C": ll_sec_adv_bv_03_c, # [Privacy - Non Connectable Undirected Advertising, Resolvable Private Address]
-              "LL/SEC/ADV/BV-04-C": ll_sec_adv_bv_04_c, # [Network Privacy - Scannable Advertising, non-resolvable private address]
-              "LL/SEC/ADV/BV-05-C": ll_sec_adv_bv_05_c, # [Network Privacy - Scannable Advertising, resolvable private address]
-              "LL/SEC/ADV/BV-06-C": ll_sec_adv_bv_06_c, # [Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK]
-              "LL/SEC/ADV/BV-07-C": ll_sec_adv_bv_07_c, # [Network Privacy - Undirected Connectable Advertising with Local IRK, no peer IRK]
-            #  "LL/SEC/ADV/BV-08-C": ll_sec_adv_bv_08_c, # [Network Privacy - Undirected Connectable Advertising with Local IRK, peer IRK]
-              "LL/SEC/ADV/BV-09-C": ll_sec_adv_bv_09_c, # [Network Privacy - Undirected Connectable Advertising without Local IRK, peer IRK]
-              "LL/SEC/ADV/BV-10-C": ll_sec_adv_bv_10_c, # [Network Privace - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List]
-              "LL/SEC/ADV/BV-11-C": ll_sec_adv_bv_11_c, # [Network Privacy - Directed Connectable Advertising using local and remote IRK]
-              "LL/SEC/ADV/BV-12-C": ll_sec_adv_bv_12_c, # [Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK]
-            #   "LL/SEC/ADV/BV-13-C": ll_sec_adv_bv_13_c, # Failing - [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]
-            #   "LL/SEC/ADV/BV-14-C": ll_sec_adv_bv_14_c, # Failing - [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]
-              "LL/SEC/ADV/BV-15-C": ll_sec_adv_bv_15_c, # [Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address]
-              "LL/SEC/ADV/BV-16-C": ll_sec_adv_bv_16_c, # [Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address]
-            #   "LL/SEC/ADV/BV-17-C": ll_sec_adv_bv_17_c, # Failing - [Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address]
-            #   "LL/SEC/ADV/BV-18-C": ll_sec_adv_bv_18_c, # Failing - [Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address]
-            #   "LL/SEC/ADV/BV-19-C": ll_sec_adv_bv_19_c, # Failing - [Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address]
-              "LL/SEC/ADV/BV-20-C": ll_sec_adv_bv_20_c, # [Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address]
-};
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
 
 def preamble(transport, trace):
     global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
@@ -7284,72 +7644,11 @@ def preamble(transport, trace):
     trace.trace(4, "preamble Device Address Set " + ("PASS" if success else "FAIL"));
     return ok and success;          
     
-def runTest(test, transport, trace):
-    global __tests__;
-    
-    passed = failed = 0;
-
-    if test.lower() == "all":
-        for test in __tests__:
-            success = preamble(transport, trace);
-            trace.trace(4, "");
-            success = success and __tests__[test](transport, 0, 1, trace);
-
-            passed += 1 if success else 0;
-            failed += 0 if success else 1;
-
-            trace.trace(4, "");
-
-    elif test in __tests__:
-        success = preamble(transport, trace);
-        success = success and __tests__[test](transport, 0, 1, trace);
-        
-        passed += 1 if success else 0;
-        failed += 0 if success else 1;
-
-    elif os.path.isfile(test):
-        file = open(test, "r");
-        for line in file:
-            test = line.strip().upper();
-            if test in __tests__:
-                success = preamble(transport, trace);
-                trace.trace(4, "");
-                success = success and __tests__[test](transport, 0, 1, trace);
-
-                passed += 1 if success else 0;
-                failed += 0 if success else 1;
-
-                trace.trace(4, "");
-        file.close();
-
-    else:
-        trace.trace(1, "Test '%s' not found!" % test);
-        
-        failed += 1;
-
-    if (passed + failed) > 1:
-        trace.trace(1, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
-        if passed > 0:
-            trace.trace(1, "PASS%10d" % passed);
-        if failed > 0:
-            trace.trace(1, "FAIL%10d" % failed);
-        trace.trace(1, "%s\nTotal%9d" % ('='*14, passed + failed));
-        
-    return (failed == 0);
-
 """
-    Return the specification which contains information about the test suite
+    Run a test given its test_spec
 """
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Link Layer (LL) Test Suite",
-                    number_devices = 2,
-                    description = "Qualification of the Link Layer.");
-    return spec;
-
-"""
-    Run the command...
-"""
-def main(args, transport, trace):
-    success = runTest("all" if args.case is None else args.case, transport, trace);
-    return 0 if success else -1;
+def run_a_test(args, transport, trace, test_spec):
+    success = preamble(transport, trace);
+    test_f = test_spec.test_private;
+    success = success and test_f(transport, 0, 1, trace);
+    return not success

@@ -48,19 +48,69 @@ def init_transport(transport, xtra_args, trace):
     transport.connect();
     return transport;
 
-def run_test(args, transport, trace):
+def run_one_test(args, xtra_args, transport, trace, test_mod, test_spec):
+            trace.trace(4, test_spec);
+            trace.trace(4, "");
+            if test_spec.number_devices > transport.n_devices:
+                raise Exception("This test needs %i connected devices but you only "
+                                "connected to %i"%
+                                (test_spec.number_devices, transport.n_devices));
+            result = test_mod.run_a_test(args, transport, trace, test_spec);
+
+            trace.trace(4, "");
+
+            return result;
+
+# Attempt to load and run the tests
+def run_tests(args, xtra_args, transport, trace):
+    passed = 0;
+    total = 0;
+
     test_mod = try_to_import(args.test, "test", "tests.");
+    test_specs = test_mod.get_tests_specs();
 
-    test_spec = test_mod.spec();
-    trace.trace(4, test_spec);
+    t = "all" if args.case is None else args.case
 
-    if test_spec.number_devices > transport.n_devices:
-        raise Exception("This test needs %i connected devices but you only "
-                        "connected to %i"%
-                        (test_spec.number_devices, transport.n_devices));
+    if t.lower() == "all":
+        for _,test_spec in test_specs.iteritems():
+            result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec);
+            passed += 1 if result == 0 else 0;
+            total += 1;
 
-    result = test_mod.main(args, transport, trace);
-    return result;
+    elif t in test_specs:
+        result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t]);
+        passed += 1 if result == 0 else 0;
+        total += 1;
+
+    elif os.path.isfile(t):
+        file = open(t, "r");
+        for line in file:
+            t = line.strip().upper();
+            if (t[0] == "#"): #Skip commented lines
+                continue
+            if t in test_specs:
+                result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t]);
+                passed += 1 if result == 0 else 0;
+                total += 1;
+            else:
+                print("unkown test " + t + ". Skipping")
+        file.close();
+
+    else:
+        trace.trace(1, "Test '%s' not found!" % t);
+        total += 1;
+
+    failed = total - passed;
+    if total:
+        trace.trace(2, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
+        if passed > 0:
+            trace.trace(2, "PASS%10d" % passed);
+        
+        if failed > 0:
+            trace.trace(2, "FAIL%10d" % failed);
+        trace.trace(2, "%s\nTotal%9d" % ('='*14, total));
+
+    return failed
 
 class Trace():
     def __init__(self, level):
@@ -82,7 +132,7 @@ def main():
 
         transport = init_transport(args.transport, xtra_args, trace);
 
-        result = run_test(args, transport, trace);
+        result = run_tests(args, xtra_args, transport, trace);
 
         transport.close();
 

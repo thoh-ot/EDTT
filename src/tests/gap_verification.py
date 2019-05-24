@@ -14,6 +14,7 @@ from components.initiator import *;
 from components.preambles import *;
 from components.addata import *; 
 from components.pairing import *;
+from components.test_spec import TestSpec;
 
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
@@ -1807,57 +1808,210 @@ def gap_conn_enc(transport, upperTester, lowerTester, trace):
     trace.trace(2, "Testing encryption test " + ("PASSED" if success else "FAILED"));
     return success;
 
-__tests__ = { 
-    "GAP/DISC/NONM/BV-01-C": gap_disc_nonm_bv_01_c, # [Non-discoverable Mode Non-connectable Mode]
-    "GAP/DISC/NONM/BV-02-C": gap_disc_nonm_bv_02_c, # [Non-discoverable Mode Undirected Connectable Mode]
-    "GAP/DISC/LIMM/BV-01-C": gap_disc_limm_bv_01_c, # [Limited Discoverable Mode Non-connectable Mode BR/EDR/LE]
-    "GAP/DISC/LIMM/BV-02-C": gap_disc_limm_bv_02_c, # [Limited Discoverable Mode Undirected Connectable Mode BR/EDR/LE]
-    "GAP/DISC/LIMM/BV-03-C": gap_disc_limm_bv_03_c, # [Limited Discoverable Mode Non-connectable Mode LE Only]
-    "GAP/DISC/LIMM/BV-04-C": gap_disc_limm_bv_04_c, # [Limited Discoverable Mode Undirected Connectable Mode LE Only]
-    "GAP/DISC/GENM/BV-01-C": gap_disc_genm_bv_01_c, # [General Discoverable Mode Non-connectable Mode BR/EDR/LE]
-    "GAP/DISC/GENM/BV-02-C": gap_disc_genm_bv_02_c, # [General Discoverable Mode Undirected Connectable Mode BR/EDR/LE]
-    "GAP/DISC/GENM/BV-03-C": gap_disc_genm_bv_03_c, # [General Discoverable Mode Non-connectable Mode LE Only]
-    "GAP/DISC/GENM/BV-04-C": gap_disc_genm_bv_04_c, # [General Discoverable Mode Undirected Connectable Mode LE Only]
-    "GAP/DISC/LIMP/BV-01-C": gap_disc_limp_bv_01_c, # [Limited Discovery Procedure Find Limited Discoverable Device]
-    "GAP/DISC/LIMP/BV-02-C": gap_disc_limp_bv_02_c, # [Limited Discovery Procedure Does not find General Discoverable Device]
-    "GAP/DISC/LIMP/BV-04-C": gap_disc_limp_bv_04_c, # [Limited Discovery Procedure Does not find Undirected Connectable Device]
-    "GAP/DISC/LIMP/BV-05-C": gap_disc_limp_bv_05_c, # [Limited Discovery Procedure Does not find Directed Connectable Device]
-    "GAP/DISC/GENP/BV-01-C": gap_disc_genp_bv_01_c, # [General Discovery Procedure Finding General Discoverable Device]
-    "GAP/DISC/GENP/BV-02-C": gap_disc_genp_bv_02_c, # [General Discovery Procedure Finding Limited Discoverable Device]
-    "GAP/DISC/GENP/BV-04-C": gap_disc_genp_bv_04_c, # [General Discovery Procedure Does not find Undirected Connectable Device]
-    "GAP/DISC/GENP/BV-05-C": gap_disc_genp_bv_05_c, # [General Discovery Procedure Does not find Directed Connectable Device]
-    "GAP/DISC/RPA/BV-01-C":  gap_disc_rpa_bv_01_c,  # [Discovery Procedure Find Discoverable Device using Resolvable Private Address]
-    "GAP/CONN/NCON/BV-01-C": gap_conn_ncon_bv_01_c, # [Non-Connectable Mode]
-    "GAP/CONN/NCON/BV-02-C": gap_conn_ncon_bv_02_c, # [Non-Connectable Mode General Discoverable Mode]
-    "GAP/CONN/NCON/BV-03-C": gap_conn_ncon_bv_03_c, # [Non-Connectable Mode Limited Discoverable Mode]
-    "GAP/CONN/DCON/BV-01-C": gap_conn_dcon_bv_01_c, # [Directed Connectable Mode]
-    "GAP/CONN/UCON/BV-01-C": gap_conn_ucon_bv_01_c, # [Undirected Connectable Mode Non-Discoverable Mode]
-    "GAP/CONN/UCON/BV-02-C": gap_conn_ucon_bv_02_c, # [Undirected Connectable Mode General Discoverable Mode]
-    "GAP/CONN/UCON/BV-03-C": gap_conn_ucon_bv_03_c, # [Undirected Connectable Mode Limited Discoverable Mode]
-    "GAP/CONN/ACEP/BV-01-C": gap_conn_acep_bv_01_c, # [Auto Connection Establishment Procedure Directed Connectable Mode]
-    "GAP/CONN/ACEP/BV-03-C": gap_conn_acep_bv_03_c, # [Auto Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
-    "GAP/CONN/ACEP/BV-04-C": gap_conn_acep_bv_04_c, # [Auto Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address]
-    "GAP/CONN/GCEP/BV-01-C": gap_conn_gcep_bv_01_c, # [General Connection Establishment Procedure Directed Connectable Mode]
-    "GAP/CONN/GCEP/BV-02-C": gap_conn_gcep_bv_02_c, # [General Connection Establishment Procedure Undirected Connectable Mode]
-    "GAP/CONN/GCEP/BV-05-C": gap_conn_gcep_bv_05_c, # [General Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
-    "GAP/CONN/GCEP/BV-06-C": gap_conn_gcep_bv_06_c, # [General Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address]
-    "GAP/ADV/BV-01-C":       gap_adv_bv_01_c,       # [AD Type - Service UUID]
-    "GAP/ADV/BV-02-C":       gap_adv_bv_02_c,       # [AD Type - Local Name]
-    "GAP/ADV/BV-03-C":       gap_adv_bv_03_c,       # [AD Type - Flags]
-    "GAP/ADV/BV-04-C":       gap_adv_bv_04_c,       # [AD Type - Manufacturer Specific Data]
-    "GAP/ADV/BV-05-C":       gap_adv_bv_05_c,       # [AD Type - TX Power Level]
-    "GAP/ADV/BV-08-C":       gap_adv_bv_08_c,       # [AD Type - Slave Connection Interval Range]
-    "GAP/ADV/BV-09-C":       gap_adv_bv_09_c,       # [AD Type - Service  Solicitation]
-    "GAP/ADV/BV-10-C":       gap_adv_bv_10_c,       # [AD Type - Service Data]
-    "GAP/ADV/BV-11-C":       gap_adv_bv_11_c,       # [AD Type - Apperance]
-    "GAP/ADV/BV-12-C":       gap_adv_bv_12_c,       # [AD Type - Public Target Address]
-    "GAP/ADV/BV-13-C":       gap_adv_bv_13_c,       # [AD Type - Random Target Address]
-    "GAP/ADV/BV-14-C":       gap_adv_bv_14_c,       # [AD Type - Advertising Interval]
-    "GAP/ADV/BV-15-C":       gap_adv_bv_15_c,       # [AD Type - LE Bluetooth Device Address]
-    "GAP/ADV/BV-16-C":       gap_adv_bv_16_c,       # [AD Type - LE Role]
-    "GAP/ADV/BV-17-C":       gap_adv_bv_17_c,       # [AD Type - URI]
-    "GAP/CONN/ENC":          gap_conn_enc           # [Testing encryption]
-};
+_spec = {};
+_spec["GAP/ADV/BV-01-C"] = \
+    TestSpec(name = "GAP/ADV/BV-01-C", number_devices = 2,
+             description = "#[ADType-ServiceUUID]",
+             test_private = gap_adv_bv_01_c);
+_spec["GAP/ADV/BV-02-C"] = \
+    TestSpec(name = "GAP/ADV/BV-02-C", number_devices = 2,
+             description = "#[ADType-LocalName]",
+             test_private = gap_adv_bv_02_c);
+_spec["GAP/ADV/BV-03-C"] = \
+    TestSpec(name = "GAP/ADV/BV-03-C", number_devices = 2,
+             description = "#[ADType-Flags]",
+             test_private = gap_adv_bv_03_c);
+_spec["GAP/ADV/BV-04-C"] = \
+    TestSpec(name = "GAP/ADV/BV-04-C", number_devices = 2,
+             description = "#[ADType-ManufacturerSpecificData]",
+             test_private = gap_adv_bv_04_c);
+_spec["GAP/ADV/BV-05-C"] = \
+    TestSpec(name = "GAP/ADV/BV-05-C", number_devices = 2,
+             description = "#[ADType-TXPowerLevel]",
+             test_private = gap_adv_bv_05_c);
+_spec["GAP/ADV/BV-08-C"] = \
+    TestSpec(name = "GAP/ADV/BV-08-C", number_devices = 2,
+             description = "#[ADType-SlaveConnectionIntervalRange]",
+             test_private = gap_adv_bv_08_c);
+_spec["GAP/ADV/BV-09-C"] = \
+    TestSpec(name = "GAP/ADV/BV-09-C", number_devices = 2,
+             description = "#[ADType-ServiceSolicitation]",
+             test_private = gap_adv_bv_09_c);
+_spec["GAP/ADV/BV-10-C"] = \
+    TestSpec(name = "GAP/ADV/BV-10-C", number_devices = 2,
+             description = "#[ADType-ServiceData]",
+             test_private = gap_adv_bv_10_c);
+_spec["GAP/ADV/BV-11-C"] = \
+    TestSpec(name = "GAP/ADV/BV-11-C", number_devices = 2,
+             description = "#[ADType-Apperance]",
+             test_private = gap_adv_bv_11_c);
+_spec["GAP/ADV/BV-12-C"] = \
+    TestSpec(name = "GAP/ADV/BV-12-C", number_devices = 2,
+             description = "#[ADType-PublicTargetAddress]",
+             test_private = gap_adv_bv_12_c);
+_spec["GAP/ADV/BV-13-C"] = \
+    TestSpec(name = "GAP/ADV/BV-13-C", number_devices = 2,
+             description = "#[ADType-RandomTargetAddress]",
+             test_private = gap_adv_bv_13_c);
+_spec["GAP/ADV/BV-14-C"] = \
+    TestSpec(name = "GAP/ADV/BV-14-C", number_devices = 2,
+             description = "#[ADType-AdvertisingInterval]",
+             test_private = gap_adv_bv_14_c);
+_spec["GAP/ADV/BV-15-C"] = \
+    TestSpec(name = "GAP/ADV/BV-15-C", number_devices = 2,
+             description = "#[ADType-LEBluetoothDeviceAddress]",
+             test_private = gap_adv_bv_15_c);
+_spec["GAP/ADV/BV-16-C"] = \
+    TestSpec(name = "GAP/ADV/BV-16-C", number_devices = 2,
+             description = "#[ADType-LERole]",
+             test_private = gap_adv_bv_16_c);
+_spec["GAP/ADV/BV-17-C"] = \
+    TestSpec(name = "GAP/ADV/BV-17-C", number_devices = 2,
+             description = "#[ADType-URI]",
+             test_private = gap_adv_bv_17_c);
+_spec["GAP/CONN/ACEP/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/ACEP/BV-01-C", number_devices = 2,
+             description = "#[AutoConnectionEstablishmentProcedureDirectedConnectableMode]",
+             test_private = gap_conn_acep_bv_01_c);
+_spec["GAP/CONN/ACEP/BV-03-C"] = \
+    TestSpec(name = "GAP/CONN/ACEP/BV-03-C", number_devices = 2,
+             description = "#[AutoConnectionEstablishmentProcedureDirectedConnectableMode,ResolvablePrivateAddress,CentralAddressResolution]",
+             test_private = gap_conn_acep_bv_03_c);
+_spec["GAP/CONN/ACEP/BV-04-C"] = \
+    TestSpec(name = "GAP/CONN/ACEP/BV-04-C", number_devices = 2,
+             description = "#[AutoConnectionEstablishmentProcedureUndirectedConnectableMode,ResolvablePrivateAddress]",
+             test_private = gap_conn_acep_bv_04_c);
+_spec["GAP/CONN/DCON/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/DCON/BV-01-C", number_devices = 2,
+             description = "#[DirectedConnectableMode]",
+             test_private = gap_conn_dcon_bv_01_c);
+_spec["GAP/CONN/ENC"] = \
+    TestSpec(name = "GAP/CONN/ENC", number_devices = 2,
+             description = "[Testingencryption]",
+             test_private = gap_conn_enc);
+_spec["GAP/CONN/GCEP/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/GCEP/BV-01-C", number_devices = 2,
+             description = "#[GeneralConnectionEstablishmentProcedureDirectedConnectableMode]",
+             test_private = gap_conn_gcep_bv_01_c);
+_spec["GAP/CONN/GCEP/BV-02-C"] = \
+    TestSpec(name = "GAP/CONN/GCEP/BV-02-C", number_devices = 2,
+             description = "#[GeneralConnectionEstablishmentProcedureUndirectedConnectableMode]",
+             test_private = gap_conn_gcep_bv_02_c);
+_spec["GAP/CONN/GCEP/BV-05-C"] = \
+    TestSpec(name = "GAP/CONN/GCEP/BV-05-C", number_devices = 2,
+             description = "#[GeneralConnectionEstablishmentProcedureDirectedConnectableMode,ResolvablePrivateAddress,CentralAddressResolution]",
+             test_private = gap_conn_gcep_bv_05_c);
+_spec["GAP/CONN/GCEP/BV-06-C"] = \
+    TestSpec(name = "GAP/CONN/GCEP/BV-06-C", number_devices = 2,
+             description = "#[GeneralConnectionEstablishmentProcedureUndirectedConnectableMode,ResolvablePrivateAddress]",
+             test_private = gap_conn_gcep_bv_06_c);
+_spec["GAP/CONN/NCON/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/NCON/BV-01-C", number_devices = 2,
+             description = "#[Non-ConnectableMode]",
+             test_private = gap_conn_ncon_bv_01_c);
+_spec["GAP/CONN/NCON/BV-02-C"] = \
+    TestSpec(name = "GAP/CONN/NCON/BV-02-C", number_devices = 2,
+             description = "#[Non-ConnectableModeGeneralDiscoverableMode]",
+             test_private = gap_conn_ncon_bv_02_c);
+_spec["GAP/CONN/NCON/BV-03-C"] = \
+    TestSpec(name = "GAP/CONN/NCON/BV-03-C", number_devices = 2,
+             description = "#[Non-ConnectableModeLimitedDiscoverableMode]",
+             test_private = gap_conn_ncon_bv_03_c);
+_spec["GAP/CONN/UCON/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/UCON/BV-01-C", number_devices = 2,
+             description = "#[UndirectedConnectableModeNon-DiscoverableMode]",
+             test_private = gap_conn_ucon_bv_01_c);
+_spec["GAP/CONN/UCON/BV-02-C"] = \
+    TestSpec(name = "GAP/CONN/UCON/BV-02-C", number_devices = 2,
+             description = "#[UndirectedConnectableModeGeneralDiscoverableMode]",
+             test_private = gap_conn_ucon_bv_02_c);
+_spec["GAP/CONN/UCON/BV-03-C"] = \
+    TestSpec(name = "GAP/CONN/UCON/BV-03-C", number_devices = 2,
+             description = "#[UndirectedConnectableModeLimitedDiscoverableMode]",
+             test_private = gap_conn_ucon_bv_03_c);
+_spec["GAP/DISC/GENM/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/GENM/BV-01-C", number_devices = 2,
+             description = "#[GeneralDiscoverableModeNon-connectableModeBR/EDR/LE]",
+             test_private = gap_disc_genm_bv_01_c);
+_spec["GAP/DISC/GENM/BV-02-C"] = \
+    TestSpec(name = "GAP/DISC/GENM/BV-02-C", number_devices = 2,
+             description = "#[GeneralDiscoverableModeUndirectedConnectableModeBR/EDR/LE]",
+             test_private = gap_disc_genm_bv_02_c);
+_spec["GAP/DISC/GENM/BV-03-C"] = \
+    TestSpec(name = "GAP/DISC/GENM/BV-03-C", number_devices = 2,
+             description = "#[GeneralDiscoverableModeNon-connectableModeLEOnly]",
+             test_private = gap_disc_genm_bv_03_c);
+_spec["GAP/DISC/GENM/BV-04-C"] = \
+    TestSpec(name = "GAP/DISC/GENM/BV-04-C", number_devices = 2,
+             description = "#[GeneralDiscoverableModeUndirectedConnectableModeLEOnly]",
+             test_private = gap_disc_genm_bv_04_c);
+_spec["GAP/DISC/GENP/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/GENP/BV-01-C", number_devices = 2,
+             description = "#[GeneralDiscoveryProcedureFindingGeneralDiscoverableDevice]",
+             test_private = gap_disc_genp_bv_01_c);
+_spec["GAP/DISC/GENP/BV-02-C"] = \
+    TestSpec(name = "GAP/DISC/GENP/BV-02-C", number_devices = 2,
+             description = "#[GeneralDiscoveryProcedureFindingLimitedDiscoverableDevice]",
+             test_private = gap_disc_genp_bv_02_c);
+_spec["GAP/DISC/GENP/BV-04-C"] = \
+    TestSpec(name = "GAP/DISC/GENP/BV-04-C", number_devices = 2,
+             description = "#[GeneralDiscoveryProcedureDoesnotfindUndirectedConnectableDevice]",
+             test_private = gap_disc_genp_bv_04_c);
+_spec["GAP/DISC/GENP/BV-05-C"] = \
+    TestSpec(name = "GAP/DISC/GENP/BV-05-C", number_devices = 2,
+             description = "#[GeneralDiscoveryProcedureDoesnotfindDirectedConnectableDevice]",
+             test_private = gap_disc_genp_bv_05_c);
+_spec["GAP/DISC/LIMM/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/LIMM/BV-01-C", number_devices = 2,
+             description = "#[LimitedDiscoverableModeNon-connectableModeBR/EDR/LE]",
+             test_private = gap_disc_limm_bv_01_c);
+_spec["GAP/DISC/LIMM/BV-02-C"] = \
+    TestSpec(name = "GAP/DISC/LIMM/BV-02-C", number_devices = 2,
+             description = "#[LimitedDiscoverableModeUndirectedConnectableModeBR/EDR/LE]",
+             test_private = gap_disc_limm_bv_02_c);
+_spec["GAP/DISC/LIMM/BV-03-C"] = \
+    TestSpec(name = "GAP/DISC/LIMM/BV-03-C", number_devices = 2,
+             description = "#[LimitedDiscoverableModeNon-connectableModeLEOnly]",
+             test_private = gap_disc_limm_bv_03_c);
+_spec["GAP/DISC/LIMM/BV-04-C"] = \
+    TestSpec(name = "GAP/DISC/LIMM/BV-04-C", number_devices = 2,
+             description = "#[LimitedDiscoverableModeUndirectedConnectableModeLEOnly]",
+             test_private = gap_disc_limm_bv_04_c);
+_spec["GAP/DISC/LIMP/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/LIMP/BV-01-C", number_devices = 2,
+             description = "#[LimitedDiscoveryProcedureFindLimitedDiscoverableDevice]",
+             test_private = gap_disc_limp_bv_01_c);
+_spec["GAP/DISC/LIMP/BV-02-C"] = \
+    TestSpec(name = "GAP/DISC/LIMP/BV-02-C", number_devices = 2,
+             description = "#[LimitedDiscoveryProcedureDoesnotfindGeneralDiscoverableDevice]",
+             test_private = gap_disc_limp_bv_02_c);
+_spec["GAP/DISC/LIMP/BV-04-C"] = \
+    TestSpec(name = "GAP/DISC/LIMP/BV-04-C", number_devices = 2,
+             description = "#[LimitedDiscoveryProcedureDoesnotfindUndirectedConnectableDevice]",
+             test_private = gap_disc_limp_bv_04_c);
+_spec["GAP/DISC/LIMP/BV-05-C"] = \
+    TestSpec(name = "GAP/DISC/LIMP/BV-05-C", number_devices = 2,
+             description = "#[LimitedDiscoveryProcedureDoesnotfindDirectedConnectableDevice]",
+             test_private = gap_disc_limp_bv_05_c);
+_spec["GAP/DISC/NONM/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/NONM/BV-01-C", number_devices = 2,
+             description = "#[Non-discoverableModeNon-connectableMode]",
+             test_private = gap_disc_nonm_bv_01_c);
+_spec["GAP/DISC/NONM/BV-02-C"] = \
+    TestSpec(name = "GAP/DISC/NONM/BV-02-C", number_devices = 2,
+             description = "#[Non-discoverableModeUndirectedConnectableMode]",
+             test_private = gap_disc_nonm_bv_02_c);
+_spec["GAP/DISC/RPA/BV-01-C"] = \
+    TestSpec(name = "GAP/DISC/RPA/BV-01-C", number_devices = 2,
+             description = "#[DiscoveryProcedureFindDiscoverableDeviceusingResolvablePrivateAddress]",
+             test_private = gap_disc_rpa_bv_01_c);
+
+"""
+    Return the test spec which contains info about all the tests
+    this test module provides
+"""
+def get_tests_specs():
+    return _spec;
 
 def preamble(transport, trace):
     global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
@@ -1872,74 +2026,13 @@ def preamble(transport, trace):
     ok = ok and success;            
     success, lowerIRK, lowerRandomAddress = preamble_device_address_set(transport, 1, trace);
     trace.trace(4, "preamble Device Address Set " + ("PASS" if success else "FAIL"));
-    return ok and success;          
-    
-def runTest(test, transport, trace):
-    global __tests__;
-    
-    passed = failed = 0;
-
-    if test.lower() == "all":
-        for test in __tests__:
-            success = preamble(transport, trace);
-            trace.trace(4, "");
-            success = success and __tests__[test](transport, 0, 1, trace);
-
-            passed += 1 if success else 0;
-            failed += 0 if success else 1;
-
-            trace.trace(4, "");
-
-    elif test in __tests__:
-        success = preamble(transport, trace);
-        success = success and __tests__[test](transport, 0, 1, trace);
-        
-        passed += 1 if success else 0;
-        failed += 0 if success else 1;
-
-    elif os.path.isfile(test):
-        file = open(test, "r");
-        for line in file:
-            test = line.strip().upper();
-            if test in __tests__:
-                success = preamble(transport, trace);
-                trace.trace(4, "");
-                success = success and __tests__[test](transport, 0, 1, trace);
-
-                passed += 1 if success else 0;
-                failed += 0 if success else 1;
-
-                trace.trace(4, "");
-        file.close();
-
-    else:
-        trace.trace(1, "Test '%s' not found!" % test);
-        
-        failed += 1;
-
-    if (passed + failed) > 1:
-        trace.trace(1, "\nSummary:\n\nStatus   Count\n%s" % ('='*14));
-        if passed > 0:
-            trace.trace(1, "PASS%10d" % passed);
-        if failed > 0:
-            trace.trace(1, "FAIL%10d" % failed);
-        trace.trace(1, "%s\nTotal%9d" % ('='*14, passed + failed));
-        
-    return (failed == 0);
+    return ok and success;
 
 """
-    Return the specification which contains information about the test suite
+    Run a test given its test_spec
 """
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Generic Access Profile (GAP) Test Suite",
-                    number_devices = 2,
-                    description = "Qualification of GAP.");
-    return spec;
-
-"""
-    Run the command...
-"""
-def main(args, transport, trace):
-    success = runTest("all" if args.case is None else args.case, transport, trace);
-    return 0 if success else -1;
+def run_a_test(args, transport, trace, test_spec):
+    success = preamble(transport, trace);
+    test_f = test_spec.test_private;
+    success = success and test_f(transport, 0, 1, trace);
+    return not success

@@ -5,6 +5,7 @@ from enum import IntEnum;
 from components.utils import *;
 from components.basic_commands import *;
 from ll_verification import *;
+from components.test_spec import TestSpec;
 
 """
     ll_multiple_connections
@@ -75,20 +76,24 @@ def ll_multiple_connections(transport, trace):
     trace.trace(3, "Connection Request test " + ("PASSED" if success else "FAILED"));
     return success    
 
+
+_spec = {};
+_spec["Echo_test"] = \
+    TestSpec(name = "Multiple Connections Test Suite",
+             number_devices = 3,
+             description = "Verify ability to have multiple BLE connections.");
+
 """
-    Return the specification which contains information about the test suite
+    Return the test spec which contains info about all the tests
+    this test module provides
 """
-def spec():
-    from components.test_spec import TestSpec;
-    spec = TestSpec(name = "Multiple Connections Test Suite",
-                    number_devices = 3,
-                    description = "Verify ability to have multiple BLE connections.");
-    return spec;
+def get_tests_specs():
+    return _spec;
 
 """
     Run the command...
 """
-def main(args, transport, trace):
+def main(transport, trace):
     success = True
     print("preamble Standby Slave "    + ("PASS" if preamble_standby(transport, 0, trace) else "FAIL"));
     print("preamble Standby Master 1 " + ("PASS" if preamble_standby(transport, 1, trace) else "FAIL"));
@@ -98,4 +103,10 @@ def main(args, transport, trace):
     print("preamble Device Address Set Master 2 " + ("PASS" if preamble_device_address_set(transport, 2, trace) else "FAIL"));    
     print;
     success = ll_multiple_connections(transport, trace);
-    return (0 if success else -1)
+    return (0 if success else 1)
+
+"""
+    Run a test given its test_spec
+"""
+def run_a_test(args, transport, trace, test_spec):
+    return main(transport, trace);
