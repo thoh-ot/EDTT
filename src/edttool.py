@@ -1,5 +1,6 @@
 #! /usr/bin/env python2
 import os;
+import random;
 
 def parse_arguments():
     import argparse
@@ -18,7 +19,10 @@ def parse_arguments():
                         help="Which test module to run. This can either be a module in "
                         " src/tests, or a file path (relative or absolute)");
 
-    parser.add_argument("-C", "--case", required=False, help='Which testcase to run in that module (default "all")')
+    parser.add_argument("-C", "--case", required=False,
+                        help='Which testcase to run in that module.'
+                        'Options are: A real test name, "all", "randomize",'
+                        'or a file name containing a list of test names (default "all")')
 
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
@@ -77,6 +81,14 @@ def run_tests(args, xtra_args, transport, trace):
             passed += 1 if result == 0 else 0;
             total += 1;
 
+    elif t.lower() == "randomize":
+        tests_list = list(test_specs.iteritems());
+        random.shuffle(tests_list)
+        for _,test_spec in tests_list:
+            result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec);
+            passed += 1 if result == 0 else 0;
+            total += 1;
+
     elif t in test_specs:
         result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t]);
         passed += 1 if result == 0 else 0;
@@ -125,7 +137,6 @@ def main():
     try:
         (args, xtra_args) = parse_arguments();
         
-        import random;
         random.seed(args.seed);
 
         trace = Trace(args.verbose); #TODO: replace with Logger
