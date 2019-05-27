@@ -2271,7 +2271,7 @@ def ll_con_ini_bv_10_c(transport, upperTester, lowerTester, trace):
         """
             Add Public address of lowerTester to the Resolving List
         """
-        randIRK = [ random.randint(0,255) for _ in range(16) ];        
+        randIRK = [ random.randint(0,255) for _ in range(16) ];   
         RPAs = [ ResolvableAddresses( transport, upperTester, trace ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
         ownAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
         peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2297,7 +2297,7 @@ def ll_con_ini_bv_10_c(transport, upperTester, lowerTester, trace):
         peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
         advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
         advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-        
+
         success = success and advertiser.enable();
         connected = initiator.postConnect();
         success = success and not connected;
@@ -6409,6 +6409,7 @@ def ll_sec_adv_bv_10_c(transport, upperTester, lowerTester, trace):
                                 Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
         success = success and advertiser.enable()
 
+        connected = initiator.connect()
         success = success and (not connected)
         if not success:
             initiator.disconnect(0x13)
@@ -6492,8 +6493,8 @@ def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
         else:
             advertiser.disable()
 
-        # success = success and RPAs.disable()
-        # success = success and RPAs_lower.disable()
+        success = success and RPAs.disable()
+        success = success and RPAs_lower.disable()
 
     except Exception as e: 
         trace.trace(3, "Network Privacy - Directed Connectable Advertising using local and remote IRK test failed: %s" % str(e))
@@ -7090,18 +7091,24 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
         """
             Configure RPAs for use in address resolutions
         """
-        RPAs = ResolvableAddresses( transport, upperTester, trace, lowerIRK )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+        ownAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
+        
+        RPAs = ResolvableAddresses( transport, upperTester, trace )
         success = RPAs.clear()
-        success = success and RPAs.add( Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ))
+        success = success and RPAs.add( peerAddress, lowerIRK)
 
         RPAs_lower = ResolvableAddresses( transport, lowerTester, trace)
         success = success and RPAs_lower.clear()
-        success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+        success = success and RPAs_lower.add( ownAddress)
         """
-            Adding device identity of lower tester to the whitelist
+            Enabling device privacy mode...
         """
-        addresses = [[ SimpleAddressType.PUBLIC, 0x123456789ABCL ]]
-        success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
+        status = le_set_privacy_mode(transport, upperTester, peerAddress.type, peerAddress.address, PrivacyMode.DEVICE_PRIVACY, 200)
+        success = success and status == 0
+        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
+        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
+        showEvent(event, eventData, trace)
         """
             Enable RPAs...
         """
@@ -7109,22 +7116,13 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
         success = success and RPAs.enable()
         success = success and RPAs_lower.enable()
 
-        ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL)
+        ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL)
         advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                                 ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-        lowerAddrType = Address( SimpleAddressType.PUBLIC )
+        lowerAddrType = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
         initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddrType, 
-                                Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
-
-        success = success and preamble_set_public_address(transport, lowerTester, 0x123456789ABCL, trace)
-        
-        status = le_set_privacy_mode(transport, upperTester, SimpleAddressType.PUBLIC, toArray(0x123456789ABCL, 6), 1, 200)
-        success = success and status == 0
-        if has_event(transport, upperTester, 100):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-        success = success and (status == 0)
+                                Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ))
 
         success = success and advertiser.enable()
         connected = initiator.connect()
