@@ -7030,475 +7030,475 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
 _spec = {};
 _spec["LL/CON/ADV/BV-01-C"] = \
     TestSpec(name = "LL/CON/ADV/BV-01-C", number_devices = 2,
-             description = "#[AcceptingConnections]",
+             description = "# [Accepting Connections]",
              test_private = ll_con_adv_bv_01_c);
 _spec["LL/CON/ADV/BV-04-C"] = \
     TestSpec(name = "LL/CON/ADV/BV-04-C", number_devices = 2,
-             description = "#[DirectedAdvertisingConnection]",
+             description = "# [Directed Advertising Connection]",
              test_private = ll_con_adv_bv_04_c);
 _spec["LL/CON/ADV/BV-09-C"] = \
     TestSpec(name = "LL/CON/ADV/BV-09-C", number_devices = 2,
-             description = "#[AcceptingConnections,ChannelSelectionAlgorithm#2]",
+             description = "# [Accepting Connections, Channel Selection Algorithm #2]",
              test_private = ll_con_adv_bv_09_c);
 _spec["LL/CON/ADV/BV-10-C"] = \
     TestSpec(name = "LL/CON/ADV/BV-10-C", number_devices = 2,
-             description = "#[DirectedAdvertisingConnection,ChannelSelectionAlgorithm#2]",
+             description = "# [Directed Advertising Connection, Channel Selection Algorithm #2]",
              test_private = ll_con_adv_bv_10_c);
 _spec["LL/CON/INI/BV-01-C"] = \
     TestSpec(name = "LL/CON/INI/BV-01-C", number_devices = 2,
-             description = "#[ConnectionInitiation]",
+             description = "# [Connection Initiation]",
              test_private = ll_con_ini_bv_01_c);
 _spec["LL/CON/INI/BV-02-C"] = \
     TestSpec(name = "LL/CON/INI/BV-02-C", number_devices = 2,
-             description = "#[ConnectingtoDirectedAdvertising]",
+             description = "# [Connecting to Directed Advertising]",
              test_private = ll_con_ini_bv_02_c);
 _spec["LL/CON/INI/BV-06-C"] = \
     TestSpec(name = "LL/CON/INI/BV-06-C", number_devices = 2,
-             description = "#[InitiationDeviceFiltering:Undirected]",
+             description = "# [Initiation Device Filtering: Undirected]",
              test_private = ll_con_ini_bv_06_c);
 _spec["LL/CON/INI/BV-07-C"] = \
     TestSpec(name = "LL/CON/INI/BV-07-C", number_devices = 2,
-             description = "#[InitiationDeviceFiltering:Directed]",
+             description = "# [Initiation Device Filtering: Directed]",
              test_private = ll_con_ini_bv_07_c);
 _spec["LL/CON/INI/BV-08-C"] = \
     TestSpec(name = "LL/CON/INI/BV-08-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013ConnectionEstablishmentrespondingtoconnectableundirectedadvertising,Initiator]",
+             description = "# [Network Privacy Connection Establishment responding to connectable undirected advertising, Initiator]",
              test_private = ll_con_ini_bv_08_c);
 _spec["LL/CON/INI/BV-09-C"] = \
     TestSpec(name = "LL/CON/INI/BV-09-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingresolvinglist,Initiator]",
+             description = "# [Network Privacy - Connection Establishment using resolving list, Initiator]",
              test_private = ll_con_ini_bv_09_c);
 _spec["LL/CON/INI/BV-10-C"] = \
     TestSpec(name = "LL/CON/INI/BV-10-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator]",
+             description = "# [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator]",
              test_private = ll_con_ini_bv_10_c);
 _spec["LL/CON/INI/BV-11-C"] = \
     TestSpec(name = "LL/CON/INI/BV-11-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingwithwrongaddressandresolvinglist,Initiator]",
+             description = "# [Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator]",
              test_private = ll_con_ini_bv_11_c);
 _spec["LL/CON/INI/BV-12-C"] = \
     TestSpec(name = "LL/CON/INI/BV-12-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingwithidentityaddressandresolvinglist,Initiator]",
+             description = "# [Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator]",
              test_private = ll_con_ini_bv_12_c);
 _spec["LL/CON/INI/BV-16-C"] = \
     TestSpec(name = "LL/CON/INI/BV-16-C", number_devices = 2,
-             description = "#[ConnectionInitiation,ChannelSelectionAlgorithm#2]",
+             description = "# [Connection Initiation, Channel Selection Algorithm #2]",
              test_private = ll_con_ini_bv_16_c);
 _spec["LL/CON/INI/BV-17-C"] = \
     TestSpec(name = "LL/CON/INI/BV-17-C", number_devices = 2,
-             description = "#[ConnectingtoDirectedAdvertising,ChannelSelectionAlgorithm#2]",
+             description = "# [Connecting to Directed Advertising, Channel Selection Algorithm #2]",
              test_private = ll_con_ini_bv_17_c);
 _spec["LL/CON/INI/BV-18-C"] = \
     TestSpec(name = "LL/CON/INI/BV-18-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingresolvinglist,Initiator,IgnoreIdentityAddress]",
+             description = "# [Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address]",
              test_private = ll_con_ini_bv_18_c);
 _spec["LL/CON/INI/BV-19-C"] = \
     TestSpec(name = "LL/CON/INI/BV-19-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator,IgnoreIdentityAddress]",
+             description = "# [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address]",
              test_private = ll_con_ini_bv_19_c);
 _spec["LL/CON/INI/BV-20-C"] = \
     TestSpec(name = "LL/CON/INI/BV-20-C", number_devices = 2,
-             description = "#[DevicePrivacy-ConnectionEstablishmentusingresolvinglist,Initiator,AcceptIdentityAddress]",
+             description = "# [Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address]",
              test_private = ll_con_ini_bv_20_c);
 _spec["LL/CON/INI/BV-21-C"] = \
     TestSpec(name = "LL/CON/INI/BV-21-C", number_devices = 2,
-             description = "#[DevicePrivacy-ConnectionEstablishmentusingdirectedadvertisingandresolvinglist,Initiator,AcceptIdentityAddress]",
+             description = "# [Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address]",
              test_private = ll_con_ini_bv_21_c);
 _spec["LL/CON/MAS/BI-06-C"] = \
     TestSpec(name = "LL/CON/MAS/BI-06-C", number_devices = 2,
-             description = "#[AcceptingParameterConnectionRequest-illegalparameters]",
+             description = "# [Accepting Parameter Connection Request - illegal parameters]",
              test_private = ll_con_mas_bi_06_c);
 _spec["LL/CON/MAS/BV-03-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-03-C", number_devices = 2,
-             description = "#[MasterSendingData]",
+             description = "# [Master Sending Data]",
              test_private = ll_con_mas_bv_03_c);
 _spec["LL/CON/MAS/BV-04-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-04-C", number_devices = 2,
-             description = "#[MasterReceivingData]",
+             description = "# [Master Receiving Data]",
              test_private = ll_con_mas_bv_04_c);
 _spec["LL/CON/MAS/BV-05-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-05-C", number_devices = 2,
-             description = "#[MasterSendingandReceivingData]",
+             description = "# [Master Sending and Receiving Data]",
              test_private = ll_con_mas_bv_05_c);
 _spec["LL/CON/MAS/BV-07-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-07-C", number_devices = 2,
-             description = "#[RequestingParameterUpdate]",
+             description = "# [Requesting Parameter Update]",
              test_private = ll_con_mas_bv_07_c);
 _spec["LL/CON/MAS/BV-08-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-08-C", number_devices = 2,
-             description = "#[MasterSendingTermination]",
+             description = "# [Master Sending Termination]",
              test_private = ll_con_mas_bv_08_c);
 _spec["LL/CON/MAS/BV-09-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-09-C", number_devices = 2,
-             description = "#[MasterAcceptingTermination]",
+             description = "# [Master Accepting Termination]",
              test_private = ll_con_mas_bv_09_c);
 _spec["LL/CON/MAS/BV-13-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-13-C", number_devices = 2,
-             description = "#[FeatureSetupRequest]",
+             description = "# [Feature Setup Request]",
              test_private = ll_con_mas_bv_13_c);
 _spec["LL/CON/MAS/BV-20-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-20-C", number_devices = 2,
-             description = "#[MasterRequestVersion]",
+             description = "# [Master Request Version]",
              test_private = ll_con_mas_bv_20_c);
 _spec["LL/CON/MAS/BV-21-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-21-C", number_devices = 2,
-             description = "#[MasterRespondVersion]",
+             description = "# [Master Respond Version]",
              test_private = ll_con_mas_bv_21_c);
 _spec["LL/CON/MAS/BV-23-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-23-C", number_devices = 2,
-             description = "#[RespondingtoFeatureExchange]",
+             description = "# [Responding to Feature Exchange]",
              test_private = ll_con_mas_bv_23_c);
 _spec["LL/CON/MAS/BV-24-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-24-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-Accept]",
+             description = "# [Initiating Connection Parameter Request - Accept]",
              test_private = ll_con_mas_bv_24_c);
 _spec["LL/CON/MAS/BV-25-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-25-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-Reject]",
+             description = "# [Initiating Connection Parameter Request - Reject]",
              test_private = ll_con_mas_bv_25_c);
 _spec["LL/CON/MAS/BV-26-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-26-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-sameprocedurecollision]",
+             description = "# [Initiating Connection Parameter Request - same procedure collision]",
              test_private = ll_con_mas_bv_26_c);
 _spec["LL/CON/MAS/BV-27-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-27-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-differentprocedurecollision-channelmapupdate]",
+             description = "# [Initiating Connection Parameter Request - different procedure collision - channel map update]",
              test_private = ll_con_mas_bv_27_c);
 _spec["LL/CON/MAS/BV-29-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-29-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-remotelegacyhost]",
+             description = "# [Initiating Connection Parameter Request - remote legacy host]",
              test_private = ll_con_mas_bv_29_c);
 _spec["LL/CON/MAS/BV-30-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-30-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest-noPreferredPeriodicity]",
+             description = "# [Accepting Connection Parameter Request - no Preferred Periodicity]",
              test_private = ll_con_mas_bv_30_c);
 _spec["LL/CON/MAS/BV-34-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-34-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest-eventmasked]",
+             description = "# [Accepting Connection Parameter Request - event masked]",
              test_private = ll_con_mas_bv_34_c);
 _spec["LL/CON/MAS/BV-35-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-35-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest-Hostrejects]",
+             description = "# [Accepting Connection Parameter Request - Host rejects]",
              test_private = ll_con_mas_bv_35_c);
 _spec["LL/CON/MAS/BV-41-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-41-C", number_devices = 2,
-             description = "#[InitiatingPHYUpdateProcedure]",
+             description = "# [Initiating PHY Update Procedure]",
              test_private = ll_con_mas_bv_41_c);
 _spec["LL/CON/MAS/BV-43-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-43-C", number_devices = 2,
-             description = "#[RespondingtoPHYUpdateProcedure]",
+             description = "# [Responding to PHY Update Procedure]",
              test_private = ll_con_mas_bv_43_c);
 _spec["LL/CON/MAS/BV-74-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-74-C", number_devices = 2,
-             description = "#[MasterDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE1MPHY]",
+             description = "# [Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]",
              test_private = ll_con_mas_bv_74_c);
 _spec["LL/CON/MAS/BV-77-C"] = \
     TestSpec(name = "LL/CON/MAS/BV-77-C", number_devices = 2,
-             description = "#[MasterDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE2MPHY]",
+             description = "# [Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]",
              test_private = ll_con_mas_bv_77_c);
 _spec["LL/CON/SLA/BI-08-C"] = \
     TestSpec(name = "LL/CON/SLA/BI-08-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest\u2013IllegalParameters]",
+             description = "# [Accepting Connection Parameter Request Illegal Parameters]",
              test_private = ll_con_sla_bi_08_c);
 _spec["LL/CON/SLA/BV-04-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-04-C", number_devices = 2,
-             description = "#[SlaveSendingData]",
+             description = "# [Slave Sending Data]",
              test_private = ll_con_sla_bv_04_c);
 _spec["LL/CON/SLA/BV-05-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-05-C", number_devices = 2,
-             description = "#[SlaveReceivingData]",
+             description = "# [Slave Receiving Data]",
              test_private = ll_con_sla_bv_05_c);
 _spec["LL/CON/SLA/BV-06-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-06-C", number_devices = 2,
-             description = "#[SlaveSendingandReceivingData]",
+             description = "# [Slave Sending and Receiving Data]",
              test_private = ll_con_sla_bv_06_c);
 _spec["LL/CON/SLA/BV-10-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-10-C", number_devices = 2,
-             description = "#[AcceptingParameterUpdate]",
+             description = "# [Accepting Parameter Update]",
              test_private = ll_con_sla_bv_10_c);
 _spec["LL/CON/SLA/BV-11-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-11-C", number_devices = 2,
-             description = "#[Slavesendingtermination]",
+             description = "# [Slave sending termination]",
              test_private = ll_con_sla_bv_11_c);
 _spec["LL/CON/SLA/BV-12-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-12-C", number_devices = 2,
-             description = "#[Slaveacceptingtermination]",
+             description = "# [Slave accepting termination]",
              test_private = ll_con_sla_bv_12_c);
 # _spec["LL/CON/SLA/BV-13-C"] = \
 #     TestSpec(name = "LL/CON/SLA/BV-13-C", number_devices = 2,
-#              description = "##Failing-[Slavesupervisiontimer]TESTFAILS",
+#             description = "## Failing - [Slave supervision timer] TEST FAILS",
 #              test_private = ll_con_sla_bv_13_c);
 _spec["LL/CON/SLA/BV-14-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-14-C", number_devices = 2,
-             description = "#[FeatureSetupResponse]",
+             description = "# [Feature Setup Response]",
              test_private = ll_con_sla_bv_14_c);
 _spec["LL/CON/SLA/BV-19-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-19-C", number_devices = 2,
-             description = "#[Slaverequestversion]",
+             description = "# [Slave request version]",
              test_private = ll_con_sla_bv_19_c);
 _spec["LL/CON/SLA/BV-20-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-20-C", number_devices = 2,
-             description = "#[Slaverespondversion]",
+             description = "# [Slave respond version]",
              test_private = ll_con_sla_bv_20_c);
 _spec["LL/CON/SLA/BV-22-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-22-C", number_devices = 2,
-             description = "#[Initiatefeatureexchange]",
+             description = "# [Initiate feature exchange]",
              test_private = ll_con_sla_bv_22_c);
 _spec["LL/CON/SLA/BV-24-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-24-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-Accept]",
+             description = "# [Initiating Connection Parameter Request - Accept]",
              test_private = ll_con_sla_bv_24_c);
 _spec["LL/CON/SLA/BV-25-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-25-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-Reject]",
+             description = "# [Initiating Connection Parameter Request - Reject]",
              test_private = ll_con_sla_bv_25_c);
 _spec["LL/CON/SLA/BV-26-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-26-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-sameprocedurecollision]",
+             description = "# [Initiating Connection Parameter Request - same procedure collision]",
              test_private = ll_con_sla_bv_26_c);
 _spec["LL/CON/SLA/BV-27-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-27-C", number_devices = 2,
-             description = "#[InitiatingConnectionParameterRequest-differentprocedurecollision-channelmapupdate]",
+             description = "# [Initiating Connection Parameter Request - different procedure collision - channel map update]",
              test_private = ll_con_sla_bv_27_c);
 _spec["LL/CON/SLA/BV-29-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-29-C", number_devices = 2,
-             description = "#[RespondingtoConnectionParameterRequest-noPreffered_Periodicity]",
+             description = "# [Responding to Connection Parameter Request - no Preffered_Periodicity]",
              test_private = ll_con_sla_bv_29_c);
 _spec["LL/CON/SLA/BV-33-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-33-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest-eventmasked]TESTFAILS",
+             description = "# [Accepting Connection Parameter Request - event masked] TEST FAILS",
              test_private = ll_con_sla_bv_33_c);
 _spec["LL/CON/SLA/BV-34-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-34-C", number_devices = 2,
-             description = "#[AcceptingConnectionParameterRequest-hostrejectssur]",
+             description = "# [Accepting Connection Parameter Request - host rejectssur]",
              test_private = ll_con_sla_bv_34_c);
 _spec["LL/CON/SLA/BV-40-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-40-C", number_devices = 2,
-             description = "#[InitiatingPHYUpdateProcedure]",
+             description = "# [Initiating PHY Update Procedure]",
              test_private = ll_con_sla_bv_40_c);
 _spec["LL/CON/SLA/BV-42-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-42-C", number_devices = 2,
-             description = "#[RespondingtoPHYUpdateProcedure]",
+             description = "# [Responding to PHY Update Procedure]",
              test_private = ll_con_sla_bv_42_c);
 _spec["LL/CON/SLA/BV-78-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-78-C", number_devices = 2,
-             description = "#[SlaveDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE1MPHY]",
+             description = "# [Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]",
              test_private = ll_con_sla_bv_78_c);
 _spec["LL/CON/SLA/BV-81-C"] = \
     TestSpec(name = "LL/CON/SLA/BV-81-C", number_devices = 2,
-             description = "#[SlaveDataLengthUpdate-InitiatingDataLengthUpdateProcedure,LE2MPHY]",
+             description = "# [Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]",
              test_private = ll_con_sla_bv_81_c);
 _spec["LL/DDI/ADV/BV-01-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-01-C", number_devices = 2,
-             description = "#[Non-ConnectableAdvertisingEvents]",
+             description = "# [Non-Connectable Advertising Events]",
              test_private = ll_ddi_adv_bv_01_c);
 _spec["LL/DDI/ADV/BV-02-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-02-C", number_devices = 2,
-             description = "#[UndirectedAdvertisingEvents]",
+             description = "# [Undirected Advertising Events]",
              test_private = ll_ddi_adv_bv_02_c);
 _spec["LL/DDI/ADV/BV-03-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-03-C", number_devices = 2,
-             description = "#[AdvertisingData:Non-Connectable]",
+             description = "# [Advertising Data: Non-Connectable]",
              test_private = ll_ddi_adv_bv_03_c);
 _spec["LL/DDI/ADV/BV-04-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-04-C", number_devices = 2,
-             description = "#[AdvertisingData:Undirected]",
+             description = "# [Advertising Data: Undirected]",
              test_private = ll_ddi_adv_bv_04_c);
 _spec["LL/DDI/ADV/BV-05-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-05-C", number_devices = 2,
-             description = "#[ScanRequest:UndirectedConnectable]",
+             description = "# [Scan Request: Undirected Connectable]",
              test_private = ll_ddi_adv_bv_05_c);
 _spec["LL/DDI/ADV/BV-06-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-06-C", number_devices = 2,
-             description = "#[ConnectionRequest]",
+             description = "# [Connection Request]",
              test_private = ll_ddi_adv_bv_06_c);
 _spec["LL/DDI/ADV/BV-07-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-07-C", number_devices = 2,
-             description = "#[ScanRequestConnectionRequest]",
+             description = "# [Scan Request Connection Request]",
              test_private = ll_ddi_adv_bv_07_c);
 _spec["LL/DDI/ADV/BV-08-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-08-C", number_devices = 2,
-             description = "#[ScanRequestDeviceFiltering]",
+             description = "# [Scan Request Device Filtering]",
              test_private = ll_ddi_adv_bv_08_c);
 _spec["LL/DDI/ADV/BV-09-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-09-C", number_devices = 2,
-             description = "#[ConnectionRequestDeviceFiltering]",
+             description = "# [Connection Request Device Filtering]",
              test_private = ll_ddi_adv_bv_09_c);
 _spec["LL/DDI/ADV/BV-11-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-11-C", number_devices = 2,
-             description = "#[DirectedAdvertisingEvents]",
+             description = "# [Directed Advertising Events]",
              test_private = ll_ddi_adv_bv_11_c);
 _spec["LL/DDI/ADV/BV-15-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-15-C", number_devices = 2,
-             description = "#[DiscoverableAdvertisingEvents]",
+             description = "# [Discoverable Advertising Events]",
              test_private = ll_ddi_adv_bv_15_c);
 _spec["LL/DDI/ADV/BV-16-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-16-C", number_devices = 2,
-             description = "#[AdvertisingData:Discoverable]",
+             description = "# [Advertising Data: Discoverable]",
              test_private = ll_ddi_adv_bv_16_c);
 _spec["LL/DDI/ADV/BV-17-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-17-C", number_devices = 2,
-             description = "#[ScanRequest:Discoverable]",
+             description = "# [Scan Request: Discoverable]",
              test_private = ll_ddi_adv_bv_17_c);
 _spec["LL/DDI/ADV/BV-18-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-18-C", number_devices = 2,
-             description = "#[DeviceFiltering:Discoverable]",
+             description = "# [Device Filtering: Discoverable]",
              test_private = ll_ddi_adv_bv_18_c);
 _spec["LL/DDI/ADV/BV-19-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-19-C", number_devices = 2,
-             description = "#[LowDutyCycleDirectedAdvertisingEvents]",
+             description = "# [Low Duty Cycle Directed Advertising Events]",
              test_private = ll_ddi_adv_bv_19_c);
 _spec["LL/DDI/ADV/BV-20-C"] = \
     TestSpec(name = "LL/DDI/ADV/BV-20-C", number_devices = 2,
-             description = "#[AdvertisingAlwaysUsingtheLE1MPHY]",
+             description = "# [Advertising Always Using the LE 1M PHY]",
              test_private = ll_ddi_adv_bv_20_c);
 # _spec["LL/DDI/ADV/BV-21-C"] = \
 #     TestSpec(name = "LL/DDI/ADV/BV-21-C", number_devices = 2,
-#              description = "##Failing-[ExtendedAdvertising,LegacyPDUs,Non-Connectable]",
+#             description = "## Failing - [Extended Advertising, Legacy PDUs, Non-Connectable]",
 #              test_private = ll_ddi_adv_bv_21_c);
 _spec["LL/DDI/SCN/BV-01-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-01-C", number_devices = 2,
-             description = "#[PassiveScanning:NonConnectable]",
+             description = "# [Passive Scanning: Non Connectable]",
              test_private = ll_ddi_scn_bv_01_c);
 _spec["LL/DDI/SCN/BV-02-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-02-C", number_devices = 2,
-             description = "#[PassiveScanningDeviceFiltering]",
+             description = "# [Passive Scanning Device Filtering]",
              test_private = ll_ddi_scn_bv_02_c);
 _spec["LL/DDI/SCN/BV-03-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-03-C", number_devices = 2,
-             description = "#[ActiveScanning]",
+             description = "# [Active Scanning]",
              test_private = ll_ddi_scn_bv_03_c);
 _spec["LL/DDI/SCN/BV-04-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-04-C", number_devices = 2,
-             description = "#[ActiveScanningDeviceFiltering]",
+             description = "# [Active Scanning Device Filtering]",
              test_private = ll_ddi_scn_bv_04_c);
 _spec["LL/DDI/SCN/BV-05-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-05-C", number_devices = 2,
-             description = "#[ScanningForAdvertiserTypes]",
+             description = "# [Scanning For Advertiser Types]",
              test_private = ll_ddi_scn_bv_05_c);
 _spec["LL/DDI/SCN/BV-10-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-10-C", number_devices = 2,
-             description = "#[PassiveScanning:UndirectedEvents]",
+             description = "# [Passive Scanning: Undirected Events]",
              test_private = ll_ddi_scn_bv_10_c);
 _spec["LL/DDI/SCN/BV-11-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-11-C", number_devices = 2,
-             description = "#[PassiveScanning:DirectedEvents]",
+             description = "# [Passive Scanning: Directed Events]",
              test_private = ll_ddi_scn_bv_11_c);
 _spec["LL/DDI/SCN/BV-12-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-12-C", number_devices = 2,
-             description = "#[PassiveScanning:DiscoverableEvents]",
+             description = "# [Passive Scanning: Discoverable Events]",
              test_private = ll_ddi_scn_bv_12_c);
 _spec["LL/DDI/SCN/BV-13-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-13-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013PassiveScanning,PeerIRK]",
+             description = "# [Network Privacy Passive Scanning, Peer IRK]",
              test_private = ll_ddi_scn_bv_13_c);
 _spec["LL/DDI/SCN/BV-14-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-14-C", number_devices = 2,
-             description = "#[NetworkPrivacy-PassiveScanning:DirectedEventstoanaddressdifferentfromthescanner\u2019saddress]",
+             description = "# [Network Privacy - Passive Scanning: Directed Events to an address different from the scanner s address]",
              test_private = ll_ddi_scn_bv_14_c);
 _spec["LL/DDI/SCN/BV-15-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-15-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013ActiveScanning,noLocalIRK,noPeerIRK]",
+             description = "# [Network Privacy Active Scanning, no Local IRK, no Peer IRK]",
              test_private = ll_ddi_scn_bv_15_c);
 _spec["LL/DDI/SCN/BV-16-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-16-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013ActiveScanning,LocalIRK,noPeerIRK]",
+             description = "# [Network Privacy Active Scanning, Local IRK, no Peer IRK]",
              test_private = ll_ddi_scn_bv_16_c);
 _spec["LL/DDI/SCN/BV-17-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-17-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013ActiveScanning,noLocalIRK,PeerIRK]",
+             description = "# [Network Privacy Active Scanning, no Local IRK, Peer IRK]",
              test_private = ll_ddi_scn_bv_17_c);
 _spec["LL/DDI/SCN/BV-18-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-18-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013ActiveScanning,LocalIRK,PeerIRK]",
+             description = "# [Network Privacy Active Scanning, Local IRK, Peer IRK]",
              test_private = ll_ddi_scn_bv_18_c);
 _spec["LL/DDI/SCN/BV-26-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-26-C", number_devices = 2,
-             description = "#[NetworkPrivacy\u2013PassiveScanning,PeerIRK,IgnoreIdentityAddress]",
+             description = "# [Network Privacy Passive Scanning, Peer IRK, Ignore Identity Address]",
              test_private = ll_ddi_scn_bv_26_c);
 _spec["LL/DDI/SCN/BV-28-C"] = \
     TestSpec(name = "LL/DDI/SCN/BV-28-C", number_devices = 2,
-             description = "#[DevicePrivacy\u2013PassiveScanning,PeerIRK,AcceptIdentityAddress]",
+             description = "# [Device Privacy Passive Scanning, Peer IRK, Accept Identity Address]",
              test_private = ll_ddi_scn_bv_28_c);
 # _spec["LL/SEC/ADV/BV-01-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-01-C", number_devices = 2,
-#              description = "##Failing-[Advertisingwithstaticaddress]",
+#             description = "## Failing - [Advertising with static address]",
 #              test_private = ll_sec_adv_bv_01_c);
 _spec["LL/SEC/ADV/BV-02-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-02-C", number_devices = 2,
-             description = "#[Privacy-NonConnectableUndirectedAdvertising,non-resolvableprivateaddress]",
+             description = "# [Privacy - Non Connectable Undirected Advertising, non-resolvable private address]",
              test_private = ll_sec_adv_bv_02_c);
 _spec["LL/SEC/ADV/BV-03-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-03-C", number_devices = 2,
-             description = "#[Privacy-NonConnectableUndirectedAdvertising,ResolvablePrivateAddress]",
+             description = "# [Privacy - Non Connectable Undirected Advertising, Resolvable Private Address]",
              test_private = ll_sec_adv_bv_03_c);
 _spec["LL/SEC/ADV/BV-04-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-04-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ScannableAdvertising,non-resolvableprivateaddress]",
+             description = "# [Network Privacy - Scannable Advertising, non-resolvable private address]",
              test_private = ll_sec_adv_bv_04_c);
 _spec["LL/SEC/ADV/BV-05-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-05-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ScannableAdvertising,resolvableprivateaddress]",
+             description = "# [Network Privacy - Scannable Advertising, resolvable private address]",
              test_private = ll_sec_adv_bv_05_c);
 _spec["LL/SEC/ADV/BV-06-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-06-C", number_devices = 2,
-             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingnoLocalIRK,nopeerIRK]",
+             description = "# [Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK]",
              test_private = ll_sec_adv_bv_06_c);
 _spec["LL/SEC/ADV/BV-07-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-07-C", number_devices = 2,
-             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRK,nopeerIRK]",
+             description = "# [Network Privacy - Undirected Connectable Advertising with Local IRK, no peer IRK]",
              test_private = ll_sec_adv_bv_07_c);
 # _spec["LL/SEC/ADV/BV-08-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-08-C", number_devices = 2,
-#              description = "##[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRK,peerIRK]",
+#             description = "## [Network Privacy - Undirected Connectable Advertising with Local IRK, peer IRK]",
 #              test_private = ll_sec_adv_bv_08_c);
 _spec["LL/SEC/ADV/BV-09-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-09-C", number_devices = 2,
-             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithoutLocalIRK,peerIRK]",
+             description = "# [Network Privacy - Undirected Connectable Advertising without Local IRK, peer IRK]",
              test_private = ll_sec_adv_bv_09_c);
 _spec["LL/SEC/ADV/BV-10-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-10-C", number_devices = 2,
-             description = "#[NetworkPrivace-UndirectedConnectableAdvertisingusingResolvingListandPeerDeviceIdentitynotintheList]",
+             description = "# [Network Privace - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List]",
              test_private = ll_sec_adv_bv_10_c);
 _spec["LL/SEC/ADV/BV-11-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-11-C", number_devices = 2,
-             description = "#[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK]",
+             description = "# [Network Privacy - Directed Connectable Advertising using local and remote IRK]",
              test_private = ll_sec_adv_bv_11_c);
 _spec["LL/SEC/ADV/BV-12-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-12-C", number_devices = 2,
-             description = "#[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalIRK,butnotremoteIRK]",
+             description = "# [Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK]",
              test_private = ll_sec_adv_bv_12_c);
 # _spec["LL/SEC/ADV/BV-13-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-13-C", number_devices = 2,
-#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingwithoutlocalIRK,butwithremoteIRK]",
+#             description = "## Failing - [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]",
 #              test_private = ll_sec_adv_bv_13_c);
 # _spec["LL/SEC/ADV/BV-14-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-14-C", number_devices = 2,
-#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingwithoutlocalIRK,butwithremoteIRK]",
+#             description = "## Failing - [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]",
 #              test_private = ll_sec_adv_bv_14_c);
 _spec["LL/SEC/ADV/BV-15-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-15-C", number_devices = 2,
-             description = "#[NetworkPrivacy-ScannableAdvertising,resolvableprivateaddress,IgnoreIdentityAddress]",
+             description = "# [Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address]",
              test_private = ll_sec_adv_bv_15_c);
 _spec["LL/SEC/ADV/BV-16-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-16-C", number_devices = 2,
-             description = "#[NetworkPrivacy-UndirectedConnectableAdvertisingwithLocalIRKandPeerIRK,IgnoreIdentityAddress]",
+             description = "# [Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address]",
              test_private = ll_sec_adv_bv_16_c);
 # _spec["LL/SEC/ADV/BV-17-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-17-C", number_devices = 2,
-#              description = "##Failing-[NetworkPrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK,IgnoreIdentityAddress]",
+#             description = "## Failing - [Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address]",
 #              test_private = ll_sec_adv_bv_17_c);
 # _spec["LL/SEC/ADV/BV-18-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-18-C", number_devices = 2,
-#              description = "##Failing-[DevicePrivacy-ScannableAdvertising,resolvableprivateaddress,AcceptIdentityAddress]",
+#             description = "## Failing - [Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address]",
 #              test_private = ll_sec_adv_bv_18_c);
 # _spec["LL/SEC/ADV/BV-19-C"] = \
 #     TestSpec(name = "LL/SEC/ADV/BV-19-C", number_devices = 2,
-#              description = "##Failing-[DevicePrivacy-UndirectedConnectableAdvertisingwithLocalIRKandPeerIRK,AcceptIdentityAddress]",
+#             description = "## Failing - [Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address]",
 #              test_private = ll_sec_adv_bv_19_c);
 _spec["LL/SEC/ADV/BV-20-C"] = \
     TestSpec(name = "LL/SEC/ADV/BV-20-C", number_devices = 2,
-             description = "#[DevicePrivacy-DirectedConnectableAdvertisingusinglocalandremoteIRK,AcceptIdentityAddress]",
+             description = "# [Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address]",
              test_private = ll_sec_adv_bv_20_c);
 
 """

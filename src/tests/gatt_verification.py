@@ -1032,31 +1032,31 @@ _spec = {};
 
 _spec["GAP/GAT/BV-01-C"] = \
     TestSpec(name = "GAP/GAT/BV-01-C", number_devices = 1,
-             description = "#[GAPMandatoryCharacteristics]",
+             description = "#[GAP Mandatory Characteristics]",
              test_private = gap_gat_bv_01_c);
 _spec["GAP/GAT/BV-02-C"] = \
     TestSpec(name = "GAP/GAT/BV-02-C", number_devices = 1,
-             description = "#[GAPPeripheralPrivacyFlagCharacteristic]",
+             description = "#[GAP Peripheral Privacy Flag Characteristic]",
              test_private = gap_gat_bv_02_c);
 _spec["GAP/GAT/BV-03-C"] = \
     TestSpec(name = "GAP/GAT/BV-03-C", number_devices = 1,
-             description = "#[GAPReconnectionAddressCharacteristic]",
+             description = "#[GAP Reconnection Address Characteristic]",
              test_private = gap_gat_bv_03_c);
 _spec["GAP/GAT/BV-04-C"] = \
     TestSpec(name = "GAP/GAT/BV-04-C", number_devices = 1,
-             description = "#[PeripheralPreferredConnectionParametersCharacteristic]",
+             description = "#[Peripheral Preferred Connection Parameters Characteristic]",
              test_private = gap_gat_bv_04_c);
 _spec["GAP/GAT/BV-05-C"] = \
     TestSpec(name = "GAP/GAT/BV-05-C", number_devices = 1,
-             description = "#[WritableDeviceName]",
+             description = "#[Writable DeviceName]",
              test_private = gap_gat_bv_05_c);
 _spec["GAP/GAT/BX-01-C"] = \
     TestSpec(name = "GAP/GAT/BX-01-C", number_devices = 1,
-             description = "#[DiscoverAllServices]",
+             description = "#[Discover All Services]",
              test_private = gap_gat_bx_01_c);
 _spec["GAP/IDLE/NAMP/BV-01-C"] = \
     TestSpec(name = "GAP/IDLE/NAMP/BV-01-C", number_devices = 1,
-             description = "#[NameDiscoveryProcedureGATTClient]",
+             description = "#[Name Discovery Procedure GATT Client]",
              test_private = gap_idle_namp_bv_01_c);
 _spec["GATT/CL/GAD/BV-01-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-01-C", number_devices = 1,
@@ -1064,47 +1064,47 @@ _spec["GATT/CL/GAD/BV-01-C"] = \
              test_private = gatt_cl_gad_bv_01_c);
 _spec["GATT/CL/GAD/BV-02-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-02-C", number_devices = 1,
-             description = "#[DiscoverPrimaryServicesbyServiceUUID-byClient]",
+             description = "#[Discover Primary Services by Service UUID - by Client]",
              test_private = gatt_cl_gad_bv_02_c);
 _spec["GATT/CL/GAD/BV-03-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-03-C", number_devices = 1,
-             description = "#[FindIncludedServices-byClient]",
+             description = "#[Find Included Services - by Client]",
              test_private = gatt_cl_gad_bv_03_c);
 _spec["GATT/CL/GAD/BV-04-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-04-C", number_devices = 1,
-             description = "#[DiscoverAllCharacteristicsofaService-byClient]",
+             description = "#[Discover All Characteristics of a Service - by Client]",
              test_private = gatt_cl_gad_bv_04_c);
 _spec["GATT/CL/GAD/BV-05-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-05-C", number_devices = 1,
-             description = "#[DiscoverCharacteristicsbyUUID-byClient]",
+             description = "#[Discover Characteristics by UUID - by Client]",
              test_private = gatt_cl_gad_bv_05_c);
 _spec["GATT/CL/GAD/BV-06-C"] = \
     TestSpec(name = "GATT/CL/GAD/BV-06-C", number_devices = 1,
-             description = "#[DiscoverAllCharacteristicDescriptors-byClient]",
+             description = "#[Discover All Characteristic Descriptors - by Client]",
              test_private = gatt_cl_gad_bv_06_c);
 _spec["GATT/CL/GAR/BI-01-C"] = \
     TestSpec(name = "GATT/CL/GAR/BI-01-C", number_devices = 1,
-             description = "#[ReadCharacteristicValue-InvalidHandle]",
+             description = "#[Read Characteristic Value - Invalid Handle]",
              test_private = gatt_cl_gar_bi_01_c);
 _spec["GATT/CL/GAR/BI-02-C"] = \
     TestSpec(name = "GATT/CL/GAR/BI-02-C", number_devices = 1,
-             description = "#[ReadCharacteristicValue-ReadNotPermitted]",
+             description = "#[Read Characteristic Value - Read Not Permitted]",
              test_private = gatt_cl_gar_bi_02_c);
 _spec["GATT/CL/GAR/BI-03-C"] = \
     TestSpec(name = "GATT/CL/GAR/BI-03-C", number_devices = 1,
-             description = "#[ReadCharacteristicValue-InsufficientAuthorization]",
+             description = "#[Read Characteristic Value - Insufficient Authorization]",
              test_private = gatt_cl_gar_bi_03_c);
 _spec["GATT/CL/GAR/BI-04-C"] = \
     TestSpec(name = "GATT/CL/GAR/BI-04-C", number_devices = 1,
-             description = "#[ReadCharacteristicValue-InsufficientAuthentication]",
+             description = "#[Read Characteristic Value - Insufficient Authentication]",
              test_private = gatt_cl_gar_bi_04_c);
 _spec["GATT/CL/GAR/BV-01-C"] = \
     TestSpec(name = "GATT/CL/GAR/BV-01-C", number_devices = 1,
-             description = "#[ReadCharacteristicValue-byClient]",
+             description = "#[Read Characteristic Value - by Client]",
              test_private = gatt_cl_gar_bv_01_c);
 _spec["GATT/CL/GAR/BV-03-C"] = \
     TestSpec(name = "GATT/CL/GAR/BV-03-C", number_devices = 1,
-             description = "#[ReadUsingCharacteristicUUID-byClient]",
+             description = "#[Read Using Characteristic UUID - by Client]",
              test_private = gatt_cl_gar_bv_03_c);
 
 """

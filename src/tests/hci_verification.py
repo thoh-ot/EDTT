@@ -1260,123 +1260,123 @@ def hci_dsu_bv_06_c(transport, upperTester, lowerTester, trace):
 _spec = {};
 _spec["HCI/CCO/BV-07-C"] = \
     TestSpec(name = "HCI/CCO/BV-07-C", number_devices = 2,
-             description = "[BR/EDRNotSupported]",
+             description = "# [BR/EDR Not Supported]",
              test_private = hci_cco_bv_07_c);
 _spec["HCI/CCO/BV-09-C"] = \
     TestSpec(name = "HCI/CCO/BV-09-C", number_devices = 2,
-             description = "[LESetDataLength]",
+             description = "# [LE Set Data Length]",
              test_private = hci_cco_bv_09_c);
 _spec["HCI/CCO/BV-10-C"] = \
     TestSpec(name = "HCI/CCO/BV-10-C", number_devices = 2,
-             description = "[LEReadSuggestedDefaultDataLengthCommand]",
+             description = "# [LE Read Suggested Default Data Length Command]",
              test_private = hci_cco_bv_10_c);
 _spec["HCI/CCO/BV-11-C"] = \
     TestSpec(name = "HCI/CCO/BV-11-C", number_devices = 2,
-             description = "[LEWriteSuggestedDefaultDataLengthCommand]",
+             description = "# [LE Write Suggested Default Data Length Command]",
              test_private = hci_cco_bv_11_c);
 _spec["HCI/CCO/BV-12-C"] = \
     TestSpec(name = "HCI/CCO/BV-12-C", number_devices = 2,
-             description = "[LERemoveDeviceFromResolvingListCommand]",
+             description = "# [LE Remove Device From Resolving List Command]",
              test_private = hci_cco_bv_12_c);
 _spec["HCI/CCO/BV-13-C"] = \
     TestSpec(name = "HCI/CCO/BV-13-C", number_devices = 2,
-             description = "[LEClearResolvingListCommand]",
+             description = "# [LE Clear Resolving List Command]",
              test_private = hci_cco_bv_13_c);
 _spec["HCI/CCO/BV-14-C"] = \
     TestSpec(name = "HCI/CCO/BV-14-C", number_devices = 2,
-             description = "[LEReadResolvingListSizeCommand]",
+             description = "# [LE Read Resolving List Size Command]",
              test_private = hci_cco_bv_14_c);
 _spec["HCI/CCO/BV-15-C"] = \
     TestSpec(name = "HCI/CCO/BV-15-C", number_devices = 2,
-             description = "[LESetDefaultPHYCommand]",
+             description = "# [LE Set Default PHY Command]",
              test_private = hci_cco_bv_15_c);
 #_spec["HCI/CCO/BV-16-C"] = \
 #    TestSpec(name = "HCI/CCO/BV-16-C", number_devices = 2,
-#             description = "[LEReadPeriodicAdvertiserListSizeCommand]",
+#             description = "## [LE Read Periodic Advertiser List Size Command]",
 #             test_private = hci_cco_bv_16_c);
 #_spec["HCI/CCO/BV-17-C"] = \
 #    TestSpec(name = "HCI/CCO/BV-17-C", number_devices = 2,
-#             description = "[LEAdd/Remove/ClearPeriodicAdvertiserListCommands]",
+#             description = "## [LE Add/Remove/Clear Periodic Advertiser List Commands]",
 #             test_private = hci_cco_bv_17_c);
 _spec["HCI/CCO/BV-18-C"] = \
     TestSpec(name = "HCI/CCO/BV-18-C", number_devices = 2,
-             description = "[LEReadTransmitPowerCommand]",
+             description = "# [LE Read Transmit Power Command]",
              test_private = hci_cco_bv_18_c);
 _spec["HCI/CFC/BV-02-C"] = \
     TestSpec(name = "HCI/CFC/BV-02-C", number_devices = 2,
-             description = "[BufferSize]",
+             description = "# [Buffer Size]",
              test_private = hci_cfc_bv_02_c);
 _spec["HCI/CIN/BV-01-C"] = \
     TestSpec(name = "HCI/CIN/BV-01-C", number_devices = 2,
-             description = "[ReadLocalSupportedFeaturesCommand]",
+             description = "# [Read Local Supported Features Command]",
              test_private = hci_cin_bv_01_c);
 _spec["HCI/CIN/BV-03-C"] = \
     TestSpec(name = "HCI/CIN/BV-03-C", number_devices = 2,
-             description = "[ReadLocalSupportedCommandsCommand]",
+             description = "# [Read Local Supported Commands Command]",
              test_private = hci_cin_bv_03_c);
 _spec["HCI/CIN/BV-04-C"] = \
     TestSpec(name = "HCI/CIN/BV-04-C", number_devices = 2,
-             description = "[ReadLocalVersionInformationCommand]",
+             description = "# [Read Local Version Information Command]",
              test_private = hci_cin_bv_04_c);
 _spec["HCI/CIN/BV-06-C"] = \
     TestSpec(name = "HCI/CIN/BV-06-C", number_devices = 2,
-             description = "[WhiteListSize]",
+             description = "# [White List Size]",
              test_private = hci_cin_bv_06_c);
 _spec["HCI/CIN/BV-09-C"] = \
     TestSpec(name = "HCI/CIN/BV-09-C", number_devices = 2,
-             description = "[ReadLEPublicKeyValidationFeatureBit]",
+             description = "# [Read LE Public Key Validation Feature Bit]",
              test_private = hci_cin_bv_09_c);
 _spec["HCI/CM/BV-01-C"] = \
     TestSpec(name = "HCI/CM/BV-01-C", number_devices = 2,
-             description = "[LEReadPeerResolvableAddressCommand]",
+             description = "# [LE Read Peer Resolvable Address Command]",
              test_private = hci_cm_bv_01_c);
 _spec["HCI/CM/BV-02-C"] = \
     TestSpec(name = "HCI/CM/BV-02-C", number_devices = 2,
-             description = "[LEReadLocalResolvableAddressCommand]",
+             description = "# [LE Read Local Resolvable Address Command]",
              test_private = hci_cm_bv_02_c);
 _spec["HCI/CM/BV-03-C"] = \
     TestSpec(name = "HCI/CM/BV-03-C", number_devices = 2,
-             description = "[LEReadPHYCommand]",
+             description = "# [LE Read PHY Command]",
              test_private = hci_cm_bv_03_c);
 _spec["HCI/DDI/BI-02-C"] = \
     TestSpec(name = "HCI/DDI/BI-02-C", number_devices = 2,
-             description = "[RejectInvalidAdvertisingParameters]",
+             description = "# [Reject Invalid Advertising Parameters]",
              test_private = hci_ddi_bi_02_c);
 _spec["HCI/DDI/BV-03-C"] = \
     TestSpec(name = "HCI/DDI/BV-03-C", number_devices = 2,
-             description = "[SetAdvertisingEnable]",
+             description = "# [Set Advertising Enable]",
              test_private = hci_ddi_bv_03_c);
 _spec["HCI/DDI/BV-04-C"] = \
     TestSpec(name = "HCI/DDI/BV-04-C", number_devices = 2,
-             description = "[SetScanEnable]",
+             description = "# [Set Scan Enable]",
              test_private = hci_ddi_bv_04_c);
 _spec["HCI/DSU/BV-02-C"] = \
     TestSpec(name = "HCI/DSU/BV-02-C", number_devices = 2,
-             description = "[ResetinAdvertisingState]",
+             description = "# [Reset in Advertising State]",
              test_private = hci_dsu_bv_02_c);
 _spec["HCI/DSU/BV-03-C"] = \
     TestSpec(name = "HCI/DSU/BV-03-C", number_devices = 2,
-             description = "[ResettoSlave]",
+             description = "# [Reset to Slave]",
              test_private = hci_dsu_bv_03_c);
 _spec["HCI/DSU/BV-04-C"] = \
     TestSpec(name = "HCI/DSU/BV-04-C", number_devices = 2,
-             description = "[ResetinScanningState]",
+             description = "# [Reset in Scanning State]",
              test_private = hci_dsu_bv_04_c);
 _spec["HCI/DSU/BV-05-C"] = \
     TestSpec(name = "HCI/DSU/BV-05-C", number_devices = 2,
-             description = "[ResetinInitiatingState]",
+             description = "# [Reset in Initiating State]",
              test_private = hci_dsu_bv_05_c);
 _spec["HCI/DSU/BV-06-C"] = \
     TestSpec(name = "HCI/DSU/BV-06-C", number_devices = 2,
-             description = "[ResettoMaster]",
+             description = "# [Reset to Master]",
              test_private = hci_dsu_bv_06_c);
 _spec["HCI/GEV/BV-01-C"] = \
     TestSpec(name = "HCI/GEV/BV-01-C", number_devices = 2,
-             description = "[UnsupportedCommandsoneachsupportedcontroller]",
+             description = "# [Unsupported Commands on each supported controller]",
              test_private = hci_gev_bv_01_c);
 _spec["HCI/HFC/BV-04-C"] = \
     TestSpec(name = "HCI/HFC/BV-04-C", number_devices = 2,
-             description = "[LESetEventMask]",
+             description = "# [LE Set Event Mask]",
              test_private = hci_hfc_bv_04_c);
 
 """
