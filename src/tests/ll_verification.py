@@ -3124,7 +3124,6 @@ def ll_con_sla_bv_12_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave accepting termination test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Slave accepting termination test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3165,7 +3164,6 @@ def ll_con_sla_bv_13_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave supervision timer test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Slave supervision timer test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3220,7 +3218,6 @@ def ll_con_sla_bv_14_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Feature Setup Response test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Feature Setup Response test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3391,7 +3388,6 @@ def ll_con_sla_bv_22_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate feature exchange test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate feature exchange test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3470,7 +3466,6 @@ def ll_con_sla_bv_24_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate connection parameter request - Accept test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate connection parameter request - Accept test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -3545,7 +3540,6 @@ def ll_con_sla_bv_25_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate connection parameter request - Reject test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate connection parameter request - Reject test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3668,7 +3662,6 @@ def ll_con_sla_bv_26_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate connection parameter request - same procedure collision test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate connection parameter request - same procedure collision test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3764,7 +3757,6 @@ def ll_con_sla_bv_27_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate connection parameter request - different procedure collision - channel map update test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate connection parameter request - different procedure collision - channel map update test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3853,7 +3845,6 @@ def ll_con_sla_bv_29_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting connection parameter request - no Preffered_Periodicity test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Accepting connection parameter request - no Preffered_Periodicity test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3909,7 +3900,6 @@ def ll_con_sla_bv_33_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connection Parameter Request – event masked test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Accepting Connection Parameter Request – event masked test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -3978,7 +3968,6 @@ def ll_con_sla_bv_34_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connection Parameter Request – event masked test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Accepting Connection Parameter Request – event masked test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -4039,7 +4028,6 @@ def ll_con_sla_bv_40_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiate PHY Update Procedure test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Initiate PHY Update Procedure test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -4084,7 +4072,6 @@ def ll_con_sla_bv_42_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Responding to PHY Update Procedure test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Responding to PHY Update Procedure test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -4139,7 +4126,6 @@ def ll_con_sla_bv_78_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -4200,7 +4186,6 @@ def ll_con_sla_bv_81_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -4256,7 +4241,6 @@ def ll_con_sla_bi_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connection Parameter Request – Illegal Parameters test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Accepting Connection Parameter Request – Illegal Parameters test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -5636,7 +5620,6 @@ def ll_con_mas_bv_77_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -5737,7 +5720,6 @@ def ll_sec_adv_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Advertising with static address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Advertising with static address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -5895,7 +5877,6 @@ def ll_sec_adv_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Scannable Advertising, non-resolvable private address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Scannable Advertising, non-resolvable private address test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -5969,7 +5950,6 @@ def ll_sec_adv_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Scannable Advertising, resolvable private address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Scannable Advertising, resolvable private address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6020,7 +6000,6 @@ def ll_sec_adv_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6110,7 +6089,6 @@ def ll_sec_adv_bv_07_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising Local IRK, no peer IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising Local IRK, no peer IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6202,7 +6180,6 @@ def ll_sec_adv_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising Local IRK, peer IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising Local IRK, peer IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6284,7 +6261,6 @@ def ll_sec_adv_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising Local IRK, peer IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising Local IRK, peer IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6338,7 +6314,6 @@ def ll_sec_adv_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List test " + ("PASSED" if success else "FAILED"))
     return success
 
 """
@@ -6416,7 +6391,6 @@ def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Directed Connectable Advertising using local and remote IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Directed Connectable Advertising using local and remote IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6506,7 +6480,6 @@ def ll_sec_adv_bv_12_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6596,7 +6569,6 @@ def ll_sec_adv_bv_13_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6659,7 +6631,6 @@ def ll_sec_adv_bv_14_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6730,7 +6701,6 @@ def ll_sec_adv_bv_15_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6789,7 +6759,6 @@ def ll_sec_adv_bv_16_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6854,7 +6823,6 @@ def ll_sec_adv_bv_17_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6924,7 +6892,6 @@ def ll_sec_adv_bv_18_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -6993,7 +6960,6 @@ def ll_sec_adv_bv_19_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 
@@ -7059,7 +7025,6 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address test failed: %s" % str(e))
         success = False
 
-    trace.trace(2, "Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address test " + ("PASSED" if success else "FAILED"))
     return success
 
 _spec = {};
