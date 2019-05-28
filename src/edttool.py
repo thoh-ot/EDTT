@@ -61,7 +61,8 @@ def run_one_test(args, xtra_args, transport, trace, test_mod, test_spec):
                                 (test_spec.number_devices, transport.n_devices));
             result = test_mod.run_a_test(args, transport, trace, test_spec);
 
-            trace.trace(4, "");
+            trace.trace(2, test_spec.name + " " +
+                        ("PASSED" if result == 0 else "FAILED"));
 
             return result;
 

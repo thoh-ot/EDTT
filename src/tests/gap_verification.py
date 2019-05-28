@@ -49,7 +49,6 @@ def gap_disc_nonm_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-discoverable Mode Non-connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-discoverable Mode Non-connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -83,7 +82,6 @@ def gap_disc_nonm_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-discoverable Mode Undirected Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-discoverable Mode Undirected Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -116,7 +114,6 @@ def gap_disc_limm_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discoverable Mode Non-connectable Mode BR/EDR/LE test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discoverable Mode Non-connectable Mode BR/EDR/LE test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -149,7 +146,6 @@ def gap_disc_limm_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discoverable Mode Undirected Connectable Mode BR/EDR/LE test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discoverable Mode Undirected Connectable Mode BR/EDR/LE test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -183,7 +179,6 @@ def gap_disc_limm_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discoverable Mode Non-connectable Mode LE Only test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discoverable Mode Non-connectable Mode LE Only test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -216,7 +211,6 @@ def gap_disc_limm_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discoverable Mode Undirected Connectable Mode LE Only test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discoverable Mode Undirected Connectable Mode LE Only test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -249,7 +243,6 @@ def gap_disc_genm_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discoverable Mode Non-connectable Mode BR/EDR/LE test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discoverable Mode Non-connectable Mode BR/EDR/LE test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -283,7 +276,6 @@ def gap_disc_genm_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discoverable Mode Undirected Connectable Mode BR/EDR/LE test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discoverable Mode Undirected Connectable Mode BR/EDR/LE test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -316,7 +308,6 @@ def gap_disc_genm_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discoverable Mode Non-connectable Mode LE Only test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discoverable Mode Non-connectable Mode LE Only test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -350,7 +341,6 @@ def gap_disc_genm_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discoverable Mode Undirected Connectable Mode LE Only test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discoverable Mode Undirected Connectable Mode LE Only test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -382,7 +372,6 @@ def gap_disc_limp_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discovery Procedure Find Limited Discoverable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discovery Procedure Find Limited Discoverable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -414,7 +403,6 @@ def gap_disc_limp_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discovery Procedure Does not find General Discoverable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discovery Procedure Does not find General Discoverable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -447,7 +435,6 @@ def gap_disc_limp_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discovery Procedure Does not find Undirected Connectable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discovery Procedure Does not find Undirected Connectable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -481,7 +468,6 @@ def gap_disc_limp_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Limited Discovery Procedure Does not find Directed Connectable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Limited Discovery Procedure Does not find Directed Connectable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -512,7 +498,6 @@ def gap_disc_genp_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discovery Procedure Finding General Discoverable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discovery Procedure Finding General Discoverable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -543,7 +528,6 @@ def gap_disc_genp_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discovery Procedure Finding Limited Discoverable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discovery Procedure Finding Limited Discoverable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -576,7 +560,6 @@ def gap_disc_genp_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discovery Procedure Does not find Undirected Connectable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discovery Procedure Does not find Undirected Connectable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -610,7 +593,6 @@ def gap_disc_genp_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Discovery Procedure Does not find Directed Connectable Device test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Discovery Procedure Does not find Directed Connectable Device test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -661,7 +643,6 @@ def gap_disc_rpa_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Discovery Procedure Find Discoverable Device using Resolvable Private Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discovery Procedure Find Discoverable Device using Resolvable Private Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -693,7 +674,6 @@ def gap_conn_ncon_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -735,7 +715,6 @@ def gap_conn_ncon_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-Connectable Mode General Discoverable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-Connectable Mode General Discoverable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -777,7 +756,6 @@ def gap_conn_ncon_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-Connectable Mode Limited Discoverable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-Connectable Mode Limited Discoverable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -820,7 +798,6 @@ def gap_conn_dcon_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Directed Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Directed Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -868,7 +845,6 @@ def gap_conn_ucon_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Undirected Connectable Mode Non-Discoverable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Undirected Connectable Mode Non-Discoverable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -916,7 +892,6 @@ def gap_conn_ucon_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Undirected Connectable Mode General Discoverable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Undirected Connectable Mode General Discoverable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -964,7 +939,6 @@ def gap_conn_ucon_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Undirected Connectable Mode Limited Discoverable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Undirected Connectable Mode Limited Discoverable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1003,7 +977,6 @@ def gap_conn_acep_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Auto Connection Establishment Procedure Directed Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Auto Connection Establishment Procedure Directed Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1057,7 +1030,6 @@ def gap_conn_acep_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Auto Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Auto Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1111,7 +1083,6 @@ def gap_conn_acep_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Auto Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Auto Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1142,7 +1113,6 @@ def gap_conn_gcep_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Connection Establishment Procedure Directed Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Connection Establishment Procedure Directed Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1173,7 +1143,6 @@ def gap_conn_gcep_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Connection Establishment Procedure Undirected Connectable Mode test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Connection Establishment Procedure Undirected Connectable Mode test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1220,7 +1189,6 @@ def gap_conn_gcep_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Connection Establishment Procedure Directed Connectable Mode, Resolvable Private Address, Central Address Resolution test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1267,7 +1235,6 @@ def gap_conn_gcep_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "General Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "General Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1312,7 +1279,6 @@ def gap_adv_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Service UUID test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Service UUID test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1344,7 +1310,6 @@ def gap_adv_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Local Name test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Local Name test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1376,7 +1341,6 @@ def gap_adv_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Flags test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Flags test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1408,7 +1372,6 @@ def gap_adv_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Manufacturer Specific Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Manufacturer Specific Data test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1440,7 +1403,6 @@ def gap_adv_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - TX Power Level test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - TX Power Level test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1472,7 +1434,6 @@ def gap_adv_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Slave Connection Interval Range test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Slave Connection Interval Range test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1504,7 +1465,6 @@ def gap_adv_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Service  Solicitation test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Service  Solicitation test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1536,7 +1496,6 @@ def gap_adv_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Service Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Service Data test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1568,7 +1527,6 @@ def gap_adv_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Apperance test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Apperance test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1600,7 +1558,6 @@ def gap_adv_bv_12_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Public Target Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Public Target Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1632,7 +1589,6 @@ def gap_adv_bv_13_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Random Target Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Random Target Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1664,7 +1620,6 @@ def gap_adv_bv_14_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - Advertising Interval test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - Advertising Interval test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1696,7 +1651,6 @@ def gap_adv_bv_15_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - LE Bluetooth Device Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - LE Bluetooth Device Address test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1728,7 +1682,6 @@ def gap_adv_bv_16_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - LE Role test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - LE Role test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1760,7 +1713,6 @@ def gap_adv_bv_17_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "AD Type - URI test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "AD Type - URI test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1805,7 +1757,6 @@ def gap_conn_enc(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Testing encryption test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Testing encryption test " + ("PASSED" if success else "FAILED"));
     return success;
 
 _spec = {};

@@ -77,7 +77,6 @@ def ll_ddi_adv_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Non-Connectable Advertising Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Non-Connectable Advertising Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -113,7 +112,6 @@ def ll_ddi_adv_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Undirected Advertising Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Undirected Advertising Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -151,7 +149,6 @@ def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Advertising Data: Non-Connectable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Advertising Data: Non-Connectable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -188,7 +185,6 @@ def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Advertising Data: Undirected test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Advertising Data: Undirected test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -230,7 +226,6 @@ def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Scan Request: Undirected Connectable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Scan Request: Undirected Connectable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -290,7 +285,6 @@ def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connection Request test failed: %s" % str(e));
         success = False;
     
-    trace.trace(2, "Connection Request test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -342,7 +336,6 @@ def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Scan Request Connection Request test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Scan Request Connection Request test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -423,7 +416,6 @@ def ll_ddi_adv_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Scan Request Device Filtering test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Scan Request Device Filtering test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -522,7 +514,6 @@ def ll_ddi_adv_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connection Request Device Filtering test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Connection Request Device Filtering test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -573,7 +564,6 @@ def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Directed Advertising Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Directed Advertising Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -609,7 +599,6 @@ def ll_ddi_adv_bv_15_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Discoverable Advertising Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discoverable Advertising Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -647,7 +636,6 @@ def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Advertising Data: Discoverable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Advertising Data: Discoverable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -692,7 +680,6 @@ def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Scan Request: Discoverable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Scan Request: Discoverable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -743,7 +730,6 @@ def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Filtering: Discoverable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Device Filtering: Discoverable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -793,7 +779,6 @@ def ll_ddi_adv_bv_19_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Low Duty Cycle Directed Advertising Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Low Duty Cycle Directed Advertising Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -835,7 +820,6 @@ def ll_ddi_adv_bv_20_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Advertising Always Using the LE 1M PHY test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Advertising Always Using the LE 1M PHY test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -918,7 +902,6 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Extended Advertising, Legacy PDUs, Non-Connectable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Extended Advertising, Legacy PDUs, Non-Connectable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -960,7 +943,6 @@ def ll_ddi_scn_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Passive Scanning: Non Connectable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Passive Scanning: Non Connectable test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1008,7 +990,6 @@ def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Passive Scanning Device Filtering test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Passive Scanning Device Filtering test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1057,7 +1038,6 @@ def ll_ddi_scn_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Active Scanning test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Active Scanning test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1109,7 +1089,6 @@ def ll_ddi_scn_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Active Scanning Device Filtering test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Active Scanning Device Filtering test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1162,7 +1141,6 @@ def ll_ddi_scn_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Scanning For Advertiser Types test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Scanning For Advertiser Types test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1205,7 +1183,6 @@ def ll_ddi_scn_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Passive Scanning: Undirected Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Passive Scanning: Undirected Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1253,7 +1230,6 @@ def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Passive Scanning: Directed Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Passive Scanning: Directed Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1301,7 +1277,6 @@ def ll_ddi_scn_bv_12_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Passive Scanning: Discoverable Events test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Passive Scanning: Discoverable Events test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1348,7 +1323,6 @@ def ll_ddi_scn_bv_13_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Passive Scanning, Peer IRK test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Passive Scanning, Peer IRK test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1392,7 +1366,6 @@ def ll_ddi_scn_bv_14_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Passive Scanning: Directed Events to an address different from the scanner’s address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Passive Scanning: Directed Events to an address different from the scanner’s address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1444,7 +1417,6 @@ def ll_ddi_scn_bv_15_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Active Scanning, no Local IRK, no Peer IRK test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Active Scanning, no Local IRK, no Peer IRK test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1505,7 +1477,6 @@ def ll_ddi_scn_bv_16_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Active Scanning, Local IRK, no Peer IRK test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Active Scanning, Local IRK, no Peer IRK test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1557,7 +1528,6 @@ def ll_ddi_scn_bv_17_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Active Scanning, no Local IRK, Peer IRK test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Active Scanning, no Local IRK, Peer IRK test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1608,7 +1578,6 @@ def ll_ddi_scn_bv_18_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Active Scanning, Local IRK, Peer IRK test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Active Scanning, Local IRK, Peer IRK test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1651,7 +1620,6 @@ def ll_ddi_scn_bv_26_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Passive Scanning, Peer IRK, Ignore Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Passive Scanning, Peer IRK, Ignore Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1706,7 +1674,6 @@ def ll_ddi_scn_bv_28_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy – Passive Scanning, Peer IRK, Accept Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Device Privacy – Passive Scanning, Peer IRK, Accept Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1747,7 +1714,6 @@ def ll_con_adv_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connections test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Connections test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1790,7 +1756,6 @@ def ll_con_adv_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Directed Advertising Connection test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Directed Advertising Connection test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1852,7 +1817,6 @@ def ll_con_adv_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connections, Channel Selection Algorithm #2 test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Connections, Channel Selection Algorithm #2 test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1913,7 +1877,6 @@ def ll_con_adv_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Directed Advertising Connection, Channel Selection Algorithm #2 test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Directed Advertising Connection, Channel Selection Algorithm #2 test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1969,7 +1932,6 @@ def ll_con_ini_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connection Initiation test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Connection Initiation test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -1998,7 +1960,6 @@ def ll_con_ini_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connecting to Directed Advertising test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Connecting to Directed Advertising test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2053,7 +2014,6 @@ def ll_con_ini_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiation Device Filtering: Undirected test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiation Device Filtering: Undirected test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2108,7 +2068,6 @@ def ll_con_ini_bv_07_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiation Device Filtering: Directed test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiation Device Filtering: Directed test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2150,7 +2109,6 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2192,7 +2150,6 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2256,7 +2213,6 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using resolving list, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using resolving list, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2321,7 +2277,6 @@ def ll_con_ini_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2403,7 +2358,6 @@ def ll_con_ini_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2484,7 +2438,6 @@ def ll_con_ini_bv_12_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2548,7 +2501,6 @@ def ll_con_ini_bv_16_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connection Initiation, Channel Selection Algorithm #2 test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Connection Initiation, Channel Selection Algorithm #2 test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2612,7 +2564,6 @@ def ll_con_ini_bv_17_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Connecting to Directed Advertising, Channel Selection Algorithm #2 test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Connecting to Directed Advertising, Channel Selection Algorithm #2 test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2666,7 +2617,6 @@ def ll_con_ini_bv_18_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2717,7 +2667,6 @@ def ll_con_ini_bv_19_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2776,7 +2725,6 @@ def ll_con_ini_bv_20_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2834,7 +2782,6 @@ def ll_con_ini_bv_21_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2930,7 +2877,6 @@ def ll_con_sla_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave Sending Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave Sending Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -2987,7 +2933,6 @@ def ll_con_sla_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave Receiving Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave Receiving Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -3063,7 +3008,6 @@ def ll_con_sla_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave Sending and Receiving Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave Sending and Receiving Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -3113,7 +3057,6 @@ def ll_con_sla_bv_10_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Parameter Update test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Parameter Update test " + ("PASSED" if success else "FAILED"));
     return success
 
 
@@ -3149,7 +3092,6 @@ def ll_con_sla_bv_11_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave sending termination test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave sending termination test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -3326,7 +3268,6 @@ def ll_con_sla_bv_19_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave request version test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave request version test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -3376,7 +3317,6 @@ def ll_con_sla_bv_20_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Slave respond version test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Slave respond version test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4411,7 +4351,6 @@ def ll_con_mas_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Sending Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Sending Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4468,7 +4407,6 @@ def ll_con_mas_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Receiving Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Receiving Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4551,7 +4489,6 @@ def ll_con_mas_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Sending and Receiving Data test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Sending and Receiving Data test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4601,7 +4538,6 @@ def ll_con_mas_bv_07_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Requesting Parameter Update test failed: %s" % str(e));
         success = False;
     
-    trace.trace(2, "Requesting Parameter Update test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4636,7 +4572,6 @@ def ll_con_mas_bv_08_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Sending Termination test failed: %s" % str(e));
         success = False;
     
-    trace.trace(2, "Master Sending Termination test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4675,7 +4610,6 @@ def ll_con_mas_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Accepting Termination test failed: %s" % str(e));
         success = False;
     
-    trace.trace(2, "Master Accepting Termination test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4736,7 +4670,6 @@ def ll_con_mas_bv_13_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Feature Setup Request test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Feature Setup Request test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4787,7 +4720,6 @@ def ll_con_mas_bv_20_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Request Version test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Request Version test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4838,7 +4770,6 @@ def ll_con_mas_bv_21_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Respond Version test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Respond Version test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4890,7 +4821,6 @@ def ll_con_mas_bv_23_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Responding to Feature Exchange test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Responding to Feature Exchange test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4940,7 +4870,6 @@ def ll_con_mas_bv_24_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating Connection Parameter Request - Accept test failed: %s" % str(e));
         success = False;
     
-    trace.trace(2, "Initiating Connection Parameter Request - Accept test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -4994,7 +4923,6 @@ def ll_con_mas_bv_25_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating Connection Parameter Request - Reject test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiating Connection Parameter Request - Reject test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5077,7 +5005,6 @@ def ll_con_mas_bv_26_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating Connection Parameter Request - same procedure collision test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiating Connection Parameter Request - same procedure collision test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5147,7 +5074,6 @@ def ll_con_mas_bv_27_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating Connection Parameter Request - different procedure collision - channel map update test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiating Connection Parameter Request - different procedure collision - channel map update test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5197,7 +5123,6 @@ def ll_con_mas_bv_29_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating Connection Parameter Request - remote legacy host test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiating Connection Parameter Request - remote legacy host test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5252,7 +5177,6 @@ def ll_con_mas_bv_30_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connection Parameter Request - no Preferred Periodicity test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Connection Parameter Request - no Preferred Periodicity test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5313,7 +5237,6 @@ def ll_con_mas_bv_34_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Connection Parameter Request - event masked test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Connection Parameter Request - event masked test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5369,7 +5292,6 @@ def ll_con_mas_bv_35_c(transport, upperTester, lowerTester, trace):
         success = False;
 
 
-    trace.trace(2, "Accepting Connection Parameter Request - Host rejects test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5412,7 +5334,6 @@ def ll_con_mas_bv_41_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Initiating PHY Update Procedure test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Initiating PHY Update Procedure test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5463,7 +5384,6 @@ def ll_con_mas_bv_43_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Responding to PHY Update Procedure test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Responding to PHY Update Procedure test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5587,7 +5507,6 @@ def ll_con_mas_bv_74_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -5766,7 +5685,6 @@ def ll_con_mas_bi_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Accepting Parameter Connection Request - illegal parameters test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Accepting Parameter Connection Request - illegal parameters test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -5864,7 +5782,6 @@ def ll_sec_adv_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Privacy - Non Connectable Undirected Advertising, non-resolvable private address test failed: %s" % str(e));
         success = False
 
-    trace.trace(2, "Privacy - Non Connectable Undirected Advertising, non-resolvable private address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """
@@ -5934,7 +5851,6 @@ def ll_sec_adv_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Privacy - Non Connectable Undirected Advertising, Resolvable Private Address test failed: %s" % str(e));
         success = False
 
-    trace.trace(2, "Privacy - Non Connectable Undirected Advertising, Resolvable Private Address test " + ("PASSED" if success else "FAILED"));
     return success
 
 """

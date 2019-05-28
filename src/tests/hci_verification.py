@@ -238,7 +238,6 @@ def hci_gev_bv_01_c(transport, idx, trace):
         trace.trace(3, "Unsupported Commands on each supported controller test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Unsupported Commands on each supported controller test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -266,7 +265,6 @@ def hci_cfc_bv_02_c(transport, idx, trace):
         trace.trace(3, "Buffer Size Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Buffer Size Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -288,7 +286,6 @@ def hci_cin_bv_01_c(transport, idx, trace):
         trace.trace(3, "Read Local Supported Features Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Local Supported Features Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -310,7 +307,6 @@ def hci_cin_bv_03_c(transport, idx, trace):
         trace.trace(3, "Read Local Supported Commands Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Local Supported Commands Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -336,7 +332,6 @@ def hci_cin_bv_04_c(transport, idx, trace):
         trace.trace(3, "Read Local Version Information Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Local Version Information Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -389,7 +384,6 @@ def hci_cin_bv_06_c(transport, idx, trace):
         trace.trace(3, "White List Size test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "White List Size test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -410,7 +404,6 @@ def hci_cin_bv_09_c(transport, idx, trace):
         trace.trace(3, "Read LE Public Key Validation Feature Bit test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read LE Public Key Validation Feature Bit test " + ("PASSED" if success else "FAILED"));
     return success;
     
 """
@@ -430,7 +423,6 @@ def hci_cco_bv_07_c(transport, idx, trace):
         trace.trace(3, "BR/EDR Not Supported test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "BR/EDR Not Supported test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -486,7 +478,6 @@ def hci_cco_bv_09_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "LE Set Data Length test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Set Data Length test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -508,7 +499,6 @@ def hci_cco_bv_10_c(transport, idx, trace):
         trace.trace(3, "LE Read Suggested Default Data Length Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Suggested Default Data Length Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -542,7 +532,6 @@ def hci_cco_bv_11_c(transport, idx, trace):
         trace.trace(3, "LE Write Suggested Default Data Length Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Write Suggested Default Data Length Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -570,7 +559,6 @@ def hci_cco_bv_12_c(transport, idx, trace):
         trace.trace(3, "LE Remove Device From Resolving List Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Remove Device From Resolving List Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -598,7 +586,6 @@ def hci_cco_bv_13_c(transport, idx, trace):
         trace.trace(3, "LE Clear Resolving List Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Clear Resolving List Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -619,7 +606,6 @@ def hci_cco_bv_14_c(transport, idx, trace):
         trace.trace(3, "LE Read Resolving List Size Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Resolving List Size Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -639,7 +625,6 @@ def hci_cco_bv_15_c(transport, idx, trace):
         trace.trace(3, "LE Set Default PHY Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Set Default PHY Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -660,7 +645,6 @@ def hci_cco_bv_16_c(transport, idx, trace):
         trace.trace(3, "LE Read Periodic Advertiser List Size Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Periodic Advertiser List Size Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -716,7 +700,6 @@ def hci_cco_bv_17_c(transport, idx, trace):
         trace.trace(3, "LE Add/Remove/Clear Periodic Advertiser List Commands test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Add/Remove/Clear Periodic Advertiser List Commands test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -737,7 +720,6 @@ def hci_cco_bv_18_c(transport, idx, trace):
         trace.trace(3, "LE Read Transmit Power Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Transmit Power Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -771,7 +753,6 @@ def hci_ddi_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Set Advertising Enable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Set Advertising Enable test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -804,7 +785,6 @@ def hci_ddi_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Set Scan Enable test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Set Scan Enable test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -840,7 +820,6 @@ def hci_ddi_bi_02_c(transport, upperTester, trace):
         trace.trace(3, "Reject Invalid Advertising Parameters test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reject Invalid Advertising Parameters test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -912,7 +891,6 @@ def hci_hfc_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "LE Set Event Mask test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Set Event Mask test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -979,7 +957,6 @@ def hci_cm_bv_01_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "LE Read Peer Resolvable Address Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Peer Resolvable Address Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1046,7 +1023,6 @@ def hci_cm_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "LE Read Local Resolvable Address Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read Local Resolvable Address Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1081,7 +1057,6 @@ def hci_cm_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "LE Read PHY Command test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "LE Read PHY Command test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1123,7 +1098,6 @@ def hci_dsu_bv_02_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Reset in Advertising State test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reset in Advertising State test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1173,7 +1147,6 @@ def hci_dsu_bv_03_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Reset to Slave test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reset to Slave test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1215,7 +1188,6 @@ def hci_dsu_bv_04_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Reset in Scanning State test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reset in Scanning State test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1251,7 +1223,6 @@ def hci_dsu_bv_05_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Reset in Initiating State test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reset in Initiating State test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1284,7 +1255,6 @@ def hci_dsu_bv_06_c(transport, upperTester, lowerTester, trace):
         trace.trace(3, "Reset to Master test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Reset to Master test " + ("PASSED" if success else "FAILED"));
     return success;
 
 _spec = {};

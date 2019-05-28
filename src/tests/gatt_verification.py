@@ -403,7 +403,6 @@ def gap_gat_bv_01_c(transport, upperTester, trace):
         trace.trace(3, "GAP Mandatory Characteristics test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "GAP Mandatory Characteristics test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -436,7 +435,6 @@ def gap_gat_bv_02_c(transport, upperTester, trace):
         trace.trace(3, "GAP Peripheral Privacy Flag Characteristic test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "GAP Peripheral Privacy Flag Characteristic test " + ("PASSED" if success else "FAILED"));
 
     return success;
 
@@ -470,7 +468,6 @@ def gap_gat_bv_03_c(transport, upperTester, trace):
         trace.trace(3, "GAP Reconnection Address Characteristic test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "GAP Reconnection Address Characteristic test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -521,7 +518,6 @@ def gap_gat_bv_04_c(transport, upperTester, trace):
         trace.trace(3, "Peripheral Preferred Connection Parameters Characteristic test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Peripheral Preferred Connection Parameters Characteristic test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -570,7 +566,6 @@ def gap_gat_bv_05_c(transport, upperTester, trace):
         trace.trace(3, "Writable Device Name test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Writable Device Name test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -601,7 +596,6 @@ def gap_gat_bx_01_c(transport, upperTester, trace):
         trace.trace(3, "Discover All Services test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover All Services test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -635,7 +629,6 @@ def gap_idle_namp_bv_01_c(transport, upperTester, trace):
         trace.trace(3, "Name Discovery Procedure GATT Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Name Discovery Procedure GATT Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -665,7 +658,6 @@ def gatt_cl_gad_bv_01_c(transport, upperTester, trace):
         trace.trace(3, "Discover All Primary Services - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover All Primary Services - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -701,7 +693,6 @@ def gatt_cl_gad_bv_02_c(transport, upperTester, trace):
         trace.trace(3, "Discover Primary Services by Service UUID - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover Primary Services by Service UUID - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -733,7 +724,6 @@ def gatt_cl_gad_bv_03_c(transport, upperTester, trace):
         trace.trace(3, "Find Included Services - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Find Included Services - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -767,7 +757,6 @@ def gatt_cl_gad_bv_04_c(transport, upperTester, trace):
         trace.trace(3, "Discover All Characteristics of a Service - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover All Characteristics of a Service - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -801,7 +790,6 @@ def gatt_cl_gad_bv_05_c(transport, upperTester, trace):
         trace.trace(3, "Discover Characteristics by UUID - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover Characteristics by UUID - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -835,7 +823,6 @@ def gatt_cl_gad_bv_06_c(transport, upperTester, trace):
         trace.trace(3, "Discover All Characteristic Descriptors - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Discover All Characteristic Descriptors - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -875,7 +862,6 @@ def gatt_cl_gar_bv_01_c(transport, upperTester, trace):
         trace.trace(3, "Read Characteristic Value - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Characteristic Value - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -908,7 +894,6 @@ def gatt_cl_gar_bi_01_c(transport, upperTester, trace):
         trace.trace(3, "Read Characteristic Value - Invalid Handle test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Characteristic Value - Invalid Handle test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -939,7 +924,6 @@ def gatt_cl_gar_bi_02_c(transport, upperTester, trace):
         trace.trace(3, "Read Characteristic Value - Read Not Permitted test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Characteristic Value - Read Not Permitted test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -972,7 +956,6 @@ def gatt_cl_gar_bi_03_c(transport, upperTester, trace):
         trace.trace(3, "Read Characteristic Value - Insufficient Authorization test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Characteristic Value - Insufficient Authorization test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1008,7 +991,6 @@ def gatt_cl_gar_bi_04_c(transport, upperTester, trace):
         trace.trace(3, "Read Characteristic Value - Insufficient Authentication test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Characteristic Value - Insufficient Authentication test " + ("PASSED" if success else "FAILED"));
     return success;
 
 """
@@ -1044,7 +1026,6 @@ def gatt_cl_gar_bv_03_c(transport, upperTester, trace):
         trace.trace(3, "Read Using Characteristic UUID - by Client test failed: %s" % str(e));
         success = False;
 
-    trace.trace(2, "Read Using Characteristic UUID - by Client test " + ("PASSED" if success else "FAILED"));
     return success;
 
 _spec = {};
