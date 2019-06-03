@@ -932,7 +932,7 @@ def gap_conn_ucon_bv_03_c(transport, upperTester, lowerTester, trace):
                 connected = not initiator.disconnect(0x3E);
                 success = success and not connected;
 
-        if advertising:             
+        if advertising:
             advertiser.disable();
 
     except Exception as e: 
@@ -1236,6 +1236,294 @@ def gap_conn_gcep_bv_06_c(transport, upperTester, lowerTester, trace):
         success = False;
 
     return success;
+
+"""
+    GAP/CONN/CPUP/BV-01-C [Connection Parameter Update Procedure Valid Parameters Peripheral Initiator]
+"""
+def gap_conn_cpup_bv_01_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-01-C [Connection Parameter Update Procedure Valid Parameters Peripheral Initiator]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
+        advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, lowerTester, upperTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            """
+                Switch the roles, so that the upperTester initiates the Connection Parameter Update Procedure
+            """
+            initiator.switchRoles()
+            """
+                Setting new connection update parameters and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3000 
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+            """
+            success = success and initiator.acceptUpdate()
+            """
+                Both lower and upper Tester should receive a LE Connection Update Complete Event...
+            """
+            success = success and initiator.updated()
+
+            transport.wait(100)
+            initiator.resetRoles()
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Valid Parameters Peripheral Initiator test failed: %s" % str(e));
+        success = False
+
+    return success
+
+"""
+    GAP/CONN/CPUP/BV-02-C [Connection Parameter Update Procedure Valid Parameters Timeout Peripheral Initiator]
+"""
+def gap_conn_cpup_bv_02_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-02-C [Connection Parameter Update Procedure Valid Parameters Timeout Peripheral Initiator]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
+        advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, lowerTester, upperTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            """
+                Switch the roles, so that the upperTester initiates the Connection Parameter Update Procedure
+            """
+            initiator.switchRoles()
+            """
+                Setting new connection update parameters and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3000 
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Verify if initiator received an LE Connection Update Complete Event
+            """
+            transport.wait(200)
+            success = success and not initiator.updated()
+            """
+                IUT ignores error case and continues normal operation
+            """
+            initiator.resetRoles()
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Valid Parameters Timeout Peripheral Initiator test failed: %s" % str(e));
+        success = False
+
+    return success
+
+"""
+    GAP/CONN/CPUP/BV-03-C [Connection Parameter Update Procedure Invalid Parameters Peripheral Initiator]
+"""
+def gap_conn_cpup_bv_03_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-03-C [Connection Parameter Update Procedure Invalid Parameters Peripheral Initiator]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
+        advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, lowerTester, upperTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            initiator.switchRoles()
+            """
+                Setting invalid connection update parameters (timeout > max_timeout) and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3300 
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Try to accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+            """
+            success = success and not initiator.acceptUpdate()
+            """
+                The tester should not receive any LE Connection Update Complete Event...
+            """
+            success = success and not initiator.updated()
+            """
+                Close connection
+            """
+            initiator.resetRoles()
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Invalid Parameters Peripheral Initiator test failed: %s" % str(e));
+        success = False
+
+    return success
+
+"""
+    GAP/CONN/CPUP/BV-04-C [Connection Parameter Update Procedure Valid Parameters Central Responder]
+"""
+def gap_conn_cpup_bv_04_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-04-C [Connection Parameter Update Procedure Valid Parameters Central Responder]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
+        advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, upperTester, lowerTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            initiator.switchRoles()
+            """
+                Setting invalid connection update parameters (timeout > max_timeout) and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3000
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Try to accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+            """
+            success = success and initiator.acceptUpdate()
+            """
+                The testers should receive a Connection Update Complete Event...
+            """
+            success = success and initiator.updated()
+            """
+                Close connection
+            """
+            initiator.resetRoles()
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Valid Parameters Central Responder test failed: %s" % str(e));
+        success = False
+
+    return success
+
+"""
+    GAP/CONN/CPUP/BV-05-C [Connection Parameter Update Procedure Invalid Parameters Central Responder]
+"""
+def gap_conn_cpup_bv_05_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-05-C [Connection Parameter Update Procedure Invalid Parameters Central Responder]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
+        advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, upperTester, lowerTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            initiator.switchRoles()
+            """
+                Setting invalid connection update parameters (timeout > max_timeout) and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3300 
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+            """
+            success = success and not initiator.acceptUpdate()
+            """
+                The tester should not receive any LE Connection Update Complete Event...
+            """
+            success = success and not initiator.updated()
+            """
+                Close connection
+            """
+            initiator.resetRoles()
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Invalid Parameters Central Responder test failed: %s" % str(e));
+        success = False
+
+    return success
+
+"""
+    GAP/CONN/CPUP/BV-06-C [Connection Parameter Update Procedure Valid Parameters Central Initiator]
+"""
+def gap_conn_cpup_bv_06_c(transport, upperTester, lowerTester, trace):
+    trace.trace(2, "GAP/CONN/CPUP/BV-06-C [Connection Parameter Update Procedure Valid Parameters Central Initiator]")
+
+    try:
+        ownAddress = Address( ExtendedAddressType.PUBLIC )
+        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
+        advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
+        initiator = Initiator(transport, upperTester, lowerTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ))
+ 
+        success = advertising = advertiser.enable()
+        connected = initiator.connect()
+        success = success and connected
+
+        if connected:
+            transport.wait(100)
+            """
+                Setting invalid connection update parameters (timeout > max_timeout) and send a LL_CONNECTION_PARAM_REQ
+            """
+            interval = 30
+            timeout = 3000 
+            success = success and initiator.update(interval, interval, initiator.latency, timeout)
+            """
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+            """
+            success = success and initiator.acceptUpdate()
+            """
+                The testers should receive LE Connection Update Complete Events...
+            """
+            success = success and initiator.updated()
+            """
+                Close connection
+            """
+            disconnected = initiator.disconnect(0x3E)
+            success = success and disconnected
+        else:
+            advertiser.disable()
+
+    except Exception as e: 
+        trace.trace(3, "Connection Parameter Update Procedure Valid Parameters Central Initiator test failed: %s" % str(e));
+        success = False
+
+    return success
 
 """
     GAP/ADV/BV-01-C [AD Type - Service UUID]
@@ -1856,6 +2144,30 @@ _spec["GAP/CONN/GCEP/BV-06-C"] = \
     TestSpec(name = "GAP/CONN/GCEP/BV-06-C", number_devices = 2,
              description = "# [General Connection Establishment Procedure Undirected Connectable Mode, Resolvable Private Address]",
              test_private = gap_conn_gcep_bv_06_c);
+_spec["GAP/CONN/CPUP/BV-01-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-01-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Valid Parameters Peripheral Initiator]",
+             test_private = gap_conn_cpup_bv_01_c);
+_spec["GAP/CONN/CPUP/BV-02-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-02-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Valid Parameters Timeout Peripheral Initiator]",
+             test_private = gap_conn_cpup_bv_02_c);
+_spec["GAP/CONN/CPUP/BV-03-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-03-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Invalid Parameters Peripheral Initiator]",
+             test_private = gap_conn_cpup_bv_03_c);
+_spec["GAP/CONN/CPUP/BV-04-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-04-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Valid Parameters Central Responder]",
+             test_private = gap_conn_cpup_bv_04_c);
+_spec["GAP/CONN/CPUP/BV-05-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-05-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Invalid Parameters Central Responder]",
+             test_private = gap_conn_cpup_bv_05_c);
+_spec["GAP/CONN/CPUP/BV-06-C"] = \
+    TestSpec(name = "GAP/CONN/CPUP/BV-06-C", number_devices = 2,
+             description = "# [Connection Parameter Update Procedure Invalid Parameters Central Initiator]",
+             test_private = gap_conn_cpup_bv_06_c);
 _spec["GAP/CONN/NCON/BV-01-C"] = \
     TestSpec(name = "GAP/CONN/NCON/BV-01-C", number_devices = 2,
              description = "# [Non-Connectable Mode]",
