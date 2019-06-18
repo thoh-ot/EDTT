@@ -212,6 +212,12 @@ class Commands(IntEnum):
     CMD_LE_DATA_WRITE_RSP                                         = 206
     CMD_LE_DATA_READ_REQ                                          = 207
     CMD_LE_DATA_READ_RSP                                          = 208
+    CMD_GATT_SERVICE_SET_REQ                                      = 209
+    CMD_GATT_SERVICE_SET_RSP                                      = 210
+    CMD_GATT_SERVICE_NOTIFY_REQ                                   = 211
+    CMD_GATT_SERVICE_NOTIFY_RSP                                   = 212
+    CMD_GATT_SERVICE_INDICATE_REQ                                 = 213
+    CMD_GATT_SERVICE_INDICATE_RSP                                 = 214
 
 class HCICommands(IntEnum):
     BT_HCI_OP_INQUIRY                       = 0x401
@@ -2944,3 +2950,67 @@ def le_data_read(transport, idx, to):
     handle &= 0x0fff;
     
     return time, handle, PbFlags, BcFlags, data;
+
+"""
+    Switch GATT Service Set
+"""
+def switch_gatt_service_set(transport, idx, serviceSet, to):
+    
+    cmd = struct.pack('<HHB', Commands.CMD_GATT_SERVICE_SET_REQ, 1, serviceSet);
+    transport.send(idx, cmd);
+    
+    packet = transport.recv(idx, 4, to);
+    
+    if ( 4 != len(packet) ):
+        raise Exception("Switch GATT Service Set command failed: Response too short (Expected %i bytes got %i bytes)" % (4, len(packet)));
+    
+    RespCmd, RespLen = struct.unpack('<HH', packet);
+    
+    if ( RespCmd != Commands.CMD_GATT_SERVICE_SET_RSP ):
+        raise Exception("Switch GATT Service Set command failed: Inappropriate command response received");
+    
+    if ( RespLen != 0 ):
+        raise Exception("Switch GATT Service Set command failed: Response length field corrupted (%i)" % RespLen);
+
+"""
+    Invoke GATT Service Set Notifications
+"""
+def gatt_service_notify(transport, idx, to):
+    
+    cmd = struct.pack('<HH', Commands.CMD_GATT_SERVICE_NOTIFY_REQ, 0);
+    transport.send(idx, cmd);
+    
+    packet = transport.recv(idx, 4, to);
+    
+    if ( 4 != len(packet) ):
+        raise Exception("Invoke GATT Service Set Notifications command failed: Response too short (Expected %i bytes got %i bytes)" % (4, len(packet)));
+    
+    RespCmd, RespLen = struct.unpack('<HH', packet);
+    
+    if ( RespCmd != Commands.CMD_GATT_SERVICE_NOTIFY_RSP ):
+        raise Exception("Invoke GATT Service Set Notifications command failed: Inappropriate command response received");
+    
+    if ( RespLen != 0 ):
+        raise Exception("Invoke GATT Service Set Notifications command failed: Response length field corrupted (%i)" % RespLen);
+
+"""
+    Invoke GATT Service Set Indications
+"""
+def gatt_service_indicate(transport, idx, to):
+    
+    cmd = struct.pack('<HH', Commands.CMD_GATT_SERVICE_INDICATE_REQ, 0);
+    transport.send(idx, cmd);
+    
+    packet = transport.recv(idx, 4, to);
+    
+    if ( 4 != len(packet) ):
+        raise Exception("Invoke GATT Service Set Indications command failed: Response too short (Expected %i bytes got %i bytes)" % (4, len(packet)));
+    
+    RespCmd, RespLen = struct.unpack('<HH', packet);
+    
+    if ( RespCmd != Commands.CMD_GATT_SERVICE_INDICATE_RSP ):
+        raise Exception("Invoke GATT Service Set Indications command failed: Inappropriate command response received");
+    
+    if ( RespLen != 0 ):
+        raise Exception("Invoke GATT Service Set Indications command failed: Response length field corrupted (%i)" % RespLen);
+
