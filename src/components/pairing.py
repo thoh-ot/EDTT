@@ -487,7 +487,7 @@ class Pairing:
     """
         Distribute Initiators keys...
         
-            LTK, EDIV, Rand and IRK are send to the peer.
+            LTK, EDIV, Rand, IRK, Address and Address Type are send to the peer.
     """
     def __sendInitiatorKeys(self, ltk, ediv, rand, irk):
         smpData = SMPData();
@@ -500,6 +500,10 @@ class Pairing:
             if not success:
                 break;
             txData = smpData.encode( SMPOpcode.SMP_IDENTITY_INFORMATION, irk );
+            success = self.__request( self.initiator.initiator, txData );
+            if not success:
+                break;
+            txData = smpData.encode( SMPOpcode.SMP_IDENTITY_ADDRESS_INFORMATION, self.initiator.initiatorAddress.type, toNumber( self.initiator.initiatorAddress.address ) );
             success = self.__request( self.initiator.initiator, txData );
             break;
         return success;
@@ -536,7 +540,7 @@ class Pairing:
     def __recvResponderKeys(self):
         smpData = SMPData();
 
-        LTKs = EDIVs = RANDs = IRKs = address = addressType = 0;
+        LTKs, EDIVs, RANDs, IRKs, address, addressType = 0, 0, 0, 0, 0, 0;
    
         mask  = (1<<SMPOpcode.SMP_ENCRYPTION_INFORMATION) | (1<<SMPOpcode.SMP_MASTER_IDENTIFICATION);
         mask |= (1<<SMPOpcode.SMP_IDENTITY_INFORMATION) | (1<<SMPOpcode.SMP_IDENTITY_ADDRESS_INFORMATION);
@@ -580,9 +584,10 @@ class Pairing:
     def __recvInitiatorKeys(self):
         smpData = SMPData();
 
-        LTKm = EDIVm = RANDm = IRKm = 0;
+        LTKm, EDIVm, RANDm, IRKm, address, addressType = 0, 0, 0, 0, 0, 0;
    
-        mask  = (1<<SMPOpcode.SMP_ENCRYPTION_INFORMATION) | (1<<SMPOpcode.SMP_MASTER_IDENTIFICATION) | (1<<SMPOpcode.SMP_IDENTITY_INFORMATION);
+        mask  = (1<<SMPOpcode.SMP_ENCRYPTION_INFORMATION) | (1<<SMPOpcode.SMP_MASTER_IDENTIFICATION);
+        mask |= (1<<SMPOpcode.SMP_IDENTITY_INFORMATION) | (1<<SMPOpcode.SMP_IDENTITY_ADDRESS_INFORMATION);
         recv = 0;
         success = True;
 
@@ -604,12 +609,16 @@ class Pairing:
             elif reply["opcode"] == SMPOpcode.SMP_IDENTITY_INFORMATION:
                success = True;
                IRKm = reply["irk"];
+            elif reply["opcode"] == SMPOpcode.SMP_IDENTITY_ADDRESS_INFORMATION:
+               success = True;
+               address = reply["address"];
+               addressType = reply["type"];
             else:
                success = False;
         
             if not success:
                 break;
-        return success, LTKm, EDIVm, RANDm, IRKm;
+        return success, LTKm, EDIVm, RANDm, IRKm, address, addressType;
 
     """
         Establish an encrypted link between parties in a connection.
@@ -678,7 +687,7 @@ class Pairing:
                 break;
 
             if not self.initiator.peer is None:
-                success, LTKm, EDIVm, RANDm, IRKm = self.__recvInitiatorKeys( );
+                success, LTKm, EDIVm, RANDm, IRKm, address, addressType = self.__recvInitiatorKeys( );
                 if not success:
                     break;
             break;
