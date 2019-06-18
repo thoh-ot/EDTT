@@ -73,12 +73,11 @@ class Initiator:
         success = has_event(self.transport, idx, timeout); 
         if success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
-            success = (event == Events.BT_HCI_EVT_LE_META_EVENT) and ((subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE));
+            success = (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE);
             showEvent(event, eventData, self.trace);
             if success:
                 self.status, handle, role, addressType, address, localRPA, peerRPA, interval = connectionComplete(eventData)[:8];
                 success = (self.status == 0);
-
         return success, handle, role, localRPA, interval;
 
     """
@@ -109,7 +108,7 @@ class Initiator:
         success = has_event(self.transport, idx, timeout);
         if success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
-            success = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_PHY_UPDATE_COMPLETE);
+            success = subEvent == MetaEvents.BT_HCI_EVT_LE_PHY_UPDATE_COMPLETE;
             showEvent(event, eventData, self.trace);
             if success:
                 self.status, handle, txPhys, rxPhys = physicalUpdated(eventData);
@@ -127,7 +126,7 @@ class Initiator:
         success = has_event(self.transport, idx, timeout); 
         if success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
-            success = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ);
+            success = subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ;
             showEvent(event, eventData, self.trace);
             if success:
                 handle, minInterval, maxInterval, latency, supervisionTimeout = remoteConnectionParameterRequest(eventData);
@@ -176,11 +175,19 @@ class Initiator:
 
         try:
             disconnect(self.transport, self.initiator, self.handles[0], reason, 100);
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.initiator, 100);
-            self.status = ord(eventData[0]);
-            success = (event == Events.BT_HCI_EVT_CMD_STATUS) and (self.status == 0);
-            self.trace.trace(6, "Disconnect Command returns status: 0x%02X" % self.status);
-            showEvent(event, eventData, self.trace);
+            more = has_event(self.transport, self.initiator, 100);
+            while more:
+                eventTime, event, subEvent, eventData = get_event(self.transport, self.initiator, 100);
+                if event == Events.BT_HCI_EVT_CMD_STATUS:
+                    status, packets, opcode = struct.unpack('<BBH', eventData);
+                    if opcode == HCICommands.BT_HCI_OP_DISCONNECT:
+                        self.status = status;
+                        self.trace.trace(6, "Disconnect Command returns status: 0x%02X" % self.status);
+                        success = self.status == 0;
+                        break; 
+                showEvent(event, eventData, self.trace);
+                more = has_event(self.transport, self.initiator, 100);
+
         except Exception as e: 
             self.trace.trace(3, "Disconnect Command failed: %s" % str(e));
             success = False;
@@ -259,7 +266,7 @@ class Initiator:
             """
                 Check for LE Connection Complete Event | LE Enhanced Connection Complete Event in initiator...
             """
-            initiatorConnected, handle, role, localRPA, interval = self.__hasConnectionCompleteEvent(self.initiator, 200);
+            initiatorConnected, handle, role, localRPA, interval = self.__hasConnectionCompleteEvent(self.initiator, 300);
             if initiatorConnected:
                 self.handles[0] = handle; self.prevInterval = interval;
                 self.RPAs[0] = localRPA[ : ];
