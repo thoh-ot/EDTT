@@ -26,7 +26,16 @@ class ATTPermission(IntEnum):
     ATT_PERM_WRITE_PREPARED              =  64
     ATT_PERM_READ_AUTHOR                 = 128
     ATT_PERM_WRITE_AUTHOR                = 256
+    ATT_PERM_ANY_READ                    = ATT_PERM_READ | ATT_PERM_READ_ENCRYPT | ATT_PERM_READ_AUTHEN | ATT_PERM_READ_AUTHOR
+    ATT_PERM_ANY_WRITE                   = ATT_PERM_WRITE | ATT_PERM_WRITE_ENCRYPT | ATT_PERM_WRITE_AUTHEN | ATT_PERM_WRITE_PREPARED | ATT_PERM_WRITE_AUTHOR
 
+#
+# The Opcode field has the following bits:
+#    Bits:
+#     0-5: Method
+#       6: Command Flag (64)
+#       7: Authentication Signature Flag (128)
+#
 class ATTOpcode(IntEnum):
     ATT_ERROR_RESPONSE                   =   1 # Request Opcode in Error, Attribute Handle In Error, Error Code
     ATT_EXCH_MTU_REQUEST                 =   2 # Client Rx MTU
@@ -54,8 +63,10 @@ class ATTOpcode(IntEnum):
     ATT_HANDLE_VALUE_NOTIFICATION        =  27 # Attribute Handle, Attribute Value
     ATT_HANDLE_VALUE_INDICATION          =  29 # Attribute Handle, Attribute Value
     ATT_HANDLE_VALUE_CONFIRMATION        =  30 # -
-    ATT_WRITE_COMMAND                    =  82 # Attribute Handle, Attribute Value
-    ATT_SIGNED_WRITE_COMMAND             = 210 # Attribute Handle, Attribute Value, Authentication Signature
+    ATT_INVALID_REQUEST                  =  31 # -
+    ATT_WRITE_COMMAND                    =  82 # Attribute Handle, Attribute Value (64+18)
+    ATT_INVALID_COMMAND                  =  95 # -
+    ATT_SIGNED_WRITE_COMMAND             = 210 # Attribute Handle, Attribute Value, Authentication Signature (128+64+18)
 
 class ATTError(IntEnum):
     ATT_ERROR_INVALID_HANDLE                       = 0x01 # The attribute handle given was not valid on this server.
@@ -131,7 +142,7 @@ class ATTData:
       # 
         elif ( opcode == ATTOpcode.ATT_READ_MULTIPLE_REQUEST ):
             self.data = [ opcode ];
-            for arg in args:
+            for arg in args[0]:
                 self.data += toArray( arg, 2 );
       #
       # encode ATT_READ_BY_GROUP_TYPE_REQUEST, <start_handle>, <end_handle>, <attribute_group_type>
@@ -181,6 +192,13 @@ class ATTData:
         elif ( opcode == ATTOpcode.ATT_SIGNED_WRITE_COMMAND ):
             self.data = [ opcode ] + toArray( args[0], 2 ) + args[2:] + toArray( args[1], 12 );
       #
+      # encode Illegal command...
+      #
+        else:
+            self.data = [ opcode ];
+            for arg in args:
+                self.data += arg;
+      #
       # The first two octets in the L2CAP PDU contains the length of the entire L2CAP PDU in octets, excluding the Length and CID fields.
       #
         if len(self.data) > 0:
@@ -200,7 +218,7 @@ class ATTData:
       #
         if   ( opcode == ATTOpcode.ATT_ERROR_RESPONSE ):
             result["request opcode"] = ATTOpcode(data[5]);
-            result["handle"] = toNumber( data[6:8] );
+            result["handle"] = [ toNumber( data[6:8] ) ];
             result["error"] = ATTError(data[8]);
       #
       # decode ATT_EXCH_MTU_RESPONSE: <mtu>
@@ -331,7 +349,7 @@ class ATTData:
         
     def __hexByteArray(self, start, end):
         result = '';
-        for n in range(start, end):
+        for n in range(start, min(len(self.data), end)):
             if len(result) > 0:
                 result += ' ';
             result += '%02X' % self.data[n];
@@ -407,7 +425,7 @@ class ATTData:
         elif ( opcode == ATTOpcode.ATT_READ_BY_TYPE_REQUEST ):
             result += ' start=0x%04X end=0x%04X' % (toNumber(self.data[5:7]), toNumber(self.data[7:9]));
             if size > 7:
-                result += ' group type=%s' % uuid(toNumber(self.data[9:25]));
+                result += ' group type=%s' % self.uuid(toNumber(self.data[9:25]));
             else:
                 result += ' group type=%04X' % toNumber(self.data[9:11]);
       #
@@ -489,8 +507,8 @@ class ATTData:
       # ATT_WRITE_RESPONSE: 
       #       where 
       #
-      #  elif ( opcode == ATTOpcode.ATT_WRITE_RESPONSE ):
-
+        elif ( opcode == ATTOpcode.ATT_WRITE_RESPONSE ):
+            pass;
       #
       # ATT_PREPARE_WRITE_REQUEST: <attribute_handle>, <value_offset>, <values>...
       #       where <attribute_handle> 2 octets; <value_offset> 2 octets; <values> 1 octet each
@@ -513,8 +531,8 @@ class ATTData:
       # ATT_EXECUTE_WRITE_RESPONSE: 
       #       where 
       #
-      #  elif ( opcode == ATTOpcode.ATT_EXECUTE_WRITE_RESPONSE ):
-
+        elif ( opcode == ATTOpcode.ATT_EXECUTE_WRITE_RESPONSE ):
+            pass;
       #
       # ATT_HANDLE_VALUE_NOTIFICATION: <handle>, <value>...
       #       where <handle> 2 octets; <value> 1 octet each
@@ -530,8 +548,8 @@ class ATTData:
       #
       # ATT_HANDLE_VALUE_CONFIRMATION:
       # 
-      # elif ( opcode == ATTOpcode.ATT_HANDLE_VALUE_CONFIRMATION ):
-
+        elif ( opcode == ATTOpcode.ATT_HANDLE_VALUE_CONFIRMATION ):
+            pass;
       #
       # ATT_WRITE_COMMAND: <attribute_handle>, <values>...
       #       where <attribute_handle> 2 octets; <values> 1 octet each
@@ -544,6 +562,16 @@ class ATTData:
       # 
         elif ( opcode == ATTOpcode.ATT_SIGNED_WRITE_COMMAND ):
             result += ' handle=0x%04X signature=0x%024X values: %s' % (toNumber(self.data[5:7]), toNumber(self.data[7:19]), self.__hexByteArray(19, size+4));
+      #
+      # ATT_INVALID_REQUEST:
+      # 
+        elif ( opcode == ATTOpcode.ATT_INVALID_REQUEST ):
+            result += ' ' + self.__hexByteArray(5, size+4);
+      #
+      # ATT_INVALID_COMMAND:
+      # 
+        elif ( opcode == ATTOpcode.ATT_INVALID_COMMAND ):
+            result += ' ' + self.__hexByteArray(5, size+4);
 
         return result;
 
@@ -582,6 +610,10 @@ class ATTData:
     def permission(self, data):
         permissionTexts = [ 'READ', 'WRITE', 'READ ENCRYPTED', 'WRITE ENCRYPTED', 'READ AUTHENTICATED', 'WRITE AUTHENTICATED', 'WRITE PREPARED', 'READ AUTHORIZED', 'WRITE AUTHORIZED' ];
         return self.__formatEnumSet(data, permissionTexts);
+
+    def isPermissionError(self, code):
+        permissionErrors = [ ATTError.ATT_ERROR_READ_NOT_PERMITTED, ATTError.ATT_ERROR_INSUFFICIENT_AUTHENTICATION, ATTError.ATT_ERROR_INSUFFICIENT_AUTHORIZATION, ATTError.ATT_ERROR_INSUFFICIENT_ENCRYPTION_KEY_SIZE, ATTError.ATT_ERROR_INSUFFICIENT_ENCRYPTION ];
+        return code in permissionErrors;
 
     def error(self, code):
         errorTexts = {
