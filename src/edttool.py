@@ -52,19 +52,17 @@ def init_transport(transport, xtra_args, trace):
     transport.connect();
     return transport;
 
-def run_one_test(args, xtra_args, transport, trace, test_mod, test_spec):
-            trace.trace(4, test_spec);
-            trace.trace(4, "");
-            if test_spec.number_devices > transport.n_devices:
-                raise Exception("This test needs %i connected devices but you only "
-                                "connected to %i"%
-                                (test_spec.number_devices, transport.n_devices));
-            result = test_mod.run_a_test(args, transport, trace, test_spec);
+def run_one_test(args, xtra_args, transport, trace, test_mod, test_spec, nameLen):
+    trace.trace(4, test_spec);
+    trace.trace(4, "");
+    if test_spec.number_devices > transport.n_devices:
+        raise Exception("This test needs %i connected devices but you only connected to %i" %
+                        (test_spec.number_devices, transport.n_devices));
+    
+    result = test_mod.run_a_test(args, transport, trace, test_spec);
+    trace.trace(2, "%-*s %s %s" % (nameLen, test_spec.name, test_spec.description[1:], ("PASSED" if result == 0 else "FAILED")));
 
-            trace.trace(2, test_spec.name + " " +
-                        ("PASSED" if result == 0 else "FAILED"));
-
-            return result;
+    return result;
 
 # Attempt to load and run the tests
 def run_tests(args, xtra_args, transport, trace):
@@ -73,6 +71,7 @@ def run_tests(args, xtra_args, transport, trace):
 
     test_mod = try_to_import(args.test, "test", "tests.");
     test_specs = test_mod.get_tests_specs();
+    nameLen = max([ len(test_specs[key].name) for key in test_specs ]); 
 
     t = "all" if args.case is None else args.case
 
@@ -82,12 +81,12 @@ def run_tests(args, xtra_args, transport, trace):
             random.shuffle(tests_list)
 
         for _,test_spec in tests_list:
-            result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec);
+            result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec, nameLen);
             passed += 1 if result == 0 else 0;
             total += 1;
 
     elif t in test_specs:
-        result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t]);
+        result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
         passed += 1 if result == 0 else 0;
         total += 1;
 
@@ -98,7 +97,7 @@ def run_tests(args, xtra_args, transport, trace):
             if (t[0] == "#"): #Skip commented lines
                 continue
             if t in test_specs:
-                result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t]);
+                result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
                 passed += 1 if result == 0 else 0;
                 total += 1;
             else:
