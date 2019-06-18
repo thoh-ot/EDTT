@@ -17,7 +17,7 @@
 			</Service>
 			<Service type="Primary Service" uuid="1800" name="Generic Access Profile" handle="9">
 				<Characteristics>
-					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="2" permissions="1">Test Database</Characteristic>
+					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="10" permissions="9">Test Database</Characteristic>
 					<Characteristic uuid="2A01" name="Appearance" handle="12" properties="2" permissions="1">41 03</Characteristic>
 					<Characteristic uuid="2A04" name="Peripheral Preferred Connection Parameters" handle="14" properties="2" permissions="1">18 00 28 00 00 00 2A 00</Characteristic>
 				</Characteristics>
@@ -41,7 +41,7 @@
 			</Service>
 			<Service type="Primary Service" uuid="1800" name="Generic Access Profile" handle="9">
 				<Characteristics>
-					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="2" permissions="1">Test Database</Characteristic>
+					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="10" permissions="9">Test Database</Characteristic>
 					<Characteristic uuid="2A01" name="Appearance" handle="12" properties="2" permissions="1">41 03</Characteristic>
 					<Characteristic uuid="2A04" name="Peripheral Preferred Connection Parameters" handle="14" properties="2" permissions="1">18 00 28 00 00 00 2A 00</Characteristic>
 				</Characteristics>
@@ -52,7 +52,7 @@
 				</Includes>
 				<Characteristics>
 					<Characteristic uuid="B00C" name="Value V12" handle="18" properties="2" permissions="16">0C</Characteristic>
-					<Characteristic uuid="0000B00B000000000123456789ABCDEF" name="Value V11 (128-bit UUID)" handle="20" properties="2" permissions="16">0B</Characteristic>
+					<Characteristic uuid="0000B00B000000000123456789ABCDEF" name="Value V11 (128-bit UUID)" handle="20" properties="2" permissions="128">0B</Characteristic>
 				</Characteristics>
 			</Service>
 			<Service type="Primary Service" uuid="A00A" name="Service A" handle="32">
@@ -83,7 +83,7 @@
 			</Service>
 			<Service type="Primary Service" uuid="A00B" name="Service B.1" handle="96">
 				<Characteristics>
-					<Characteristic uuid="B004" name="Value V4" handle="97" properties="10" permissions="18">04</Characteristic>
+					<Characteristic uuid="B004" name="Value V4" handle="97" properties="10" permissions="33">04</Characteristic>
 					<Characteristic uuid="B004" name="Value V4" handle="99" properties="10" permissions="3">
 						04
 						<Descriptors>
@@ -106,11 +106,11 @@
 			</Service>
 			<Service type="Primary Service" uuid="A00B" name="Service B.2" handle="112">
 				<Characteristics>
-					<Characteristic uuid="B005" name="Value V5" handle="113" properties="138" permissions="18">
+					<Characteristic uuid="B005" name="Value V5" handle="113" properties="138" permissions="257">
 						05
 						<Descriptors>
 							<Descriptor uuid="2900" name="Characteristic Extended Properties" handle="115" permissions="1">03 00</Descriptor>
-							<Descriptor uuid="2901" name="Characteristic User Description" handle="116" permissions="3">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
+							<Descriptor uuid="2901" name="Characteristic User Description" handle="116" permissions="1">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
 							<Descriptor uuid="2904" name="Characteristic Format" handle="117" permissions="1">04 00 01 30 01 11 31</Descriptor>
 							<Descriptor uuid="0000D5D4000000000123456789ABCDEF" name="Descriptor V5D4 (128-bit UUID)" handle="118" permissions="1">44</Descriptor>
 						</Descriptors>
@@ -119,12 +119,12 @@
 			</Service>
 			<Service type="Primary Service" uuid="A00B" name="Service B.5" handle="128">
 				<Characteristics>
-					<Characteristic uuid="B008" name="Value V8" handle="129" properties="10" permissions="6">
+					<Characteristic uuid="B008" name="Value V8" handle="129" properties="10" permissions="9">
 						08
 						<Descriptors>
-							<Descriptor uuid="B015" name="Descriptor V8D1" handle="131" permissions="33">01</Descriptor>
-							<Descriptor uuid="B016" name="Descriptor V8D2" handle="132" permissions="33">02</Descriptor>
-							<Descriptor uuid="B017" name="Descriptor V8D3" handle="133" permissions="9">03</Descriptor>
+							<Descriptor uuid="B015" name="Descriptor V8D1" handle="131" permissions="48">01</Descriptor>
+							<Descriptor uuid="B016" name="Descriptor V8D2" handle="132" permissions="384">02</Descriptor>
+							<Descriptor uuid="B017" name="Descriptor V8D3" handle="133" permissions="12">03</Descriptor>
 						</Descriptors>
 					</Characteristic>
 				</Characteristics>
@@ -218,22 +218,22 @@
 							<Descriptor uuid="B014" name="Long descriptor V2D3" handle="212" permissions="3">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33 44 55</Descriptor>
 						</Descriptors>
 					</Characteristic>
-					<Characteristic uuid="B002" name="Value V2" handle="213" properties="10" permissions="33">
+					<Characteristic uuid="B002" name="Value V2" handle="213" properties="10" permissions="48">
 						1111122222333334444455555666667777788888999
 						<Descriptors>
-							<Descriptor uuid="B012" name="Long descriptor V2D1" handle="215" permissions="33">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33</Descriptor>
+							<Descriptor uuid="B012" name="Long descriptor V2D1" handle="215" permissions="48">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33</Descriptor>
 						</Descriptors>
 					</Characteristic>
-					<Characteristic uuid="B002" name="Value V2" handle="216" properties="10" permissions="33">
+					<Characteristic uuid="B002" name="Value V2" handle="216" properties="10" permissions="384">
 						22222333334444455555666667777788888999990000
 						<Descriptors>
-							<Descriptor uuid="B013" name="Long descriptor V2D2" handle="218" permissions="33">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33 44</Descriptor>
+							<Descriptor uuid="B013" name="Long descriptor V2D2" handle="218" permissions="384">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33 44</Descriptor>
 						</Descriptors>
 					</Characteristic>
-					<Characteristic uuid="B002" name="Value V2" handle="219" properties="10" permissions="9">
+					<Characteristic uuid="B002" name="Value V2" handle="219" properties="10" permissions="12">
 						333334444455555666667777788888999990000011111
 						<Descriptors>
-							<Descriptor uuid="B014" name="Long descriptor V2D3" handle="221" permissions="9">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33 44 55</Descriptor>
+							<Descriptor uuid="B014" name="Long descriptor V2D3" handle="221" permissions="12">11 22 33 44 55 66 77 88 99 00 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 12 34 56 78 90 11 22 33 44 55 66 77 88 99 00 11 22 33 44 55</Descriptor>
 						</Descriptors>
 					</Characteristic>
 				</Characteristics>
@@ -257,7 +257,7 @@
 			</Service>
 			<Service type="Primary Service" uuid="1800" name="Generic Access Profile" handle="9">
 				<Characteristics>
-					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="2" permissions="1">Test Database</Characteristic>
+					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="10" permissions="9">Test Database</Characteristic>
 					<Characteristic uuid="2A01" name="Appearance" handle="12" properties="2" permissions="1">41 03</Characteristic>
 					<Characteristic uuid="2A04" name="Peripheral Preferred Connection Parameters" handle="14" properties="2" permissions="1">18 00 28 00 00 00 2A 00</Characteristic>
 				</Characteristics>
@@ -335,7 +335,7 @@
 						<Descriptors>
 							<Descriptor uuid="0000D5D4000000000123456789ABCDEF" name="Descriptor V5D4 (128-bit UUID)" handle="147" permissions="1">44</Descriptor>
 							<Descriptor uuid="2900" name="Characteristic Extended Properties" handle="148" permissions="1">03 00</Descriptor>
-							<Descriptor uuid="2901" name="Characteristic User Description" handle="149" permissions="3">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
+							<Descriptor uuid="2901" name="Characteristic User Description" handle="149" permissions="1">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
 							<Descriptor uuid="2904" name="Characteristic Format" handle="150" permissions="1">04 00 01 30 01 11 31</Descriptor>
 						</Descriptors>
 					</Characteristic>
@@ -370,7 +370,7 @@
 			</Service>
 			<Service type="Primary Service" uuid="1800" name="Generic Access Profile" handle="9">
 				<Characteristics>
-					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="2" permissions="1">Test Database</Characteristic>
+					<Characteristic uuid="2A00" name="Device Name" handle="10" properties="10" permissions="9">Test Database</Characteristic>
 					<Characteristic uuid="2A01" name="Appearance" handle="12" properties="2" permissions="1">41 03</Characteristic>
 					<Characteristic uuid="2A04" name="Peripheral Preferred Connection Parameters" handle="14" properties="2" permissions="1">18 00 28 00 00 00 2A 00</Characteristic>
 				</Characteristics>
@@ -437,7 +437,7 @@
 					<Characteristic uuid="B005" name="Value V5" handle="145" properties="138" permissions="3">
 						05
 						<Descriptors>
-							<Descriptor uuid="2901" name="Characteristic User Description" handle="147" permissions="3">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
+							<Descriptor uuid="2901" name="Characteristic User Description" handle="147" permissions="1">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Descriptor>
 							<Descriptor uuid="2900" name="Characteristic Extended Properties" handle="148" permissions="1">03 00</Descriptor>
 							<Descriptor uuid="0000D5D4000000000123456789ABCDEF" name="Descriptor V5D4 (128-bit UUID)" handle="149" permissions="1">44</Descriptor>
 							<Descriptor uuid="2904" name="Characteristic Format" handle="150" permissions="1">04 00 01 30 01 11 31</Descriptor>
