@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 from enum import IntEnum;
 from utils import *;
 
@@ -602,6 +605,3 @@ class ADData:
                     n += length; 
 
         return result;
-
-
-

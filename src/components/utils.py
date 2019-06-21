@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 import struct;
 import numpy;
 from enum import IntEnum;

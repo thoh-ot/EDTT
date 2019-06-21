@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 # from enum import IntFlag;
 from components.utils import *;
 from components.basic_commands import *;
@@ -647,5 +650,3 @@ def public_identity_address( address ):
 
 def random_identity_address( address ):
     return ExtendedAddressType.RESOLVABLE_OR_RANDOM, toArray(address, 6);
-
-

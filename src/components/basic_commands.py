@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 import struct;
 from enum import IntEnum;
 from itertools import chain;
@@ -3013,4 +3016,3 @@ def gatt_service_indicate(transport, idx, to):
     
     if ( RespLen != 0 ):
         raise Exception("Invoke GATT Service Set Indications command failed: Response length field corrupted (%i)" % RespLen);
-

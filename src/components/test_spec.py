@@ -1,3 +1,5 @@
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
 
 class TestSpec():
     

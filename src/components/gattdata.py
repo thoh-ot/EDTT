@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 import string;
 import re;
 from xml.dom import minidom;
@@ -187,5 +190,3 @@ class GATTData:
                  'value_handle': _characteristics['value_handle'][j], 
                  'property':     _characteristics['property'][j], 
                  'permission':   _characteristics['permission'][j] };
-
-
