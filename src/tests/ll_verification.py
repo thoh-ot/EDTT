@@ -48,9 +48,9 @@ def local_resolvable_address(transport, idx, identityAddress, trace):
     return status, resolvableAddress;
 
 """
-    LL/DDI/ADV/BV-01-C [Non-Connectable Advertising Events]
+    LINK/DED/ADV/1-C [Non-Connectable Advertising Packets on one channel]
 """
-def ll_ddi_adv_bv_01_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_1_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -78,9 +78,9 @@ def ll_ddi_adv_bv_01_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-02-C [Undirected Advertising Events]
+    LINK/DED/ADV/2-C [Undirected Advertising Packets on one channel]
 """
-def ll_ddi_adv_bv_02_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_2_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -108,9 +108,9 @@ def ll_ddi_adv_bv_02_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-03-C [Advertising Data: Non-Connectable]
+    LINK/DED/ADV/3-C [Non-Connectable Advertising Packets on all channels]
 """
-def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_3_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -143,9 +143,9 @@ def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-04-C [Advertising Data: Undirected]
+    LINK/DED/ADV/4-C [Undirected Advertising with Data on all channels ]
 """
-def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_4_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -178,9 +178,9 @@ def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-05-C [Scan Request: Undirected Connectable]
+    LINK/DED/ADV/5-C [Undirected Connectable Advertising with Scan Request/Response ]
 """
-def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_5_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -218,9 +218,9 @@ def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-06-C [Connection Request]
+    LINK/DED/ADV/6-C [Stop Advertising on Connection Request]
 """
-def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_6_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -272,9 +272,9 @@ def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-07-C [Scan Request Connection Request]
+    LINK/DED/ADV/7-C [Scan Request/Response followed by Connection Request]
 """
-def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_7_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -318,9 +318,9 @@ def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-08-C [Scan Request Device Filtering]
+    LINK/DED/ADV/8-C [Advertiser Filtering Scan requests]
 """
-def ll_ddi_adv_bv_08_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_8_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List for the Advertiser
@@ -393,9 +393,9 @@ def ll_ddi_adv_bv_08_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-09-C [Connection Request Device Filtering]
+    LINK/DED/ADV/9-C [Advertiser Filtering Connection requests]
 """
-def ll_ddi_adv_bv_09_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_9_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List for the Advertiser
@@ -486,9 +486,9 @@ def ll_ddi_adv_bv_09_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-11-C [Directed Advertising Events]
+    LINK/DED/ADV/10-C [High Duty Cycle Connectable Directed Advertising on one channel]
 """
-def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_10_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -531,9 +531,9 @@ def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-15-C [Discoverable Advertising Events]
+    LINK/DED/ADV/11-C [Discoverable Undirected Advertising on all channels]
 """
-def ll_ddi_adv_bv_15_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_11_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -561,9 +561,9 @@ def ll_ddi_adv_bv_15_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-16-C [Advertising Data: Discoverable]
+    LINK/DED/ADV/12-C [Discoverable Undirected Advertising with Data on all channels]
 """    
-def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_12_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -591,9 +591,9 @@ def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-17-C [Scan Request: Discoverable]
+    LINK/DED/ADV/13-C [Discoverable Undirected Advertising with Scan Request/Response]
 """
-def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_13_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -629,9 +629,9 @@ def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-18-C [Device Filtering: Discoverable]
+    LINK/DED/ADV/14-C [Discoverable Undirected Advertiser Filtering Scan requests ]
 """
-def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_14_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -674,9 +674,9 @@ def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-19-C [Low Duty Cycle Directed Advertising Events]
+    LINK/DED/ADV/17-C [Low Duty Cycle Directed Advertising on all channels]
 """
-def ll_ddi_adv_bv_19_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_17_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -717,9 +717,9 @@ def ll_ddi_adv_bv_19_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-20-C [Advertising Always Using the LE 1M PHY]
+    LINK/DED/ADV/18-C [Advertising on the LE 1M PHY on all channels]
 """
-def ll_ddi_adv_bv_20_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_18_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -752,9 +752,9 @@ def ll_ddi_adv_bv_20_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/ADV/BV-21-C [Extended Advertising, Legacy PDUs, Non-Connectable]
+    LINK/DED/ADV/19-C [Non-Connectable Extended Legacy Advertising with Data on all channels]
 """
-def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
+def link_ded_adv_19_c(transport, upperTester, lowerTester, trace):
 
     Handle          = 0;
     Properties      = ExtAdvertiseType.LEGACY;
@@ -817,8 +817,6 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
                             deltas += [eventTime - prevTime];
                         prevTime = eventTime;
             
-        flush_events(transport, lowerTester, 100);
-            
         success = success and preamble_scan_enable(transport, lowerTester, Scan.DISABLE, ScanFilterDuplicate.DISABLE, trace);
         success = success and preamble_ext_advertise_enable(transport, upperTester, Advertise.DISABLE, SHandle, SDuration, SMaxExtAdvEvts, trace);
             
@@ -830,9 +828,9 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-01-C [Passive Scanning: Non Connectable]
+    LINK/DED/SCA/1-C [Passive Scanning of Non-Connectable Advertising Packets]
 """
-def ll_ddi_scn_bv_01_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_1_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -864,9 +862,9 @@ def ll_ddi_scn_bv_01_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-02-C [Passive Scanning Device Filtering]
+    LINK/DED/SCA/2-C [Filtered Passive Scanning of Non-Connectable Advertising Packets]
 """
-def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_2_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -904,9 +902,9 @@ def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-03-C [Active Scanning]
+    LINK/DED/SCA/3-C [Active Scanning of Connectable Undirected Advertising Packets]
 """
-def ll_ddi_scn_bv_03_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_3_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -945,9 +943,9 @@ def ll_ddi_scn_bv_03_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-04-C [Active Scanning Device Filtering]
+    LINK/DED/SCA/4-C [Filtered Active Scanning of Connectable Undirected Advertising Packets]
 """
-def ll_ddi_scn_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_4_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -989,9 +987,9 @@ def ll_ddi_scn_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-05-C [Scanning For Advertiser Types]
+    LINK/DED/SCA/5-C [Scanning for different Advertiser types with and without Data]
 """
-def ll_ddi_scn_bv_05_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_5_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -1034,9 +1032,9 @@ def ll_ddi_scn_bv_05_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-10-C [Passive Scanning: Undirected Events]
+    LINK/DED/SCA/6-C [Passive Scanning for Undirected Advertising Packets with Data]
 """
-def ll_ddi_scn_bv_10_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_6_c(transport, upperTester, lowerTester, trace):
 
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
@@ -1069,9 +1067,9 @@ def ll_ddi_scn_bv_10_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-11-C [Passive Scanning: Directed Events]
+    LINK/DED/SCA/7-C [Passive Scanning for Directed Advertising Packets]
 """
-def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_7_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -1109,9 +1107,9 @@ def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-12-C [Passive Scanning: Discoverable Events]
+    LINK/DED/SCA/8-C [Passive Scanning for Discoverable Undirected Advertising Packets]
 """
-def ll_ddi_scn_bv_12_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_8_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -1149,9 +1147,9 @@ def ll_ddi_scn_bv_12_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-13-C [Network Privacy – Passive Scanning, Peer IRK]
+    LINK/DED/SCA/9-C [Passive Scanning for Non-Connectable Advertising Packets using Network Privacy]
 """
-def ll_ddi_scn_bv_13_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_9_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -1189,9 +1187,9 @@ def ll_ddi_scn_bv_13_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-14-C [Network Privacy - Passive Scanning: Directed Events to an address different from the scanner’s address]
+    LINK/DED/SCA/10-C [Passive Scanning for Connectable Directed Advertising Packets using Network Privacy]
 """
-def ll_ddi_scn_bv_14_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_10_c(transport, upperTester, lowerTester, trace):
 
     """
         Clear the Resolving List
@@ -1225,9 +1223,9 @@ def ll_ddi_scn_bv_14_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-15-C [Network Privacy – Active Scanning, no Local IRK, no Peer IRK]
+    LINK/DED/SCA/11-C [Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with no Local or Peer IRK]
 """
-def ll_ddi_scn_bv_15_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_11_c(transport, upperTester, lowerTester, trace):
 
     """
         Set a Non-Resolvable Private Address in the upper Tester
@@ -1269,9 +1267,9 @@ def ll_ddi_scn_bv_15_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-16-C [Network Privacy – Active Scanning, Local IRK, no Peer IRK]
+    LINK/DED/SCA/12-C [Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with Local and no Peer IRK]
 """
-def ll_ddi_scn_bv_16_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_12_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -1324,9 +1322,9 @@ def ll_ddi_scn_bv_16_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-17-C [Network Privacy – Active Scanning, no Local IRK, Peer IRK]
+    LINK/DED/SCA/13-C [Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with no Local and a Peer IRK]
 """
-def ll_ddi_scn_bv_17_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_13_c(transport, upperTester, lowerTester, trace):
 
     """
         Set a Non-Resolvable Private Address in the upper Tester
@@ -1368,9 +1366,9 @@ def ll_ddi_scn_bv_17_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-18-C [Network Privacy – Active Scanning, Local IRK, Peer IRK]
+    LINK/DED/SCA/14-C [Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with both Local and Peer IRKs]
 """
-def ll_ddi_scn_bv_18_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_14_c(transport, upperTester, lowerTester, trace):
 
     """
         Set a Random Static Address in the upper Tester
@@ -1411,9 +1409,9 @@ def ll_ddi_scn_bv_18_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-26-C [Network Privacy – Passive Scanning, Peer IRK, Ignore Identity Address]
+    LINK/DED/SCA/21-C [Passive Scanning for Non-Connectable Advertising Packets using Network Privacy]
 """
-def ll_ddi_scn_bv_26_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_21_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -1446,9 +1444,9 @@ def ll_ddi_scn_bv_26_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/DDI/SCN/BV-28-C [Device Privacy – Passive Scanning, Peer IRK, Accept Identity Address]
+    LINK/DED/SCA/22-C [Passive Scanning for Non-Connectable Advertising Packets using Device Privacy]
 """
-def ll_ddi_scn_bv_28_c(transport, upperTester, lowerTester, trace):
+def link_ded_sca_22_c(transport, upperTester, lowerTester, trace):
 
     lowerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     """
@@ -1493,9 +1491,9 @@ def ll_ddi_scn_bv_28_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/ADV/BV-01-C [Accepting Connections]
+    LINK/CON/ADV/1-C [Accepting Connection Request]
 """
-def ll_con_adv_bv_01_c(transport, upperTester, lowerTester, trace):
+def link_con_adv_1_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1528,9 +1526,9 @@ def ll_con_adv_bv_01_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/ADV/BV-04-C [Directed Advertising Connection]
+   LINK/CON/ADV/4-C [Accepting Connection Request after Directed Advertising]
 """
-def ll_con_adv_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_con_adv_4_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1565,9 +1563,9 @@ def ll_con_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/ADV/BV-09-C [Accepting Connections, Channel Selection Algorithm #2]
+   LINK/CON/ADV/9-C [Accepting Connection Request using Channel Selection Algorithm #2]
 """
-def ll_con_adv_bv_09_c(transport, upperTester, lowerTester, trace):
+def link_con_adv_9_c(transport, upperTester, lowerTester, trace):
 
     """
        Enable the LE Channel Selection Algorithm Event
@@ -1621,9 +1619,9 @@ def ll_con_adv_bv_09_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/ADV/BV-10-C [Directed Advertising Connection, Channel Selection Algorithm #2]
+   LINK/CON/ADV/10-C [Accepting Connection Request after Directed Advertising using Channel Selection Algorithm #2]
 """
-def ll_con_adv_bv_10_c(transport, upperTester, lowerTester, trace):
+def link_con_adv_10_c(transport, upperTester, lowerTester, trace):
 
     """
         Enable the LE Channel Selection Algorithm Event
@@ -1676,9 +1674,9 @@ def ll_con_adv_bv_10_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/INI/BV-01-C [Connection Initiation]
+    LINK/CON/INI/1-C [Connection Initiation rejects Address change]
 """
-def ll_con_ini_bv_01_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_1_c(transport, upperTester, lowerTester, trace):
 
     for channel in [ AdvertiseChannel.CHANNEL_37, AdvertiseChannel.CHANNEL_38, AdvertiseChannel.CHANNEL_39 ]:
         for i in range(4):
@@ -1725,9 +1723,9 @@ def ll_con_ini_bv_01_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/INI/BV-02-C [Connecting to Directed Advertising]
+    LINK/CON/INI/2-C [Connecting to Advertiser using Directed Advertising Packets]
 """
-def ll_con_ini_bv_02_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_2_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -1748,9 +1746,9 @@ def ll_con_ini_bv_02_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/INI/BV-06-C [Initiation Device Filtering: Undirected]
+    LINK/CON/INI/5-C [Filtered Connection to Advertiser using Undirected Advertising Packets]
 """
-def ll_con_ini_bv_06_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_5_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -1798,9 +1796,9 @@ def ll_con_ini_bv_06_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/INI/BV-07-C [Initiation Device Filtering: Directed]
+    LINK/CON/INI/6-C [Filtered Connection to Advertiser using Directed Advertising Packets]
 """
-def ll_con_ini_bv_07_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_6_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List
@@ -1848,45 +1846,9 @@ def ll_con_ini_bv_07_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/INI/BV-08-C [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]
+    LINK/CON/INI/7-C [Connecting to Connectable Undirected Advertiser with Network Privacy]
 """
-def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
-
-    """
-        Add Public address of lowerTester to the Resolving List
-    """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    success = RPAs.clear();
-    success = success and RPAs.add( peerAddress );
-    """
-        Set resolvable private address timeout in seconds ( sixty seconds )
-    """
-    success = success and RPAs.timeout(60);
-    success = success and RPAs.enable();
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
-    advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_38, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-    initiatorAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
-    initiator = Initiator(transport, upperTester, lowerTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ));
-    success = success and advertiser.enable();
-
-    success = success and initiator.connect();
-        
-    transport.wait(1000);
-        
-    if success:
-        success = success and initiator.disconnect(0x3E);
-
-    return success
-
-"""
-    LL/CON/INI/BV-08-C [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]
-"""
-def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_7_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -1920,9 +1882,9 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-09-C [Network Privacy - Connection Establishment using resolving list, Initiator]
+   LINK/CON/INI/8-C [Connecting to Connectable Undirected Advertiser with Network Privacy thru Resolving List]
 """
-def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_8_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -1977,9 +1939,9 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-10-C [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator]
+   LINK/CON/INI/9-C [Connecting to Directed Advertiser with Network Privacy thru Resolving List]
 """
-def ll_con_ini_bv_10_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_9_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2034,9 +1996,9 @@ def ll_con_ini_bv_10_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-11-C [Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator]
+   LINK/CON/INI/10-C [Connecting to Directed Advertiser using  wrong address with Network Privacy thru Resolving List ]
 """
-def ll_con_ini_bv_11_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_10_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2108,9 +2070,9 @@ def ll_con_ini_bv_11_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-12-C [Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator]
+   LINK/CON/INI/11-C [Connecting to Directed Advertiser using Identity address with Network Privacy thru Resolving List]
 """
-def ll_con_ini_bv_12_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_11_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2181,9 +2143,9 @@ def ll_con_ini_bv_12_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-16-C [Connection Initiation, Channel Selection Algorithm #2]
+   LINK/CON/INI/15-C [Connecting to Advertiser with Channel Selection Algorithm #2]
 """
-def ll_con_ini_bv_16_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_15_c(transport, upperTester, lowerTester, trace):
 
     """
        Enable the LE Channel Selection Algorithm Event; Disable the LE_Enhanced_Connection_Complete_Event
@@ -2239,9 +2201,9 @@ def ll_con_ini_bv_16_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-17-C [Connecting to Directed Advertising, Channel Selection Algorithm #2]
+   LINK/CON/INI/16-C [Connecting to Directed Advertiser with Channel Selection Algorithm #2]
 """
-def ll_con_ini_bv_17_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_16_c(transport, upperTester, lowerTester, trace):
 
     """
         Enable the LE Channel Selection Algorithm Event; Disable the LE_Enhanced_Connection_Complete_Event
@@ -2297,9 +2259,9 @@ def ll_con_ini_bv_17_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-18-C [Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address]
+   LINK/CON/INI/17-C [Don't connect to Advertiser using Identity address with Network Privacy thru Resolving List]
 """
-def ll_con_ini_bv_18_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_17_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2343,9 +2305,9 @@ def ll_con_ini_bv_18_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-19-C [Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address]
+   LINK/CON/INI/18-C [Don't connect to Directed Advertiser using Identity address with Network Privacy thru Resolving List]
 """
-def ll_con_ini_bv_19_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_18_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2386,9 +2348,9 @@ def ll_con_ini_bv_19_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-20-C [Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address]
+   LINK/CON/INI/19-C [Connect to Advertiser using Identity address with Device Privacy thru Resolving List]
 """
-def ll_con_ini_bv_20_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_19_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2437,9 +2399,9 @@ def ll_con_ini_bv_20_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-   LL/CON/INI/BV-21-C [Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address]
+   LINK/CON/INI/20-C [Connect to Directed Advertiser using Identity address with Device Privacy thru Resolving List]
 """
-def ll_con_ini_bv_21_c(transport, upperTester, lowerTester, trace):
+def link_con_ini_20_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List
@@ -2487,9 +2449,9 @@ def ll_con_ini_bv_21_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-04-C [Slave Sending Data]
+    LINK/CON/SLA/2-C [Connection where Slave sends data to Master]
 """
-def ll_con_sla_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_2_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2576,9 +2538,9 @@ def ll_con_sla_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-05-C [Slave Receiving Data]
+    LINK/CON/SLA/3-C [Connection where Slave receives data from Master]
 """
-def ll_con_sla_bv_05_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_3_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2626,9 +2588,9 @@ def ll_con_sla_bv_05_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-06-C [Slave Sending and Receiving Data]
+    LINK/CON/SLA/4-C [Connection where Slave sends and receives data to and from Master]
 """
-def ll_con_sla_bv_06_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_4_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2695,9 +2657,9 @@ def ll_con_sla_bv_06_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-10-C [Accepting Parameter Update]
+    LINK/CON/SLA/5-C [Slave accepting Connection Parameter Update from Master]
 """
-def ll_con_sla_bv_10_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_5_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2739,9 +2701,9 @@ def ll_con_sla_bv_10_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-11-C [Slave sending termination]
+    LINK/CON/SLA/6-C [Slave sending Termination to Master]
 """
-def ll_con_sla_bv_11_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_6_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2767,9 +2729,9 @@ def ll_con_sla_bv_11_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-12-C [Slave accepting termination]
+    LINK/CON/SLA/7-C [Slave accepting Termination from Master]
 """
-def ll_con_sla_bv_12_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_7_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2793,9 +2755,9 @@ def ll_con_sla_bv_12_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-13-C [Slave supervision timer]
+    LINK/CON/SLA/8-C [Slave Terminating Connection on Supervision Timer]
 """
-def ll_con_sla_bv_13_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_8_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2826,9 +2788,9 @@ def ll_con_sla_bv_13_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-14-C [Feature Setup Response]
+    LINK/CON/SLA/9-C [Slave performs Feature Setup procedure]
 """
-def ll_con_sla_bv_14_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_9_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2876,9 +2838,9 @@ def ll_con_sla_bv_14_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-19-C [Slave request version]
+    LINK/CON/SLA/14-C [Slave requests Version Exchange procedure]
 """
-def ll_con_sla_bv_19_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_14_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2919,9 +2881,9 @@ def ll_con_sla_bv_19_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-20-C [Slave respond version]
+    LINK/CON/SLA/15-C [Slave responds to Version Exchange procedure]
 """
-def ll_con_sla_bv_20_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_15_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -2963,9 +2925,9 @@ def ll_con_sla_bv_20_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-22-C [Initiate feature exchange]
+    LINK/CON/SLA/17-C [Slave requests Feature Exchange procedure]
 """
-def ll_con_sla_bv_22_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_17_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3032,16 +2994,13 @@ def ll_con_sla_bv_22_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-24-C [Initiate connection parameter request - Accept]
+    LINK/CON/SLA/19-C [Slave requests Connection Parameters – Master Accepts]
 """
-def ll_con_sla_bv_24_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_19_c(transport, upperTester, lowerTester, trace):
 
     """
         The test consists of 3 cases for specific connection intervals and supervision timeouts
     """
-    intervals = [6, 32, 6]
-    supervisionTimeouts = [300, 3200, 300]
-
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
@@ -3059,58 +3018,35 @@ def ll_con_sla_bv_24_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     transport.wait(200)
     if connected:
-        for i in range(0,len(intervals)):
-            le_connection_update(transport, upperTester, initiator.handles[1], intervals[i], intervals[i], initiator.latency, \
-                                 supervisionTimeouts[i], initiator.minCeLen, initiator.maxCeLen, 100)
-            transport.wait(100)
-            status, handle = le_remote_connection_parameter_request_reply(transport, lowerTester, initiator.handles[0], intervals[i], \
-                                intervals[i], initiator.latency, supervisionTimeouts[i], initiator.minCeLen, initiator.maxCeLen, 100)
+        initiator.switchRoles();
+
+        for interval, timeout in zip([ 6, 32, 6 ], [ 300, 3200, 300 ]):        
             """
-                UpperTester expects a HCI_Command_Status event after sending the HCI_LE_Connection_Update command
+                Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
             """
-            if(has_event(transport, upperTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-                success = success and (status == 0)
-            else:
-                success = False
+            success = success and initiator.update(interval, interval, initiator.latency, timeout);
             """
-                LowerTester expects a BT_HCI_EVT_LE_CONN_PARAM_REQ control PDU from the IUT
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
             """
-            if(has_event(transport, lowerTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                          (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-                showEvent(event, eventData, trace)
-            else:
-                success = False
-            transport.wait(400) # send some empty data packets
+            success = success and initiator.acceptUpdate();
             """
-                Upper Tester expects an HCI_LE_Connection_Update_Complete from the IUT
+                Both lower and upper Tester should receive a LE Connection Update Complete Event...
             """
-            if(has_event(transport, upperTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                          (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (status == 0) and (timeout == supervisionTimeouts[i])
-            else:
-                success = False
-            trace.trace(7, "Test case #" + str(i+1) + (" PASSED" if success else " FAILED"))
-            flush_events(transport, lowerTester, 100) #flush events before the next test case
+            success = success and initiator.updated();
+
+            transport.wait(int(4 * interval * 1.25));
+
+        initiator.resetRoles();
+        success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
-
-    success = success and initiator.disconnect(0x3E)
 
     return success
 
 """
-    LL/CON/SLA/BV-25-C [Initiate connection parameter request - Reject]
+    LINK/CON/SLA/20-C [Slave requests Connection Parameters – Master Rejects]
 """
-def ll_con_sla_bv_25_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_20_c(transport, upperTester, lowerTester, trace):
 
     testInterval = 6
     testSupervision = 300
@@ -3170,7 +3106,6 @@ def ll_con_sla_bv_25_c(transport, upperTester, lowerTester, trace):
                         (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
         else:
             success = False
-        flush_events(transport, lowerTester, 100) #flush events before the next test case
     else:
         advertiser.disable()
 
@@ -3179,9 +3114,9 @@ def ll_con_sla_bv_25_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-26-C [Initiate connection parameter request - same procedure collision]
+    LINK/CON/SLA/21-C [Slave requests Connection Parameters – same procedure collision]
 """
-def ll_con_sla_bv_26_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_21_c(transport, upperTester, lowerTester, trace):
     interval = 6
     testSupervision = 300
     errCode = 0x23
@@ -3296,9 +3231,9 @@ def ll_con_sla_bv_26_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-27-C [Initiate connection parameter request - different procedure collision - channel map update]
+    LINK/CON/SLA/22-C [Slave requests Connection Parameters – channel map update procedure collision]
 """
-def ll_con_sla_bv_27_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_22_c(transport, upperTester, lowerTester, trace):
 
     interval = 6
     testSupervision = 300
@@ -3385,9 +3320,9 @@ def ll_con_sla_bv_27_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-29-C [Accepting connection parameter request - no Preffered_Periodicity]
+    LINK/CON/SLA/24-C [Slave responds to Connection Parameters – Master no Preferred Periodicity]
 """
-def ll_con_sla_bv_29_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_24_c(transport, upperTester, lowerTester, trace):
 
     intervals = [6, 32, 6]
     testSupervision = [300, 3200, 300]
@@ -3470,9 +3405,9 @@ def ll_con_sla_bv_29_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-33-C [Accepting Connection Parameter Request – event masked]
+    LINK/CON/SLA/28-C [Slave responds to Connection Parameters request – event masked]
 """
-def ll_con_sla_bv_33_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_28_c(transport, upperTester, lowerTester, trace):
 
     interval = 6
     testSupervision = 300
@@ -3521,9 +3456,9 @@ def ll_con_sla_bv_33_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-34-C [Accepting Connection Parameter Request – host rejects]
+    LINK/CON/SLA/29-C [Slave responds to Connection Parameters request – Host rejects]
 """
-def ll_con_sla_bv_34_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_29_c(transport, upperTester, lowerTester, trace):
 
     interval = 6
     testSupervision = 300
@@ -3584,9 +3519,9 @@ def ll_con_sla_bv_34_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-40-C [Initiate PHY Update Procedure]
+    LINK/CON/SLA/30-C [Slave requests PHY Update procedure]
 """
-def ll_con_sla_bv_40_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_30_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3638,9 +3573,9 @@ def ll_con_sla_bv_40_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-42-C [Responding to PHY Update Procedure]
+    LINK/CON/SLA/31-C [Slave responds to PHY Update procedure]
 """
-def ll_con_sla_bv_42_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_31_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3677,11 +3612,11 @@ def ll_con_sla_bv_42_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-78-C [Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]
+    LINK/CON/SLA/67-C [Slave requests Packet Data Length Update procedure; LE 1M PHY]
 
     NOTE: Requires that CONFIG_BT_CTLR_DATA_LENGTH_MAX=60 is set in the prj.conf file for the ptt_app.
 """
-def ll_con_sla_bv_78_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_67_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3724,11 +3659,11 @@ def ll_con_sla_bv_78_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BV-81-C [Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]
+    LINK/CON/SLA/70-C [Slave requests Packet Data Length Update procedure; LE 2M PHY]
 
     NOTE: Requires that CONFIG_BT_CTLR_DATA_LENGTH_MAX=60 is set in the prj.conf file for the ptt_app.
 """
-def ll_con_sla_bv_81_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_70_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3780,9 +3715,9 @@ def ll_con_sla_bv_81_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/SLA/BI-08-C [Accepting Connection Parameter Request – Illegal Parameters]
+    LINK/CON/SLA/81-C [Slave responds to Connection Parameters request – Illegal Parameters]
 """
-def ll_con_sla_bi_08_c(transport, upperTester, lowerTester, trace):
+def link_con_sla_81_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3830,9 +3765,9 @@ def ll_con_sla_bi_08_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-03-C [Master Sending Data]
+    LINK/CON/MAS/2-C [Master sending Data packets to Slave]
 """
-def ll_con_mas_bv_03_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_2_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -3918,9 +3853,9 @@ def ll_con_mas_bv_03_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-04-C [Master Receiving Data]
+    LINK/CON/MAS/3-C [Master receiving Data packets from Slave]
 """
-def ll_con_mas_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_3_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -3968,9 +3903,9 @@ def ll_con_mas_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-05-C [Master Sending and Receiving Data]
+    LINK/CON/MAS/4-C [Master sending and receiving Data packets to and form Slave]
 """
-def ll_con_mas_bv_05_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_4_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4044,9 +3979,9 @@ def ll_con_mas_bv_05_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-07-C [Requesting Parameter Update]
+    LINK/CON/MAS/5-C [Master requests Connection Parameter Update]
 """
-def ll_con_mas_bv_07_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_5_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4088,9 +4023,9 @@ def ll_con_mas_bv_07_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-08-C [Master Sending Termination]
+    LINK/CON/MAS/6-C [Master Terminating Connection]
 """
-def ll_con_mas_bv_08_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_6_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4116,9 +4051,9 @@ def ll_con_mas_bv_08_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-09-C [Master Accepting Termination]
+    LINK/CON/MAS/7-C [Master accepting Connection Termination]
 """
-def ll_con_mas_bv_09_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_7_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4147,9 +4082,9 @@ def ll_con_mas_bv_09_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-13-C [Feature Setup Request]
+    LINK/CON/MAS/9-C [Master requests Feature Setup procedure]
 """
-def ll_con_mas_bv_13_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_9_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -4202,9 +4137,9 @@ def ll_con_mas_bv_13_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-20-C [Master Request Version]
+    LINK/CON/MAS/16-C [Master requests Version Exchange procedure]
 """
-def ll_con_mas_bv_20_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_16_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -4247,9 +4182,9 @@ def ll_con_mas_bv_20_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-21-C [Master Respond Version]
+    LINK/CON/MAS/17-C [Master responds to Version Exchange procedure]
 """
-def ll_con_mas_bv_21_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_17_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -4292,9 +4227,9 @@ def ll_con_mas_bv_21_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-23-C [Responding to Feature Exchange]
+    LINK/CON/MAS/19-C [Master responds to Feature Exchange procedure]
 """
-def ll_con_mas_bv_23_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_19_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -4338,9 +4273,9 @@ def ll_con_mas_bv_23_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-24-C [Initiating Connection Parameter Request - Accept]
+    LINK/CON/MAS/20-C [Master requests Connection Parameters – Slave Accepts]
 """
-def ll_con_mas_bv_24_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_20_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4382,9 +4317,9 @@ def ll_con_mas_bv_24_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-25-C [Initiating Connection Parameter Request - Reject]
+    LINK/CON/MAS/21-C [Master requests Connection Parameters – Slave Rejects]
 """
-def ll_con_mas_bv_25_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_21_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4430,9 +4365,9 @@ def ll_con_mas_bv_25_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-26-C [Initiating Connection Parameter Request - same procedure collision]
+    LINK/CON/MAS/22-C [Master requests Connection Parameters – same procedure collision]
 """
-def ll_con_mas_bv_26_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_22_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4508,9 +4443,9 @@ def ll_con_mas_bv_26_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-27-C [Initiating Connection Parameter Request - different procedure collision - channel map update]
+    LINK/CON/MAS/23-C [Master requests Connection Parameters - Channel Map Update procedure collision]
 """
-def ll_con_mas_bv_27_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_23_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4572,9 +4507,9 @@ def ll_con_mas_bv_27_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-29-C [Initiating Connection Parameter Request - remote legacy host]
+    LINK/CON/MAS/25-C [Master requests Connection Parameters – Slave unsupported]
 """
-def ll_con_mas_bv_29_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_25_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4616,9 +4551,9 @@ def ll_con_mas_bv_29_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-30-C [Accepting Connection Parameter Request - no Preferred Periodicity]
+    LINK/CON/MAS/26-C [Master responds to Connection Parameters request – no Preferred_Periodicity]
 """
-def ll_con_mas_bv_30_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_26_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4665,9 +4600,9 @@ def ll_con_mas_bv_30_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-34-C [Accepting Connection Parameter Request - event masked]
+    LINK/CON/MAS/30-C [Master responds to Connection Parameters request – event masked]
 """
-def ll_con_mas_bv_34_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_30_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4719,9 +4654,9 @@ def ll_con_mas_bv_34_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-35-C [Accepting Connection Parameter Request - Host rejects]
+    LINK/CON/MAS/31-C [Master responds to Connection Parameters request – Host rejects]
 """
-def ll_con_mas_bv_35_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_31_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4768,9 +4703,9 @@ def ll_con_mas_bv_35_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-41-C [Initiating PHY Update Procedure]
+    LINK/CON/MAS/32-C [Master requests PHY Update procedure]
 """
-def ll_con_mas_bv_41_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_32_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4809,9 +4744,9 @@ def ll_con_mas_bv_41_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-43-C [Responding to PHY Update Procedure]
+    LINK/CON/MAS/34-C [Master responds to PHY Update procedure]
 """
-def ll_con_mas_bv_43_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_34_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4857,11 +4792,11 @@ def ll_con_mas_bv_43_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BV-74-C [Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY]
+    LINK/CON/MAS/65-C [Master Packet Data Length Update – Initiating Packet Data Length Update Procedure; LE 1M PHY]
 
     Note: Requires that CONFIG_BT_CTLR_DATA_LENGTH_MAX=60 is set in the prj.conf file for the ptt_app.
 """
-def ll_con_mas_bv_74_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_65_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -4975,11 +4910,11 @@ def ll_con_mas_bv_74_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    LL/CON/MAS/BV-77-C [Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY]
+    LINK/CON/MAS/68-C [Master Packet Data Length Update – Initiating Packet Data Length Update Procedure; LE 2M PHY]
 
     Note: Requires that CONFIG_BT_CTLR_DATA_LENGTH_MAX=60 is set in the prj.conf file for the ptt_app. 
 """
-def ll_con_mas_bv_77_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_68_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
@@ -5099,9 +5034,9 @@ def ll_con_mas_bv_77_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/CON/MAS/BI-06-C [Accepting Parameter Connection Request - illegal parameters]
+    LINK/CON/MAS/77-C [Master responds to Connection Parameter Request – illegal parameters]
 """
-def ll_con_mas_bi_06_c(transport, upperTester, lowerTester, trace):
+def link_con_mas_77_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -5142,9 +5077,9 @@ def ll_con_mas_bi_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    LL/SEC/ADV/BV-01-C [Advertising with static address]
+    LINK/SEC/ADV/1-C [Changing Static Address while Advertising]
 """
-def ll_sec_adv_bv_01_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_1_c(transport, upperTester, lowerTester, trace):
 
     """
         Setting static address for upper tester and lower tester; adding lower tester's address to the whitelist
@@ -5188,9 +5123,9 @@ def ll_sec_adv_bv_01_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-02-C [Privacy - Non Connectable Undirected Advertising, non-resolvable private address]
+    LINK/SEC/ADV/2-C [Non Connectable Undirected Advertising with non-resolvable private address]
 """
-def ll_sec_adv_bv_02_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_2_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Random address of upperTester to the Resolving List
@@ -5225,9 +5160,9 @@ def ll_sec_adv_bv_02_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-03-C [Privacy - Non Connectable Undirected Advertising, Resolvable Private Address]
+    LINK/SEC/ADV/3-C [Non Connectable Undirected Advertising with resolvable private address]
 """
-def ll_sec_adv_bv_03_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_3_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to the Resolving List with the upperIRK
@@ -5287,9 +5222,9 @@ def ll_sec_adv_bv_03_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-04-C [Network Privacy - Scannable Advertising, non-resolvable private address]
+    LINK/SEC/ADV/4-C [Scannable Undirected Advertising with non-resolvable private address]
 """
-def ll_sec_adv_bv_04_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_4_c(transport, upperTester, lowerTester, trace):
 
     """
         Set advertiser and scanner to use non-resolvable private addresses
@@ -5323,9 +5258,9 @@ def ll_sec_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-05-C [Network Privacy - Scannable Advertising, resolvable private address]
+    LINK/SEC/ADV/5-C [Scannable Undirected Advertising with resolvable private address]
 """
-def ll_sec_adv_bv_05_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_5_c(transport, upperTester, lowerTester, trace):
 
     """
         Retrieving random addresses and forcing them to be private resolvable
@@ -5391,9 +5326,9 @@ def ll_sec_adv_bv_05_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-06-C [Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK]
+    LINK/SEC/ADV/6-C [Connecting with Undirected Connectable Advertiser using non-resolvable private address]
 """
-def ll_sec_adv_bv_06_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_6_c(transport, upperTester, lowerTester, trace):
 
     upperAddr = toNumber(upperRandomAddress) & 0x3FFFFFFFFFFFL
     lowerAddrType = [SimpleAddressType.PUBLIC, ExtendedAddressType.RESOLVABLE_OR_RANDOM, ExtendedAddressType.RESOLVABLE_OR_RANDOM]
@@ -5435,9 +5370,9 @@ def ll_sec_adv_bv_06_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-07-C [Network Privacy - Undirected Connectable Advertising with Local IRK, no peer IRK]
+    LINK/SEC/ADV/7-C [Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK]
 """
-def ll_sec_adv_bv_07_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
 
     """
         Set advertiser and scanner to use non-resolvable private addresses
@@ -5516,9 +5451,9 @@ def ll_sec_adv_bv_07_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-08-C [Network Privacy - Undirected Connectable Advertising with Local IRK, peer IRK]
+    LINK/SEC/ADV/8-C [Connecting with Undirected Connectable Advertiser with both Local and Peer IRK]
 """
-def ll_sec_adv_bv_08_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_8_c(transport, upperTester, lowerTester, trace):
 
     """
         Set advertiser and scanner to use resolvable private addresses
@@ -5598,9 +5533,9 @@ def ll_sec_adv_bv_08_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-09-C [Network Privacy - Undirected Connectable Advertising without Local IRK, peer IRK]
+    LINK/SEC/ADV/9-C [Connecting with Undirected Connectable Advertiser with no Local IRK but peer IRK]
 """
-def ll_sec_adv_bv_09_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_9_c(transport, upperTester, lowerTester, trace):
 
     initiatorAddr = (toNumber(lowerRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
     """
@@ -5671,9 +5606,9 @@ def ll_sec_adv_bv_09_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-10-C [Network Privacy - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List]
+    LINK/SEC/ADV/10-C [Connecting with Undirected Connectable Advertiser where Peer Device Identity address not in White List]
 """
-def ll_sec_adv_bv_10_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_10_c(transport, upperTester, lowerTester, trace):
 
     """
         Retreive resolvable private address for lower tester
@@ -5716,9 +5651,9 @@ def ll_sec_adv_bv_10_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-11-C [Network Privacy - Directed Connectable Advertising using local and remote IRK]
+    LINK/SEC/ADV/11-C [Connecting with Directed Connectable Advertiser using local and remote IRK]
 """
-def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_11_c(transport, upperTester, lowerTester, trace):
 
     """
         Configure RPAs for use in address resolutions
@@ -5785,9 +5720,9 @@ def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-12-C [Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK]
+    LINK/SEC/ADV/12-C [Connecting with Directed Connectable Advertising with local IRK but without remote IRK]
 """
-def ll_sec_adv_bv_12_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_12_c(transport, upperTester, lowerTester, trace):
 
     lowerAddr = 0x123456789ABCL
     """
@@ -5865,9 +5800,9 @@ def ll_sec_adv_bv_12_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-13-C [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]
+    LINK/SEC/ADV/13-C [Directed Connectable Advertising without local IRK but with remote IRK]
 """
-def ll_sec_adv_bv_13_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_13_c(transport, upperTester, lowerTester, trace):
 
     upperAddr = toNumber( upperRandomAddress ) | 0xC00000000000L
     """
@@ -5947,9 +5882,9 @@ def ll_sec_adv_bv_13_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-14-C [Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK]
+    LINK/SEC/ADV/14-C [Directed Connectable Advertising using Resolving List and Peer Device Identity not in the List]
 """
-def ll_sec_adv_bv_14_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_14_c(transport, upperTester, lowerTester, trace):
 
     """
         Retreive resolvable private address for lower tester
@@ -6001,9 +5936,9 @@ def ll_sec_adv_bv_14_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-15-C [Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address]
+    LINK/SEC/ADV/15-C [Scannable Advertising with resolvable private address, no Scan Response to Identity Address]
 """
-def ll_sec_adv_bv_15_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_15_c(transport, upperTester, lowerTester, trace):
 
     lowerAddr = 0x123456789ABCL
     upperAddr = 0x456789ABCDEFL
@@ -6065,9 +6000,9 @@ def ll_sec_adv_bv_15_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-16-C [Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address]
+    LINK/SEC/ADV/16-C [Undirected Connectable Advertising with resolvable private address; no Connection to Identity Address]
 """
-def ll_sec_adv_bv_16_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_16_c(transport, upperTester, lowerTester, trace):
 
     upperAddr = (toNumber(upperRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
     lowerAddrType = SimpleAddressType.PUBLIC
@@ -6116,9 +6051,9 @@ def ll_sec_adv_bv_16_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-17-C [Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address]
+    LINK/SEC/ADV/17-C [Directed Connectable Advertising using local and remote IRK, Ignore Identity Address]
 """
-def ll_sec_adv_bv_17_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_17_c(transport, upperTester, lowerTester, trace):
 
     """
         Configure RPAs for use in address resolutions
@@ -6172,9 +6107,9 @@ def ll_sec_adv_bv_17_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-18-C [Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address]
+    LINK/SEC/ADV/18-C [Scannable Advertising with resolvable private address, accept Identity Address]
 """
-def ll_sec_adv_bv_18_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_18_c(transport, upperTester, lowerTester, trace):
 
     lowerAddr = 0x123456789ABCL
     upperAddr = 0x456789ABCDEFL
@@ -6235,9 +6170,9 @@ def ll_sec_adv_bv_18_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-19-C [Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address]
+    LINK/SEC/ADV/19-C [Undirected Connectable Advertising with Local IRK and Peer IRK, accept Identity Address]
 """
-def ll_sec_adv_bv_19_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_19_c(transport, upperTester, lowerTester, trace):
 
     """
         Retrieving random addresses and forcing it to be private resolvable
@@ -6297,9 +6232,9 @@ def ll_sec_adv_bv_19_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    LL/SEC/ADV/BV-20-C [Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address]
+    LINK/SEC/ADV/20-C [Directed Connectable Advertising with resolvable private address; Connect to Identity Address]
 """
-def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
+def link_sec_adv_20_c(transport, upperTester, lowerTester, trace):
 
     """
         Configure RPAs for use in address resolutions
@@ -6354,124 +6289,124 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
     return success
 
 __tests__ = {
-    "LL/CON/ADV/BV-01-C": [ ll_con_adv_bv_01_c, "Accepting Connections" ],
-    "LL/CON/ADV/BV-04-C": [ ll_con_adv_bv_04_c, "Directed Advertising Connection" ],
-    "LL/CON/ADV/BV-09-C": [ ll_con_adv_bv_09_c, "Accepting Connections, Channel Selection Algorithm #2" ],
-    "LL/CON/ADV/BV-10-C": [ ll_con_adv_bv_10_c, "Directed Advertising Connection, Channel Selection Algorithm #2" ],
-    "LL/CON/INI/BV-01-C": [ ll_con_ini_bv_01_c, "Connection Initiation" ],
-    "LL/CON/INI/BV-02-C": [ ll_con_ini_bv_02_c, "Connecting to Directed Advertising" ],
-    "LL/CON/INI/BV-06-C": [ ll_con_ini_bv_06_c, "Initiation Device Filtering: Undirected" ],
-    "LL/CON/INI/BV-07-C": [ ll_con_ini_bv_07_c, "Initiation Device Filtering: Directed" ],
-    "LL/CON/INI/BV-08-C": [ ll_con_ini_bv_08_c, "Network Privacy Connection Establishment responding to connectable undirected advertising, Initiator" ],
-    "LL/CON/INI/BV-09-C": [ ll_con_ini_bv_09_c, "Network Privacy - Connection Establishment using resolving list, Initiator" ],
-    "LL/CON/INI/BV-10-C": [ ll_con_ini_bv_10_c, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator" ],
-    "LL/CON/INI/BV-11-C": [ ll_con_ini_bv_11_c, "Network Privacy - Connection Establishment using directed advertising with wrong address and resolving list, Initiator" ],
-    "LL/CON/INI/BV-12-C": [ ll_con_ini_bv_12_c, "Network Privacy - Connection Establishment using directed advertising with identity address and resolving list, Initiator" ],
-    "LL/CON/INI/BV-16-C": [ ll_con_ini_bv_16_c, "Connection Initiation, Channel Selection Algorithm #2" ],
-    "LL/CON/INI/BV-17-C": [ ll_con_ini_bv_17_c, "Connecting to Directed Advertising, Channel Selection Algorithm #2" ],
-    "LL/CON/INI/BV-18-C": [ ll_con_ini_bv_18_c, "Network Privacy - Connection Establishment using resolving list, Initiator, Ignore Identity Address" ],
-    "LL/CON/INI/BV-19-C": [ ll_con_ini_bv_19_c, "Network Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Ignore Identity Address" ],
-    "LL/CON/INI/BV-20-C": [ ll_con_ini_bv_20_c, "Device Privacy - Connection Establishment using resolving list, Initiator, Accept Identity Address" ],
-    "LL/CON/INI/BV-21-C": [ ll_con_ini_bv_21_c, "Device Privacy - Connection Establishment using directed advertising and resolving list, Initiator, Accept Identity Address" ],
-    "LL/CON/MAS/BI-06-C": [ ll_con_mas_bi_06_c, "Accepting Parameter Connection Request - illegal parameters" ],
-    "LL/CON/MAS/BV-03-C": [ ll_con_mas_bv_03_c, "Master Sending Data" ],
-    "LL/CON/MAS/BV-04-C": [ ll_con_mas_bv_04_c, "Master Receiving Data" ],
-    "LL/CON/MAS/BV-05-C": [ ll_con_mas_bv_05_c, "Master Sending and Receiving Data" ],
-    "LL/CON/MAS/BV-07-C": [ ll_con_mas_bv_07_c, "Requesting Parameter Update" ],
-    "LL/CON/MAS/BV-08-C": [ ll_con_mas_bv_08_c, "Master Sending Termination" ],
-    "LL/CON/MAS/BV-09-C": [ ll_con_mas_bv_09_c, "Master Accepting Termination" ],
-    "LL/CON/MAS/BV-13-C": [ ll_con_mas_bv_13_c, "Feature Setup Request" ],
-    "LL/CON/MAS/BV-20-C": [ ll_con_mas_bv_20_c, "Master Request Version" ],
-    "LL/CON/MAS/BV-21-C": [ ll_con_mas_bv_21_c, "Master Respond Version" ],
-    "LL/CON/MAS/BV-23-C": [ ll_con_mas_bv_23_c, "Responding to Feature Exchange" ],
-    "LL/CON/MAS/BV-24-C": [ ll_con_mas_bv_24_c, "Initiating Connection Parameter Request - Accept" ],
-    "LL/CON/MAS/BV-25-C": [ ll_con_mas_bv_25_c, "Initiating Connection Parameter Request - Reject" ],
-    "LL/CON/MAS/BV-26-C": [ ll_con_mas_bv_26_c, "Initiating Connection Parameter Request - same procedure collision" ],
-    "LL/CON/MAS/BV-27-C": [ ll_con_mas_bv_27_c, "Initiating Connection Parameter Request - different procedure collision - channel map update" ],
-    "LL/CON/MAS/BV-29-C": [ ll_con_mas_bv_29_c, "Initiating Connection Parameter Request - remote legacy host" ],
-    "LL/CON/MAS/BV-30-C": [ ll_con_mas_bv_30_c, "Accepting Connection Parameter Request - no Preferred Periodicity" ],
-    "LL/CON/MAS/BV-34-C": [ ll_con_mas_bv_34_c, "Accepting Connection Parameter Request - event masked" ],
-    "LL/CON/MAS/BV-35-C": [ ll_con_mas_bv_35_c, "Accepting Connection Parameter Request - Host rejects" ],
-    "LL/CON/MAS/BV-41-C": [ ll_con_mas_bv_41_c, "Initiating PHY Update Procedure" ],
-    "LL/CON/MAS/BV-43-C": [ ll_con_mas_bv_43_c, "Responding to PHY Update Procedure" ],
-    "LL/CON/MAS/BV-74-C": [ ll_con_mas_bv_74_c, "Master Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY" ],
-    "LL/CON/MAS/BV-77-C": [ ll_con_mas_bv_77_c, "Master Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY" ],
-    "LL/CON/SLA/BI-08-C": [ ll_con_sla_bi_08_c, "Accepting Connection Parameter Request Illegal Parameters" ],
-    "LL/CON/SLA/BV-04-C": [ ll_con_sla_bv_04_c, "Slave Sending Data" ],
-    "LL/CON/SLA/BV-05-C": [ ll_con_sla_bv_05_c, "Slave Receiving Data" ],
-    "LL/CON/SLA/BV-06-C": [ ll_con_sla_bv_06_c, "Slave Sending and Receiving Data" ],
-    "LL/CON/SLA/BV-10-C": [ ll_con_sla_bv_10_c, "Accepting Parameter Update" ],
-    "LL/CON/SLA/BV-11-C": [ ll_con_sla_bv_11_c, "Slave sending termination" ],
-    "LL/CON/SLA/BV-12-C": [ ll_con_sla_bv_12_c, "Slave accepting termination" ],
-#   "LL/CON/SLA/BV-13-C": [ ll_con_sla_bv_13_c, "Slave supervision timer - FAILS" ],
-    "LL/CON/SLA/BV-14-C": [ ll_con_sla_bv_14_c, "Feature Setup Response" ],
-    "LL/CON/SLA/BV-19-C": [ ll_con_sla_bv_19_c, "Slave request version" ],
-    "LL/CON/SLA/BV-20-C": [ ll_con_sla_bv_20_c, "Slave respond version" ],
-    "LL/CON/SLA/BV-22-C": [ ll_con_sla_bv_22_c, "Initiate feature exchange" ],
-    "LL/CON/SLA/BV-24-C": [ ll_con_sla_bv_24_c, "Initiating Connection Parameter Request - Accept" ],
-    "LL/CON/SLA/BV-25-C": [ ll_con_sla_bv_25_c, "Initiating Connection Parameter Request - Reject" ],
-    "LL/CON/SLA/BV-26-C": [ ll_con_sla_bv_26_c, "Initiating Connection Parameter Request - same procedure collision" ],
-    "LL/CON/SLA/BV-27-C": [ ll_con_sla_bv_27_c, "Initiating Connection Parameter Request - different procedure collision - channel map update" ],
-    "LL/CON/SLA/BV-29-C": [ ll_con_sla_bv_29_c, "Responding to Connection Parameter Request - no Preffered_Periodicity" ],
-    "LL/CON/SLA/BV-33-C": [ ll_con_sla_bv_33_c, "Accepting Connection Parameter Request - event masked" ],
-    "LL/CON/SLA/BV-34-C": [ ll_con_sla_bv_34_c, "Accepting Connection Parameter Request - host rejectssur" ],
-    "LL/CON/SLA/BV-40-C": [ ll_con_sla_bv_40_c, "Initiating PHY Update Procedure" ],
-    "LL/CON/SLA/BV-42-C": [ ll_con_sla_bv_42_c, "Responding to PHY Update Procedure" ],
-    "LL/CON/SLA/BV-78-C": [ ll_con_sla_bv_78_c, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 1M PHY" ],
-    "LL/CON/SLA/BV-81-C": [ ll_con_sla_bv_81_c, "Slave Data Length Update - Initiating Data Length Update Procedure, LE 2M PHY" ],
-    "LL/DDI/ADV/BV-01-C": [ ll_ddi_adv_bv_01_c, "Non-Connectable Advertising Events" ],
-    "LL/DDI/ADV/BV-02-C": [ ll_ddi_adv_bv_02_c, "Undirected Advertising Events" ],
-    "LL/DDI/ADV/BV-03-C": [ ll_ddi_adv_bv_03_c, "Advertising Data: Non-Connectable" ],
-    "LL/DDI/ADV/BV-04-C": [ ll_ddi_adv_bv_04_c, "Advertising Data: Undirected" ],
-    "LL/DDI/ADV/BV-05-C": [ ll_ddi_adv_bv_05_c, "Scan Request: Undirected Connectable" ],
-    "LL/DDI/ADV/BV-06-C": [ ll_ddi_adv_bv_06_c, "Connection Request" ],
-    "LL/DDI/ADV/BV-07-C": [ ll_ddi_adv_bv_07_c, "Scan Request Connection Request" ],
-    "LL/DDI/ADV/BV-08-C": [ ll_ddi_adv_bv_08_c, "Scan Request Device Filtering" ],
-    "LL/DDI/ADV/BV-09-C": [ ll_ddi_adv_bv_09_c, "Connection Request Device Filtering" ],
-    "LL/DDI/ADV/BV-11-C": [ ll_ddi_adv_bv_11_c, "Directed Advertising Events" ],
-    "LL/DDI/ADV/BV-15-C": [ ll_ddi_adv_bv_15_c, "Discoverable Advertising Events" ],
-    "LL/DDI/ADV/BV-16-C": [ ll_ddi_adv_bv_16_c, "Advertising Data: Discoverable" ],
-    "LL/DDI/ADV/BV-17-C": [ ll_ddi_adv_bv_17_c, "Scan Request: Discoverable" ],
-    "LL/DDI/ADV/BV-18-C": [ ll_ddi_adv_bv_18_c, "Device Filtering: Discoverable" ],
-    "LL/DDI/ADV/BV-19-C": [ ll_ddi_adv_bv_19_c, "Low Duty Cycle Directed Advertising Events" ],
-    "LL/DDI/ADV/BV-20-C": [ ll_ddi_adv_bv_20_c, "Advertising Always Using the LE 1M PHY" ],
-#   "LL/DDI/ADV/BV-21-C": [ ll_ddi_adv_bv_21_c, "Extended Advertising, Legacy PDUs, Non-Connectable - FAILS" ],
-    "LL/DDI/SCN/BV-01-C": [ ll_ddi_scn_bv_01_c, "Passive Scanning: Non Connectable" ],
-    "LL/DDI/SCN/BV-02-C": [ ll_ddi_scn_bv_02_c, "Passive Scanning Device Filtering" ],
-    "LL/DDI/SCN/BV-03-C": [ ll_ddi_scn_bv_03_c, "Active Scanning" ],
-    "LL/DDI/SCN/BV-04-C": [ ll_ddi_scn_bv_04_c, "Active Scanning Device Filtering" ],
-    "LL/DDI/SCN/BV-05-C": [ ll_ddi_scn_bv_05_c, "Scanning For Advertiser Types" ],
-    "LL/DDI/SCN/BV-10-C": [ ll_ddi_scn_bv_10_c, "Passive Scanning: Undirected Events" ],
-    "LL/DDI/SCN/BV-11-C": [ ll_ddi_scn_bv_11_c, "Passive Scanning: Directed Events" ],
-    "LL/DDI/SCN/BV-12-C": [ ll_ddi_scn_bv_12_c, "Passive Scanning: Discoverable Events" ],
-    "LL/DDI/SCN/BV-13-C": [ ll_ddi_scn_bv_13_c, "Network Privacy Passive Scanning, Peer IRK" ],
-    "LL/DDI/SCN/BV-14-C": [ ll_ddi_scn_bv_14_c, "Network Privacy - Passive Scanning: Directed Events to an address different from the scanner s address" ],
-    "LL/DDI/SCN/BV-15-C": [ ll_ddi_scn_bv_15_c, "Network Privacy Active Scanning, no Local IRK, no Peer IRK" ],
-    "LL/DDI/SCN/BV-16-C": [ ll_ddi_scn_bv_16_c, "Network Privacy Active Scanning, Local IRK, no Peer IRK" ],
-    "LL/DDI/SCN/BV-17-C": [ ll_ddi_scn_bv_17_c, "Network Privacy Active Scanning, no Local IRK, Peer IRK" ],
-    "LL/DDI/SCN/BV-18-C": [ ll_ddi_scn_bv_18_c, "Network Privacy Active Scanning, Local IRK, Peer IRK" ],
-    "LL/DDI/SCN/BV-26-C": [ ll_ddi_scn_bv_26_c, "Network Privacy Passive Scanning, Peer IRK, Ignore Identity Address" ],
-    "LL/DDI/SCN/BV-28-C": [ ll_ddi_scn_bv_28_c, "Device Privacy Passive Scanning, Peer IRK, Accept Identity Address" ],
-#   "LL/SEC/ADV/BV-01-C": [ ll_sec_adv_bv_01_c, "Advertising with static address - FAILS" ],
-    "LL/SEC/ADV/BV-02-C": [ ll_sec_adv_bv_02_c, "Privacy - Non Connectable Undirected Advertising, non-resolvable private address" ],
-    "LL/SEC/ADV/BV-03-C": [ ll_sec_adv_bv_03_c, "Privacy - Non Connectable Undirected Advertising, Resolvable Private Address" ],
-    "LL/SEC/ADV/BV-04-C": [ ll_sec_adv_bv_04_c, "Network Privacy - Scannable Advertising, non-resolvable private address" ],
-    "LL/SEC/ADV/BV-05-C": [ ll_sec_adv_bv_05_c, "Network Privacy - Scannable Advertising, resolvable private address" ],
-    "LL/SEC/ADV/BV-06-C": [ ll_sec_adv_bv_06_c, "Network Privacy - Undirected Connectable Advertising no Local IRK, no peer IRK" ],
-    "LL/SEC/ADV/BV-07-C": [ ll_sec_adv_bv_07_c, "Network Privacy - Undirected Connectable Advertising with Local IRK, no peer IRK" ],
-#   "LL/SEC/ADV/BV-08-C": [ ll_sec_adv_bv_08_c, "Network Privacy - Undirected Connectable Advertising with Local IRK, peer IRK - FAILS" ],
-    "LL/SEC/ADV/BV-09-C": [ ll_sec_adv_bv_09_c, "Network Privacy - Undirected Connectable Advertising without Local IRK, peer IRK" ],
-    "LL/SEC/ADV/BV-10-C": [ ll_sec_adv_bv_10_c, "Network Privace - Undirected Connectable Advertising using Resolving List and Peer Device Identity not in the List" ],
-    "LL/SEC/ADV/BV-11-C": [ ll_sec_adv_bv_11_c, "Network Privacy - Directed Connectable Advertising using local and remote IRK" ],
-    "LL/SEC/ADV/BV-12-C": [ ll_sec_adv_bv_12_c, "Network Privacy - Directed Connectable Advertising using local IRK, but not remote IRK" ],
-#   "LL/SEC/ADV/BV-13-C": [ ll_sec_adv_bv_13_c, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK - FAILS" ],
-#   "LL/SEC/ADV/BV-14-C": [ ll_sec_adv_bv_14_c, "Network Privacy - Directed Connectable Advertising without local IRK, but with remote IRK - FAILS" ],
-    "LL/SEC/ADV/BV-15-C": [ ll_sec_adv_bv_15_c, "Network Privacy - Scannable Advertising, resolvable private address, Ignore Identity Address" ],
-    "LL/SEC/ADV/BV-16-C": [ ll_sec_adv_bv_16_c, "Network Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Ignore Identity Address" ],
-#   "LL/SEC/ADV/BV-17-C": [ ll_sec_adv_bv_17_c, "Network Privacy - Directed Connectable Advertising using local and remote IRK, Ignore Identity Address - FAILS" ],
-#   "LL/SEC/ADV/BV-18-C": [ ll_sec_adv_bv_18_c, "Device Privacy - Scannable Advertising, resolvable private address, Accept Identity Address -FAILS" ],
-#   "LL/SEC/ADV/BV-19-C": [ ll_sec_adv_bv_19_c, "Device Privacy - Undirected Connectable Advertising with Local IRK and Peer IRK, Accept Identity Address- FAILS" ],
-    "LL/SEC/ADV/BV-20-C": [ ll_sec_adv_bv_20_c, "Device Privacy - Directed Connectable Advertising using local and remote IRK, Accept Identity Address" ]
+    "LINK/CON/ADV/1-C":  [ link_con_adv_1_c,  "Accepting Connection Request" ],
+    "LINK/CON/ADV/4-C":  [ link_con_adv_4_c,  "Accepting Connection Request after Directed Advertising" ],
+    "LINK/CON/ADV/9-C":  [ link_con_adv_9_c,  "Accepting Connection Request using Channel Selection Algorithm #2" ],
+    "LINK/CON/ADV/10-C": [ link_con_adv_10_c, "Accepting Connection Request after Directed Advertising using Channel Selection Algorithm #2" ],
+    "LINK/CON/INI/1-C":  [ link_con_ini_1_c,  "Connection Initiation rejects Address change" ],
+    "LINK/CON/INI/2-C":  [ link_con_ini_2_c,  "Connecting to Advertiser using Directed Advertising Packets" ],
+    "LINK/CON/INI/5-C":  [ link_con_ini_5_c,  "Filtered Connection to Advertiser using Undirected Advertising Packets" ],
+    "LINK/CON/INI/6-C":  [ link_con_ini_6_c,  "Filtered Connection to Advertiser using Directed Advertising Packets" ],
+    "LINK/CON/INI/7-C":  [ link_con_ini_7_c,  "Connecting to Connectable Undirected Advertiser with Network Privacy" ],
+    "LINK/CON/INI/8-C":  [ link_con_ini_8_c,  "Connecting to Connectable Undirected Advertiser with Network Privacy thru Resolving List" ],
+    "LINK/CON/INI/9-C":  [ link_con_ini_9_c,  "Connecting to Directed Advertiser with Network Privacy thru Resolving List" ],
+    "LINK/CON/INI/10-C": [ link_con_ini_10_c, "Connecting to Directed Advertiser using  wrong address with Network Privacy thru Resolving List " ],
+    "LINK/CON/INI/11-C": [ link_con_ini_11_c, "Connecting to Directed Advertiser using Identity address with Network Privacy thru Resolving List" ],
+    "LINK/CON/INI/15-C": [ link_con_ini_15_c, "Connecting to Advertiser with Channel Selection Algorithm #2" ],
+    "LINK/CON/INI/16-C": [ link_con_ini_16_c, "Connecting to Directed Advertiser with Channel Selection Algorithm #2" ],
+    "LINK/CON/INI/17-C": [ link_con_ini_17_c, "Don't connect to Advertiser using Identity address with Network Privacy thru Resolving List" ],
+    "LINK/CON/INI/18-C": [ link_con_ini_18_c, "Don't connect to Directed Advertiser using Identity address with Network Privacy thru Resolving List" ],
+    "LINK/CON/INI/19-C": [ link_con_ini_19_c, "Connect to Advertiser using Identity address with Device Privacy thru Resolving List" ],
+    "LINK/CON/INI/20-C": [ link_con_ini_20_c, "Connect to Directed Advertiser using Identity address with Device Privacy thru Resolving List" ],
+    "LINK/CON/MAS/77-C": [ link_con_mas_77_c, "Master responds to Connection Parameter Request – illegal parameters" ],
+    "LINK/CON/MAS/2-C":  [ link_con_mas_2_c,  "Master sending Data packets to Slave" ],
+    "LINK/CON/MAS/3-C":  [ link_con_mas_3_c,  "Master receiving Data packets from Slave" ],
+    "LINK/CON/MAS/4-C":  [ link_con_mas_4_c,  "Master sending and receiving Data packets to and form Slave" ],
+    "LINK/CON/MAS/5-C":  [ link_con_mas_5_c,  "Master requests Connection Parameter Update" ],
+    "LINK/CON/MAS/6-C":  [ link_con_mas_6_c,  "Master Terminating Connection" ],
+    "LINK/CON/MAS/7-C":  [ link_con_mas_7_c,  "Master accepting Connection Termination" ],
+    "LINK/CON/MAS/9-C":  [ link_con_mas_9_c,  "Master requests Feature Setup procedure" ],
+    "LINK/CON/MAS/16-C": [ link_con_mas_16_c, "Master requests Version Exchange procedure" ],
+    "LINK/CON/MAS/17-C": [ link_con_mas_17_c, "Master responds to Version Exchange procedure" ],
+    "LINK/CON/MAS/19-C": [ link_con_mas_19_c, "Master responds to Feature Exchange procedure" ],
+    "LINK/CON/MAS/20-C": [ link_con_mas_20_c, "Master requests Connection Parameters – Slave Accepts" ],
+    "LINK/CON/MAS/21-C": [ link_con_mas_21_c, "Master requests Connection Parameters – Slave Rejects" ],
+    "LINK/CON/MAS/22-C": [ link_con_mas_22_c, "Master requests Connection Parameters – same procedure collision" ],
+    "LINK/CON/MAS/23-C": [ link_con_mas_23_c, "Master requests Connection Parameters - Channel Map Update procedure collision" ],
+    "LINK/CON/MAS/25-C": [ link_con_mas_25_c, "Master requests Connection Parameters – Slave unsupported" ],
+    "LINK/CON/MAS/26-C": [ link_con_mas_26_c, "Master responds to Connection Parameters request – no Preferred_Periodicity" ],
+    "LINK/CON/MAS/30-C": [ link_con_mas_30_c, "Master responds to Connection Parameters request – event masked" ],
+    "LINK/CON/MAS/31-C": [ link_con_mas_31_c, "Master responds to Connection Parameters request – Host rejects" ],
+    "LINK/CON/MAS/32-C": [ link_con_mas_32_c, "Master requests PHY Update procedure" ],
+    "LINK/CON/MAS/34-C": [ link_con_mas_34_c, "Master responds to PHY Update procedure" ],
+    "LINK/CON/MAS/65-C": [ link_con_mas_65_c, "Master Packet Data Length Update – Initiating Packet Data Length Update Procedure; LE 1M PHY" ],
+    "LINK/CON/MAS/68-C": [ link_con_mas_68_c, "Master Packet Data Length Update – Initiating Packet Data Length Update Procedure; LE 2M PHY" ],
+    "LINK/CON/SLA/81-C": [ link_con_sla_81_c, "Slave responds to Connection Parameters request – Illegal Parameters" ],
+    "LINK/CON/SLA/2-C":  [ link_con_sla_2_c,  "Connection where Slave sends data to Master" ],
+    "LINK/CON/SLA/3-C":  [ link_con_sla_3_c,  "Connection where Slave receives data from Master" ],
+    "LINK/CON/SLA/4-C":  [ link_con_sla_4_c,  "Connection where Slave sends and receives data to and from Master" ],
+    "LINK/CON/SLA/5-C":  [ link_con_sla_5_c,  "Slave accepting Connection Parameter Update from Master" ],
+    "LINK/CON/SLA/6-C":  [ link_con_sla_6_c,  "Slave sending Termination to Master" ],
+    "LINK/CON/SLA/7-C":  [ link_con_sla_7_c,  "Slave accepting Termination from Master" ],
+#   "LINK/CON/SLA/8-C":  [ link_con_sla_8_c,  "Slave Terminating Connection on Supervision Timer" ],
+    "LINK/CON/SLA/9-C":  [ link_con_sla_9_c,  "Slave performs Feature Setup procedure" ],
+    "LINK/CON/SLA/14-C": [ link_con_sla_14_c, "Slave requests Version Exchange procedure" ],
+    "LINK/CON/SLA/15-C": [ link_con_sla_15_c, "Slave responds to Version Exchange procedure" ],
+    "LINK/CON/SLA/17-C": [ link_con_sla_17_c, "Slave requests Feature Exchange procedure" ],
+    "LINK/CON/SLA/19-C": [ link_con_sla_19_c, "Slave requests Connection Parameters – Master Accepts" ],
+    "LINK/CON/SLA/20-C": [ link_con_sla_20_c, "Slave requests Connection Parameters – Master Rejects" ],
+    "LINK/CON/SLA/21-C": [ link_con_sla_21_c, "Slave requests Connection Parameters – same procedure collision" ],
+    "LINK/CON/SLA/22-C": [ link_con_sla_22_c, "Slave requests Connection Parameters – channel map update procedure collision" ],
+    "LINK/CON/SLA/24-C": [ link_con_sla_24_c, "Slave responds to Connection Parameters – Master no Preferred Periodicity" ],
+    "LINK/CON/SLA/28-C": [ link_con_sla_28_c, "Slave responds to Connection Parameters request – event masked" ],
+    "LINK/CON/SLA/29-C": [ link_con_sla_29_c, "Slave responds to Connection Parameters request – Host rejects" ],
+    "LINK/CON/SLA/30-C": [ link_con_sla_30_c, "Slave requests PHY Update procedure" ],
+    "LINK/CON/SLA/31-C": [ link_con_sla_31_c, "Slave responds to PHY Update procedure" ],
+    "LINK/CON/SLA/67-C": [ link_con_sla_67_c, "Slave requests Packet Data Length Update procedure; LE 1M PHY" ],
+    "LINK/CON/SLA/70-C": [ link_con_sla_70_c, "Slave requests Packet Data Length Update procedure; LE 2M PHY" ],
+    "LINK/DED/ADV/1-C":  [ link_ded_adv_1_c,  "Non-Connectable Advertising Packets on one channel" ],
+    "LINK/DED/ADV/2-C":  [ link_ded_adv_2_c,  "Undirected Advertising Packets on one channel" ],
+    "LINK/DED/ADV/3-C":  [ link_ded_adv_3_c,  "Non-Connectable Advertising Packets on all channels" ],
+    "LINK/DED/ADV/4-C":  [ link_ded_adv_4_c,  "Undirected Advertising with Data on all channels " ],
+    "LINK/DED/ADV/5-C":  [ link_ded_adv_5_c,  "Undirected Connectable Advertising with Scan Request/Response " ],
+    "LINK/DED/ADV/6-C":  [ link_ded_adv_6_c,  "Stop Advertising on Connection Request" ],
+    "LINK/DED/ADV/7-C":  [ link_ded_adv_7_c,  "Scan Request/Response followed by Connection Request" ],
+    "LINK/DED/ADV/8-C":  [ link_ded_adv_8_c,  "Advertiser Filtering Scan requests" ],
+    "LINK/DED/ADV/9-C":  [ link_ded_adv_9_c,  "Advertiser Filtering Connection requests" ],
+    "LINK/DED/ADV/10-C": [ link_ded_adv_10_c, "High Duty Cycle Connectable Directed Advertising on one channel" ],
+    "LINK/DED/ADV/11-C": [ link_ded_adv_11_c, "Discoverable Undirected Advertising on all channels" ],
+    "LINK/DED/ADV/12-C": [ link_ded_adv_12_c, "Discoverable Undirected Advertising with Data on all channels" ],
+    "LINK/DED/ADV/13-C": [ link_ded_adv_13_c, "Discoverable Undirected Advertising with Scan Request/Response" ],
+    "LINK/DED/ADV/14-C": [ link_ded_adv_14_c, "Discoverable Undirected Advertiser Filtering Scan requests " ],
+    "LINK/DED/ADV/17-C": [ link_ded_adv_17_c, "Low Duty Cycle Directed Advertising on all channels" ],
+    "LINK/DED/ADV/18-C": [ link_ded_adv_18_c, "Advertising on the LE 1M PHY on all channels" ],
+#   "LINK/DED/ADV/19-C": [ link_ded_adv_19_c, "Non-Connectable Extended Legacy Advertising with Data on all channels" ],
+    "LINK/DED/SCA/1-C":  [ link_ded_sca_1_c,  "Passive Scanning of Non-Connectable Advertising Packets" ],
+    "LINK/DED/SCA/2-C":  [ link_ded_sca_2_c,  "Filtered Passive Scanning of Non-Connectable Advertising Packets" ],
+    "LINK/DED/SCA/3-C":  [ link_ded_sca_3_c,  "Active Scanning of Connectable Undirected Advertising Packets" ],
+    "LINK/DED/SCA/4-C":  [ link_ded_sca_4_c,  "Filtered Active Scanning of Connectable Undirected Advertising Packets" ],
+    "LINK/DED/SCA/5-C":  [ link_ded_sca_5_c,  "Scanning for different Advertiser types with and without Data" ],
+    "LINK/DED/SCA/6-C":  [ link_ded_sca_6_c,  "Passive Scanning for Undirected Advertising Packets with Data" ],
+    "LINK/DED/SCA/7-C":  [ link_ded_sca_7_c,  "Passive Scanning for Directed Advertising Packets" ],
+    "LINK/DED/SCA/8-C":  [ link_ded_sca_8_c,  "Passive Scanning for Discoverable Undirected Advertising Packets" ],
+    "LINK/DED/SCA/9-C":  [ link_ded_sca_9_c,  "Passive Scanning for Non-Connectable Advertising Packets using Network Privacy" ],
+    "LINK/DED/SCA/10-C": [ link_ded_sca_10_c, "Passive Scanning for Connectable Directed Advertising Packets using Network Privacy" ],
+    "LINK/DED/SCA/11-C": [ link_ded_sca_11_c, "Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with no Local or Peer IRK" ],
+    "LINK/DED/SCA/12-C": [ link_ded_sca_12_c, "Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with Local and no Peer IRK" ],
+    "LINK/DED/SCA/13-C": [ link_ded_sca_13_c, "Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with no Local and a Peer IRK" ],
+    "LINK/DED/SCA/14-C": [ link_ded_sca_14_c, "Active Scanning for Scannable Undirected Advertising Packets using Network Privacy with both Local and Peer IRKs" ],
+    "LINK/DED/SCA/21-C": [ link_ded_sca_21_c, "Passive Scanning for Non-Connectable Advertising Packets using Network Privacy" ],
+    "LINK/DED/SCA/22-C": [ link_ded_sca_22_c, "Passive Scanning for Non-Connectable Advertising Packets using Device Privacy" ],
+#   "LINK/SEC/ADV/1-C":  [ link_sec_adv_1_c,  "Changing Static Address while Advertising" ],
+    "LINK/SEC/ADV/2-C":  [ link_sec_adv_2_c,  "Non Connectable Undirected Advertising with non-resolvable private address" ],
+    "LINK/SEC/ADV/3-C":  [ link_sec_adv_3_c,  "Non Connectable Undirected Advertising with resolvable private address" ],
+    "LINK/SEC/ADV/4-C":  [ link_sec_adv_4_c,  "Scannable Undirected Advertising with non-resolvable private address" ],
+    "LINK/SEC/ADV/5-C":  [ link_sec_adv_5_c,  "Scannable Undirected Advertising with resolvable private address" ],
+    "LINK/SEC/ADV/6-C":  [ link_sec_adv_6_c,  "Connecting with Undirected Connectable Advertiser using non-resolvable private address" ],
+    "LINK/SEC/ADV/7-C":  [ link_sec_adv_7_c,  "Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK" ],
+#   "LINK/SEC/ADV/8-C":  [ link_sec_adv_8_c,  "Connecting with Undirected Connectable Advertiser with both Local and Peer IRK" ],
+    "LINK/SEC/ADV/9-C":  [ link_sec_adv_9_c,  "Connecting with Undirected Connectable Advertiser with no Local IRK but peer IRK" ],
+    "LINK/SEC/ADV/10-C": [ link_sec_adv_10_c, "Connecting with Undirected Connectable Advertiser where Peer Device Identity address not in White List" ],
+    "LINK/SEC/ADV/11-C": [ link_sec_adv_11_c, "Connecting with Directed Connectable Advertiser using local and remote IRK" ],
+    "LINK/SEC/ADV/12-C": [ link_sec_adv_12_c, "Connecting with Directed Connectable Advertising with local IRK but without remote IRK" ],
+#   "LINK/SEC/ADV/13-C": [ link_sec_adv_13_c, "Directed Connectable Advertising without local IRK but with remote IRK" ],
+#   "LINK/SEC/ADV/14-C": [ link_sec_adv_14_c, "Directed Connectable Advertising using Resolving List and Peer Device Identity not in the List" ],
+    "LINK/SEC/ADV/15-C": [ link_sec_adv_15_c, "Scannable Advertising with resolvable private address, no Scan Response to Identity Address" ],
+    "LINK/SEC/ADV/16-C": [ link_sec_adv_16_c, "Undirected Connectable Advertising with resolvable private address; no Connection to Identity Address" ],
+#   "LINK/SEC/ADV/17-C": [ link_sec_adv_17_c, "Directed Connectable Advertising using local and remote IRK, Ignore Identity Address" ],
+#   "LINK/SEC/ADV/18-C": [ link_sec_adv_18_c, "Scannable Advertising with resolvable private address, accept Identity Address" ],
+#   "LINK/SEC/ADV/19-C": [ link_sec_adv_19_c, "Undirected Connectable Advertising with Local IRK and Peer IRK, accept Identity Address" ],
+    "LINK/SEC/ADV/20-C": [ link_sec_adv_20_c, "Directed Connectable Advertising with resolvable private address; Connect to Identity Address" ]
 };
 
 _maxNameLength = max([ len(key) for key in __tests__ ]);

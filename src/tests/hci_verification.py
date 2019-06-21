@@ -24,9 +24,9 @@ def __check_command_complete_event(transport, idx, trace):
     return (event == Events.BT_HCI_EVT_CMD_COMPLETE);
 
 """
-    HCI/GEV/BV-01-C [Unsupported Commands on each supported controller]
+    HCI/GEV/1-C [Status return for Unsupported Commands]
 """
-def hci_gev_bv_01_c(transport, idx, trace):
+def hci_gev_1_c(transport, idx, trace):
 
     NumRsp, length, lap = 0, 1, toArray(0x9E8B00, 3);
 
@@ -195,9 +195,9 @@ def hci_gev_bv_01_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CFC/BV-02-C [Buffer Size]
+    HCI/CFC/2-C [Reported Buffer Size]
 """
-def hci_cfc_bv_02_c(transport, idx, trace):
+def hci_cfc_2_c(transport, idx, trace):
 
     status, LeMaxLen, LeMaxNum = le_read_buffer_size(transport, idx, 100);
     trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X" % status);
@@ -211,9 +211,9 @@ def hci_cfc_bv_02_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CIN/BV-01-C [Read Local Supported Features Command]
+    HCI/COI/1-C [Features returned by Read Local Supported Features Command]
 """
-def hci_cin_bv_01_c(transport, idx, trace):
+def hci_coi_1_c(transport, idx, trace):
 
     status, features = read_local_supported_features(transport, idx, 100);
     trace.trace(6, "Read Local Supported Features Command returns status: 0x%02X" % status);
@@ -224,9 +224,9 @@ def hci_cin_bv_01_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CIN/BV-03-C [Read Local Supported Commands Command]
+    HCI/COI/3-C [Supported Commands returned by Read Local Supported Commands Command]
 """
-def hci_cin_bv_03_c(transport, idx, trace):
+def hci_coi_3_c(transport, idx, trace):
 
     status, commands = read_local_supported_commands(transport, idx, 100);
     trace.trace(6, "Read Local Supported Commands Command returns status: 0x%02X" % status);
@@ -237,9 +237,9 @@ def hci_cin_bv_03_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CIN/BV-04-C [Read Local Version Information Command]
+    HCI/COI/4-C [Versions returned by Read Local Version Information Command]
 """
-def hci_cin_bv_04_c(transport, idx, trace):
+def hci_coi_4_c(transport, idx, trace):
 
     status, HCIVersion, HCIRevision, LMPVersion, manufacturer, LMPSubversion = read_local_version_information(transport, idx, 100);
     trace.trace(6, "Read Local Version Information Command returns status: 0x%02X" % status);
@@ -254,9 +254,9 @@ def hci_cin_bv_04_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CIN/BV-06-C [White List Size]
+    HCI/COI/5-C [Reported White List Size]
 """
-def hci_cin_bv_06_c(transport, idx, trace):
+def hci_coi_5_c(transport, idx, trace):
 
     status = le_clear_white_list(transport, idx, 100);
     trace.trace(6, "LE Clear White List Command returns status: 0x%02X" % status);
@@ -286,9 +286,9 @@ def hci_cin_bv_06_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CIN/BV-09-C [Read LE Public Key Validation Feature Bit]
+    HCI/COI/7-C [Feature Bits returned by Read LE Public Key Validation Feature Bit]
 """
-def hci_cin_bv_09_c(transport, idx, trace):
+def hci_coi_7_c(transport, idx, trace):
 
     status, features = le_read_local_supported_features(transport, idx, 100);
     trace.trace(6, "LE Read Local Supported Features Command returns status: 0x%02X" % status);
@@ -299,9 +299,9 @@ def hci_cin_bv_09_c(transport, idx, trace):
     return success;
     
 """
-    HCI/CCO/BV-07-C [BR/EDR Not Supported]
+    HCI/COC/6-C [BR/EDR Commands Not Supported on LE Device]
 """
-def hci_cco_bv_07_c(transport, idx, trace):
+def hci_coc_6_c(transport, idx, trace):
 
     status = inquire(transport, idx, toArray(0x9E8B00, 3), 1, 1, 100);
     trace.trace(6, "Inquire Command returns status: 0x%02X" % status);
@@ -313,11 +313,11 @@ def hci_cco_bv_07_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-09-C [LE Set Data Length]
+    HCI/COC/8-C [Handling LE Set Data Length Command]
 
     Note: Requires that CONFIG_BT_CTLR_DATA_LENGTH_MAX=60 is set in the prj.conf file for the ptt_app.
 """
-def hci_cco_bv_09_c(transport, upperTester, lowerTester, trace):
+def hci_coc_8_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -359,9 +359,9 @@ def hci_cco_bv_09_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/CCO/BV-10-C [LE Read Suggested Default Data Length Command]
+    HCI/COC/9-C [Handling LE Read Suggested Default Data Length Command]
 """
-def hci_cco_bv_10_c(transport, idx, trace):
+def hci_coc_9_c(transport, idx, trace):
 
     status, maxTxOctets, maxTxTime = le_read_suggested_default_data_length(transport, idx, 100);
     trace.trace(6, "LE Read Suggested Default Data Length Command returns status: 0x%02X" % status);
@@ -373,9 +373,9 @@ def hci_cco_bv_10_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-11-C [LE Write Suggested Default Data Length Command]
+    HCI/COC/10-C [Handling LE Write Suggested Default Data Length Command]
 """
-def hci_cco_bv_11_c(transport, idx, trace):
+def hci_coc_10_c(transport, idx, trace):
 
     maxTxOctetsIn, maxTxTimeIn = (0x001B + 0x00FB)/2, (0x0148 + 0x4290)/2;
     status = le_write_suggested_default_data_length(transport, idx, maxTxOctetsIn, maxTxTimeIn, 100);
@@ -397,9 +397,9 @@ def hci_cco_bv_11_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-12-C [LE Remove Device From Resolving List Command]
+    HCI/COC/11-C [Handling LE Remove Device From Resolving List Command]
 """
-def hci_cco_bv_12_c(transport, idx, trace):
+def hci_coc_11_c(transport, idx, trace):
 
     peerAddress = Address(SimpleAddressType.PUBLIC, 0x123456789ABCL);
     status = le_add_device_to_resolving_list(transport, idx, peerAddress.type, peerAddress.address, lowerIRK, upperIRK, 100);
@@ -413,9 +413,9 @@ def hci_cco_bv_12_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-13-C [LE Clear Resolving List Command]
+    HCI/COC/12-C [Handling LE Clear Resolving List Command]
 """
-def hci_cco_bv_13_c(transport, idx, trace):
+def hci_coc_12_c(transport, idx, trace):
 
     peerAddress = Address(SimpleAddressType.PUBLIC, 0x456789ABCDEFL);
     status = le_add_device_to_resolving_list(transport, idx, peerAddress.type, peerAddress.address, lowerIRK, upperIRK, 100);
@@ -429,9 +429,9 @@ def hci_cco_bv_13_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-14-C [LE Read Resolving List Size Command]
+    HCI/COC/13-C [Handling LE Read Resolving List Size Command]
 """
-def hci_cco_bv_14_c(transport, idx, trace):
+def hci_coc_13_c(transport, idx, trace):
 
     status, listSize = le_read_resolving_list_size(transport, idx, 100);
     trace.trace(6, "LE Read Resolving List Size Command returns status: 0x%02X" % status);
@@ -441,9 +441,9 @@ def hci_cco_bv_14_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-15-C [LE Set Default PHY Command]
+    HCI/COC/14-C [Handling LE Set Default PHY Command]
 """
-def hci_cco_bv_15_c(transport, idx, trace):
+def hci_coc_14_c(transport, idx, trace):
 
     status = le_set_default_phy(transport, idx, 3, 0, 0, 100);
     trace.trace(6, "LE Set Default PHY Command returns status: 0x%02X" % status);
@@ -452,9 +452,9 @@ def hci_cco_bv_15_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-16-C [LE Read Periodic Advertiser List Size Command]
+    HCI/COC/15-C [Handling LE Read Periodic Advertiser List Size Command]
 """
-def hci_cco_bv_16_c(transport, idx, trace):
+def hci_coc_15_c(transport, idx, trace):
 
     status, listSize = le_read_periodic_advertiser_list_size(transport, idx, 100);
     trace.trace(6, "LE Read Periodic Advertiser List Size Command returns status: 0x%02X" % status);
@@ -464,9 +464,9 @@ def hci_cco_bv_16_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-17-C [LE Add/Remove/Clear Periodic Advertiser List Commands]
+    HCI/COC/16-C [Handling Add, Remove and Clear Periodic Advertiser List Commands]
 """
-def hci_cco_bv_17_c(transport, idx, trace):
+def hci_coc_16_c(transport, idx, trace):
 
     status = le_clear_periodic_advertiser_list(transport, idx, 100);
     trace.trace(6, "LE Clear Periodic Advertiser List Command returns status: 0x%02X" % status);
@@ -496,9 +496,9 @@ def hci_cco_bv_17_c(transport, idx, trace):
     return success;
 
 """
-    HCI/CCO/BV-18-C [LE Read Transmit Power Command]
+    HCI/COC/17-C [Handling LE Read Transmit Power Command]
 """
-def hci_cco_bv_18_c(transport, idx, trace):
+def hci_coc_17_c(transport, idx, trace):
 
     status, minTxPower, maxTxPower = le_read_transmit_power(transport, idx, 100);
     trace.trace(6, "LE Read Transmit Power Command returns status: 0x%02X" % status);
@@ -509,9 +509,9 @@ def hci_cco_bv_18_c(transport, idx, trace):
     return success;
 
 """
-    HCI/DDI/BV-03-C [Set Advertising Enable]
+    HCI/DED/3-C [Disable Advertising with Set Advertising Enable Command]
 """
-def hci_ddi_bv_03_c(transport, upperTester, lowerTester, trace):
+def hci_ded_3_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( SimpleAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -537,9 +537,9 @@ def hci_ddi_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DDI/BV-04-C [Set Scan Enable]
+    HCI/DED/4-C [Disable Scanning with Set Scan Enable Command]
 """
-def hci_ddi_bv_04_c(transport, upperTester, lowerTester, trace):
+def hci_ded_4_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( SimpleAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -564,9 +564,9 @@ def hci_ddi_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DDI/BI-02-C [Reject Invalid Advertising Parameters]
+    HCI/DED/7-C [Rejecting invalid Advertising Parameters]
 """
-def hci_ddi_bi_02_c(transport, upperTester, trace):
+def hci_ded_7_c(transport, upperTester, trace):
 
     ownAddress = Address( SimpleAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -592,9 +592,9 @@ def hci_ddi_bi_02_c(transport, upperTester, trace):
     return success;
 
 """
-    HCI/HFC/BV-04-C [LE Set Event Mask]
+    HCI/HFC/4-C [Events enabled by LE Set Event Mask Command]
 """
-def hci_hfc_bv_04_c(transport, upperTester, lowerTester, trace):
+def hci_hfc_4_c(transport, upperTester, lowerTester, trace):
 
     """ Bit:   5  4  4  3  2  1  0  0
                6  8  0  2  4  6  8  0
@@ -653,9 +653,9 @@ def hci_hfc_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/CM/BV-01-C [LE Read Peer Resolvable Address Command]
+    HCI/LCM/1-C [Handling LE Read Peer Resolvable Address Command]
 """
-def hci_cm_bv_01_c(transport, upperTester, lowerTester, trace):
+def hci_lcm_1_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester and upperTester to the Resolving List
@@ -711,9 +711,9 @@ def hci_cm_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/CM/BV-02-C [LE Read Local Resolvable Address Command]
+    HCI/LCM/2-C [Handling LE Read Local Resolvable Address Command]
 """
-def hci_cm_bv_02_c(transport, upperTester, lowerTester, trace):
+def hci_lcm_2_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester and upperTester to the Resolving List
@@ -769,9 +769,9 @@ def hci_cm_bv_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/CM/BV-03-C [LE Read PHY Command]
+    HCI/LCM/3-C [Handling LE Read PHY Command]
 """
-def hci_cm_bv_03_c(transport, upperTester, lowerTester, trace):
+def hci_lcm_3_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -797,9 +797,9 @@ def hci_cm_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DSU/BV-02-C [Reset in Advertising State]
+    HCI/DES/2-C [Reset Command received in Advertising State]
 """
-def hci_dsu_bv_02_c(transport, upperTester, lowerTester, trace):
+def hci_des_2_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( SimpleAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -831,9 +831,9 @@ def hci_dsu_bv_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DSU/BV-03-C [Reset to Slave]
+    HCI/DES/3-C [Reset Command received in Slave Role]
 """
-def hci_dsu_bv_03_c(transport, upperTester, lowerTester, trace):
+def hci_des_3_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -872,9 +872,9 @@ def hci_dsu_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DSU/BV-04-C [Reset in Scanning State]
+    HCI/DES/4-C [Reset Command received in Scanning State]
 """
-def hci_dsu_bv_04_c(transport, upperTester, lowerTester, trace):
+def hci_des_4_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( SimpleAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -906,9 +906,9 @@ def hci_dsu_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DSU/BV-05-C [Reset in Initiating State]
+    HCI/DES/5-C [Reset Command received in Initiating State]
 """
-def hci_dsu_bv_05_c(transport, upperTester, lowerTester, trace):
+def hci_des_5_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -931,9 +931,9 @@ def hci_dsu_bv_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    HCI/DSU/BV-06-C [Reset to Master]
+    HCI/DES/6-C [Reset Command received in Master Role]
 """
-def hci_dsu_bv_06_c(transport, upperTester, lowerTester, trace):
+def hci_des_6_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -955,36 +955,36 @@ def hci_dsu_bv_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 __tests__ = {
-    "HCI/CCO/BV-07-C": [ hci_cco_bv_07_c, 'BR/EDR Not Supported' ],
-    "HCI/CCO/BV-09-C": [ hci_cco_bv_09_c, 'LE Set Data Length' ],
-    "HCI/CCO/BV-10-C": [ hci_cco_bv_10_c, 'LE Read Suggested Default Data Length Command' ],
-    "HCI/CCO/BV-11-C": [ hci_cco_bv_11_c, 'LE Write Suggested Default Data Length Command' ],
-    "HCI/CCO/BV-12-C": [ hci_cco_bv_12_c, 'LE Remove Device From Resolving List Command' ],
-    "HCI/CCO/BV-13-C": [ hci_cco_bv_13_c, 'LE Clear Resolving List Command' ],
-    "HCI/CCO/BV-14-C": [ hci_cco_bv_14_c, 'LE Read Resolving List Size Command' ],
-    "HCI/CCO/BV-15-C": [ hci_cco_bv_15_c, 'LE Set Default PHY Command' ],
-#   "HCI/CCO/BV-16-C": [ hci_cco_bv_17_c, 'LE Read Periodic Advertiser List Size Command' ],
-#   "HCI/CCO/BV-17-C": [ hci_cco_bv_17_c, 'LE Add/Remove/Clear Periodic Advertiser List Commands' ],
-    "HCI/CCO/BV-18-C": [ hci_cco_bv_18_c, 'LE Read Transmit Power Command' ],
-    "HCI/CFC/BV-02-C": [ hci_cfc_bv_02_c, 'Buffer Size' ],
-    "HCI/CIN/BV-01-C": [ hci_cin_bv_01_c, 'Read Local Supported Features Command' ],
-    "HCI/CIN/BV-03-C": [ hci_cin_bv_03_c, 'Read Local Supported Commands Command' ],
-    "HCI/CIN/BV-04-C": [ hci_cin_bv_04_c, 'Read Local Version Information Command' ],
-    "HCI/CIN/BV-06-C": [ hci_cin_bv_06_c, 'White List Size' ],
-    "HCI/CIN/BV-09-C": [ hci_cin_bv_09_c, 'Read LE Public Key Validation Feature Bit' ],
-    "HCI/CM/BV-01-C":  [ hci_cm_bv_01_c,  'LE Read Peer Resolvable Address Command' ],
-    "HCI/CM/BV-02-C":  [ hci_cm_bv_02_c,  'LE Read Local Resolvable Address Command' ],
-    "HCI/CM/BV-03-C":  [ hci_cm_bv_03_c,  'LE Read PHY Command' ],
-    "HCI/DDI/BI-02-C": [ hci_ddi_bi_02_c, 'Reject Invalid Advertising Parameters' ],
-    "HCI/DDI/BV-03-C": [ hci_ddi_bv_03_c, 'Set Advertising Enable' ],
-    "HCI/DDI/BV-04-C": [ hci_ddi_bv_04_c, 'Set Scan Enable' ],
-    "HCI/DSU/BV-02-C": [ hci_dsu_bv_02_c, 'Reset in Advertising State' ],
-    "HCI/DSU/BV-03-C": [ hci_dsu_bv_03_c, 'Reset to Slave' ],
-    "HCI/DSU/BV-04-C": [ hci_dsu_bv_04_c, 'Reset in Scanning State' ],
-    "HCI/DSU/BV-05-C": [ hci_dsu_bv_05_c, 'Reset in Initiating State' ],
-    "HCI/DSU/BV-06-C": [ hci_dsu_bv_06_c, 'Reset to Master' ],
-    "HCI/GEV/BV-01-C": [ hci_gev_bv_01_c, 'Unsupported Commands on each supported controller' ],
-    "HCI/HFC/BV-04-C": [ hci_hfc_bv_04_c, 'LE Set Event Mask' ]
+    "HCI/COC/6-C":  [ hci_coc_6_c,  'BR/EDR Commands Not Supported on LE Device' ],
+    "HCI/COC/8-C":  [ hci_coc_8_c,  'Handling LE Set Data Length Command' ],
+    "HCI/COC/9-C":  [ hci_coc_9_c,  'Handling LE Read Suggested Default Data Length Command' ],
+    "HCI/COC/10-C": [ hci_coc_10_c, 'Handling LE Write Suggested Default Data Length Command' ],
+    "HCI/COC/11-C": [ hci_coc_11_c, 'Handling LE Remove Device From Resolving List Command' ],
+    "HCI/COC/12-C": [ hci_coc_12_c, 'Handling LE Clear Resolving List Command' ],
+    "HCI/COC/13-C": [ hci_coc_13_c, 'Handling LE Read Resolving List Size Command' ],
+    "HCI/COC/14-C": [ hci_coc_14_c, 'Handling LE Set Default PHY Command' ],
+#   "HCI/COC/15-C": [ hci_coc_16_c, 'Handling LE Read Periodic Advertiser List Size Command' ],
+#   "HCI/COC/16-C": [ hci_coc_16_c, 'Handling Add, Remove and Clear Periodic Advertiser List Commands' ],
+    "HCI/COC/17-C": [ hci_coc_17_c, 'Handling LE Read Transmit Power Command' ],
+    "HCI/CFC/2-C":  [ hci_cfc_2_c,  'Reported Buffer Size' ],
+    "HCI/COI/1-C":  [ hci_coi_1_c,  'Features returned by Read Local Supported Features Command' ],
+    "HCI/COI/3-C":  [ hci_coi_3_c,  'Supported Commands returned by Read Local Supported Commands Command' ],
+    "HCI/COI/4-C":  [ hci_coi_4_c,  'Versions returned by Read Local Version Information Command' ],
+    "HCI/COI/5-C":  [ hci_coi_5_c,  'Reported White List Size' ],
+    "HCI/COI/7-C":  [ hci_coi_7_c,  'Feature Bits returned by Read LE Public Key Validation Feature Bit' ],
+    "HCI/LCM/1-C":  [ hci_lcm_1_c,  'Handling LE Read Peer Resolvable Address Command' ],
+    "HCI/LCM/2-C":  [ hci_lcm_2_c,  'Handling LE Read Local Resolvable Address Command' ],
+    "HCI/LCM/3-C":  [ hci_lcm_3_c,  'Handling LE Read PHY Command' ],
+    "HCI/DED/7-C":  [ hci_ded_7_c,  'Rejecting invalid Advertising Parameters' ],
+    "HCI/DED/3-C":  [ hci_ded_3_c,  'Disable Advertising with Set Advertising Enable Command' ],
+    "HCI/DED/4-C":  [ hci_ded_4_c,  'Disable Scanning with Set Scan Enable Command' ],
+    "HCI/DES/2-C":  [ hci_des_2_c,  'Reset Command received in Advertising State' ],
+    "HCI/DES/3-C":  [ hci_des_3_c,  'Reset Command received in Slave Role' ],
+    "HCI/DES/4-C":  [ hci_des_4_c,  'Reset Command received in Scanning State' ],
+    "HCI/DES/5-C":  [ hci_des_5_c,  'Reset Command received in Initiating State' ],
+    "HCI/DES/6-C":  [ hci_des_6_c,  'Reset Command received in Master Role' ],
+    "HCI/GEV/1-C":  [ hci_gev_1_c,  'Status return for Unsupported Commands' ],
+    "HCI/HFC/4-C":  [ hci_hfc_4_c,  'Events enabled by LE Set Event Mask Command' ]
 };
 
 _maxNameLength = max([ len(key) for key in __tests__ ]);

@@ -701,9 +701,9 @@ def pairing_bv_01_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/GAT/BV-01-C [GAP Mandatory Characteristics]
+    GAP/GAPC/1-C [Mandatory Characteristics]
 """
-def gap_gat_bv_01_c(transport, upperTester, trace):
+def gap_gapc_1_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         """
@@ -756,9 +756,9 @@ def gap_gat_bv_01_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/GAT/BV-02-C [GAP Peripheral Privacy Flag Characteristic]
+    GAP/GAPC/2-C [Peripheral Privacy Flag Characteristic]
 """
-def gap_gat_bv_02_c(transport, upperTester, trace):
+def gap_gapc_2_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         """
@@ -781,9 +781,9 @@ def gap_gat_bv_02_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/GAT/BV-03-C [GAP Reconnection Address Characteristic]
+    GAP/GAPC/3-C [Reconnection Address Characteristic]
 """
-def gap_gat_bv_03_c(transport, upperTester, trace):
+def gap_gapc_3_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         """
@@ -806,9 +806,9 @@ def gap_gat_bv_03_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/GAT/BV-04-C [Peripheral Preferred Connection Parameters Characteristic]
+    GAP/GAPC/4-C [Peripheral Preferred Connection Parameters Characteristic]
 """
-def gap_gat_bv_04_c(transport, upperTester, trace):
+def gap_gapc_4_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         """
@@ -849,9 +849,9 @@ def gap_gat_bv_04_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/GAT/BV-05-C [Writable Device Name]
+    GAP/GAPC/5-C [Changing Device Name]
 """
-def gap_gat_bv_05_c(transport, upperTester, trace):
+def gap_gapc_5_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         """
@@ -920,9 +920,9 @@ def gap_gat_bx_01_c(transport, upperTester, trace):
     return success;
 
 """
-    GAP/IDLE/NAMP/BV-01-C [Name Discovery Procedure GATT Client]
+    GAP/IMP/NDP/1-C [Name Discovery Procedure GATT Client]
 """
-def gap_idle_namp_bv_01_c(transport, upperTester, trace):
+def gap_imp_ndp_1_c(transport, upperTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         """
@@ -946,9 +946,9 @@ def gap_idle_namp_bv_01_c(transport, upperTester, trace):
     return success;
 
 """
-    GATT/SR/GAC/BV-01-C [Server Configuration - of Server]
+    GATT/SERVER/SC/1-C [Server accepts Server Configuration]
 """
-def gatt_sr_gac_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_sc_1_c(transport, upperTester, lowerTester, trace):
     for mtuSize in [ 23, 512 ]:
         success, mtuSize, initiator = preambleConnected(transport, upperTester, mtuSize, trace);
         if success:
@@ -977,9 +977,9 @@ def gatt_sr_gac_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-01-C [Discover All Primary Services - from Server]
+    GATT/SERVER/DIS/1-C [Server Discovers All Primary Services]
 """
-def gatt_sr_gad_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1008,9 +1008,9 @@ def gatt_sr_gad_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-02-C [Discover Primary Services by Service UUID - from Server]
+    GATT/SERVER/DIS/2-C [Server Discovers Primary Services by Service UUID]
 """
-def gatt_sr_gad_bv_02_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_2_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1043,9 +1043,9 @@ def gatt_sr_gad_bv_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-03-C [Find Included Services - from Server]
+    GATT/SERVER/DIS/3-C [Server Finds Included Services]
 """
-def gatt_sr_gad_bv_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_3_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1077,9 +1077,9 @@ def gatt_sr_gad_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-04-C [Discover All Characteristics of a Service - from Server]
+    GATT/SERVER/DIS/4-C [Server Discovers All Characteristics of a Service]
 """
-def gatt_sr_gad_bv_04_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_4_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1118,9 +1118,9 @@ def gatt_sr_gad_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-05-C [Discover Characteristics by UUID - from Server]
+    GATT/SERVER/DIS/5-C [Server Discovers Characteristics by UUID]
 """
-def gatt_sr_gad_bv_05_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_5_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1159,9 +1159,9 @@ def gatt_sr_gad_bv_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAD/BV-06-C [Discover All Characteristic Descriptors - from Server]
+    GATT/SERVER/DIS/6-C [Server Discovers All Characteristic Descriptors]
 """
-def gatt_sr_gad_bv_06_c(transport, upperTester, lowerTester, trace):
+def gatt_server_dis_6_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -1197,9 +1197,9 @@ def gatt_sr_gad_bv_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-01-C [Read Characteristic Value - from Server]
+    GATT/SERVER/RD/1-C [Server Reads Characteristic Value]
 """
-def gatt_sr_gar_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -1228,9 +1228,9 @@ def gatt_sr_gar_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-01-C [Read Characteristic Value - Invalid Handle]
+    GATT/SERVER/RD/2-C [Read Not Permitted error - Reading Characteristic Value]
 """
-def gatt_sr_gar_bi_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_2_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, prevLast, attData, gattData = 2, 0, ATTData(), GATTData.instance();
@@ -1258,9 +1258,9 @@ def gatt_sr_gar_bi_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-02-C [Read Characteristic Value - Read Not Permitted]
+    GATT/SERVER/RD/3-C [Invalid Handle error - Reading Characteristic Value]
 """
-def gatt_sr_gar_bi_02_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_3_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -1287,9 +1287,9 @@ def gatt_sr_gar_bi_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-03-C [Read Characteristic Value - Insufficient Authorization]
+    GATT/SERVER/RD/4-C [Insufficient Authorization error - Reading Characteristic Value]
 """
-def gatt_sr_gar_bi_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_4_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1317,9 +1317,9 @@ def gatt_sr_gar_bi_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-04-C [Read Characteristic Value - Insufficient Authentication]
+    GATT/SERVER/RD/5-C [Insufficient Authentication error - Reading Characteristic Value]
 """
-def gatt_sr_gar_bi_04_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_5_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         sset, found, attData, gattData = 1, False, ATTData(), GATTData.instance();
@@ -1352,9 +1352,9 @@ def gatt_sr_gar_bi_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-03-C [Read Using Characteristic UUID - from Server]
+    GATT/SERVER/RD/7-C [Server Reads using Characteristic UUID]
 """
-def gatt_sr_gar_bv_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_7_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1389,9 +1389,9 @@ def gatt_sr_gar_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-06-C [Read Using Characteristic UUID - Read Not Permitted]
+    GATT/SERVER/RD/8-C [Read Not Permitted error - Reading Characteristic by UUID]
 """
-def gatt_sr_gar_bi_06_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_8_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1419,9 +1419,9 @@ def gatt_sr_gar_bi_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-07-C [Read Using Characteristic UUID - Attribute Not Found]
+    GATT/SERVER/RD/9-C [Attribute Not Found error - Reading Characteristic by UUID]
 """
-def gatt_sr_gar_bi_07_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_9_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1443,9 +1443,9 @@ def gatt_sr_gar_bi_07_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-09-C [Read Using Characteristic UUID - Insufficient Authorization]
+    GATT/SERVER/RD/11-C [Insufficient Authorization error - Reading Using Characteristic UUID]
 """
-def gatt_sr_gar_bi_09_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_11_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1470,9 +1470,9 @@ def gatt_sr_gar_bi_09_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-10-C [Read Using Characteristic UUID - Insufficient Authentication]
+    GATT/SERVER/RD/12-C [Insufficient Authentication error - Reading Using Characteristic UUID]
 """
-def gatt_sr_gar_bi_10_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_12_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1497,9 +1497,9 @@ def gatt_sr_gar_bi_10_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-11-C [Read Using Characteristic UUID - Insufficient Encryption Key Size]
+    GATT/SERVER/RD/13-C [Insufficient Encryption Key Size error - Reading Using Characteristic UUID]
 """
-def gatt_sr_gar_bi_11_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_13_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 512, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1524,9 +1524,9 @@ def gatt_sr_gar_bi_11_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-04-C [Read Long Characteristic Value - from Server]
+    GATT/SERVER/RD/14-C [Server Reads Long Characteristic Value]
 """
-def gatt_sr_gar_bv_04_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_14_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 23, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1568,9 +1568,9 @@ def gatt_sr_gar_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-12-C [Read Long Characteristic Value - Read Not Permitted]
+    GATT/SERVER/RD/15-C [Read Not Permitted error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_12_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_15_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1596,9 +1596,9 @@ def gatt_sr_gar_bi_12_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-13-C [Read Long Characteristic Value - Invalid Offset]
+    GATT/SERVER/RD/16-C [Invalid Offset error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_13_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_16_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1624,9 +1624,9 @@ def gatt_sr_gar_bi_13_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-14-C [Read Long Characteristic Value - Invalid Handle]
+    GATT/SERVER/RD/17-C [Invalid Handle error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_14_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_17_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, prevLast, attData, gattData = 1, 0, ATTData(), GATTData.instance();
@@ -1656,9 +1656,9 @@ def gatt_sr_gar_bi_14_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-15-C [Read Long Characteristic Value - Insufficient Authorization]
+    GATT/SERVER/RD/18-C [Insufficient Authorization error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_15_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_18_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1683,9 +1683,9 @@ def gatt_sr_gar_bi_15_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-16-C [Read Long Characteristic Value - Insufficient Authentication]
+    GATT/SERVER/RD/19-C [Insufficient Authentication error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_16_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_19_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1710,9 +1710,9 @@ def gatt_sr_gar_bi_16_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-17-C [Read Long Characteristic Value - Insufficient Encryption Key Size]
+    GATT/SERVER/RD/20-C [Insufficient Encryption Key Size error - Reading Long Characteristic Value]
 """
-def gatt_sr_gar_bi_17_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_20_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1737,11 +1737,11 @@ def gatt_sr_gar_bi_17_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-05-C [Read Multiple Characteristic Values - from Server]
+    GATT/SERVER/RD/21-C [Server Reads Multiple Characteristic Values]
 
     NOTE: If the Request is fragmented - no reponse is received.
 """
-def gatt_sr_gar_bv_05_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_21_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, gattData = 2, GATTData.instance();
@@ -1772,9 +1772,9 @@ def gatt_sr_gar_bv_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-18-C [Read Multiple Characteristic Values - Read not permitted]
+    GATT/SERVER/RD/22-C [Read Not Permitted error - Reading Multiple Characteristic Values]
 """
-def gatt_sr_gar_bi_18_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_22_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -1807,9 +1807,9 @@ def gatt_sr_gar_bi_18_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-19-C [Read Multiple Characteristic Values - Invalid Handle]
+    GATT/SERVER/RD/23-C [Invalid Handle error - Reading Multiple Characteristic Values]
 """
-def gatt_sr_gar_bi_19_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_23_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, prevLast, attData, gattData = 2, 0, ATTData(), GATTData.instance();
@@ -1840,9 +1840,9 @@ def gatt_sr_gar_bi_19_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-20-C [Read Multiple Characteristic Values - Insufficient Authorization]
+    GATT/SERVER/RD/24-C [Insufficient Authorization error - Reading Multiple Characteristic Values]
 """
-def gatt_sr_gar_bi_20_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_24_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1871,9 +1871,9 @@ def gatt_sr_gar_bi_20_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-21-C [Read Multiple Characteristic Values - Insufficient Authentication]
+    GATT/SERVER/RD/25-C [Insufficient Authentication error - Reading Multiple Characteristic Values]
 """
-def gatt_sr_gar_bi_21_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_25_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1902,9 +1902,9 @@ def gatt_sr_gar_bi_21_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BI-22-C [Read Multiple Characteristic Values - Insufficient Encryption Key Size]
+    GATT/SERVER/RD/26-C [Insufficient Encryption Key Size error - Reading Multiple Characteristic Values]
 """
-def gatt_sr_gar_bi_22_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_26_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -1933,9 +1933,9 @@ def gatt_sr_gar_bi_22_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-06-C [Read Characteristic Descriptors - from Server]
+    GATT/SERVER/RD/27-C [Server Reads Characteristic Descriptors]
 """
-def gatt_sr_gar_bv_06_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_27_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, gattData = 1, GATTData.instance();
@@ -1963,9 +1963,9 @@ def gatt_sr_gar_bv_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAR/BV-07-C [Read Long Characteristic Descriptor - from Server]
+    GATT/SERVER/RD/28-C [Server Reads Long Characteristic Descriptor]
 """
-def gatt_sr_gar_bv_07_c(transport, upperTester, lowerTester, trace):
+def gatt_server_rd_28_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 23, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2005,9 +2005,9 @@ def gatt_sr_gar_bv_07_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-01-C [Write without Response - from Server]
+    GATT/SERVER/WR/1-C [Server Writes Without Response]
 """
-def gatt_sr_gaw_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2044,9 +2044,9 @@ def gatt_sr_gaw_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-03-C [Write Characteristic Value - from Server]
+    GATT/SERVER/WR/4-C [Server Writes Characteristic Value]
 """
-def gatt_sr_gaw_bv_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_4_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2083,9 +2083,9 @@ def gatt_sr_gaw_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-02-C [Write Characteristic Value - Invalid handle]
+    GATT/SERVER/WR/5-C [Invalid Handle error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_02_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_5_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, prevLast, attData, gattData = 2, 0, ATTData(), GATTData.instance();
@@ -2115,9 +2115,9 @@ def gatt_sr_gaw_bi_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-03-C [Write Characteristic Value - Write Not Permitted]
+    GATT/SERVER/WR/6-C [Write Not Permitted error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_6_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2145,9 +2145,9 @@ def gatt_sr_gaw_bi_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-04-C [Write Characteristic Value - Insufficient Authorization]
+    GATT/SERVER/WR/7-C [Insufficient Authorization error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_04_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_7_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2177,9 +2177,9 @@ def gatt_sr_gaw_bi_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-05-C [Write Characteristic Value - Insufficient Authentication]
+    GATT/SERVER/WR/8-C [Insufficient Authentication error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_05_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_8_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2209,9 +2209,9 @@ def gatt_sr_gaw_bi_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-06-C [Write Characteristic Value - Insufficient Encryption Key Size]
+    GATT/SERVER/WR/9-C [Insufficient Encryption Key Size error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_06_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_9_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2241,11 +2241,11 @@ def gatt_sr_gaw_bi_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-05-C [Write Long Characteristic Value - from Server]
+    GATT/SERVER/WR/10-C [Server Writes Long Characteristic Value]
 
     NOTE: Attempting to execute this test with an MTU size of 23 bytes will fail with an error ATT_ERROR_PREPARE_QUEUE_FULL.
 """
-def gatt_sr_gaw_bv_05_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_10_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2282,9 +2282,9 @@ def gatt_sr_gaw_bv_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-07-C [Write Long Characteristic Value - Invalid handle]
+    GATT/SERVER/WR/11-C [Invalid Handle error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_07_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_11_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, prevLast, attData, gattData = 2, 0, ATTData(), GATTData.instance();
@@ -2314,9 +2314,9 @@ def gatt_sr_gaw_bi_07_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-08-C [Write Long Characteristic Value - Write Not Permitted]
+    GATT/SERVER/WR/12-C [Write Not Permitted error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_08_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_12_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2346,9 +2346,9 @@ def gatt_sr_gaw_bi_08_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-09-C [Write Long Characteristic Value - Invalid Offset]
+    GATT/SERVER/WR/13-C [Invalid Offset error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_09_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_13_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 43, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2381,9 +2381,9 @@ def gatt_sr_gaw_bi_09_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-11-C [Write Long Characteristic Value - Insufficient Authorization]
+    GATT/SERVER/WR/14-C [Insufficient Authorization error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_11_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_14_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 43, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2412,9 +2412,9 @@ def gatt_sr_gaw_bi_11_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-12-C [Write Long Characteristic Value - Insufficient Authentication]
+    GATT/SERVER/WR/15-C [Insufficient Authentication error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_12_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_15_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 43, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2443,9 +2443,9 @@ def gatt_sr_gaw_bi_12_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-13-C [Write Long Characteristic Value - Insufficient Encryption Key Size]
+    GATT/SERVER/WR/16-C [Insufficient Encryption Key Size error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_13_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_16_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 43, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2474,9 +2474,9 @@ def gatt_sr_gaw_bi_13_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-08-C [Write Characteristic Descriptors - from Server]
+    GATT/SERVER/WR/21-C [Server Writes Characteristic Descriptors]
 """
-def gatt_sr_gaw_bv_08_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_21_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2507,9 +2507,9 @@ def gatt_sr_gaw_bv_08_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-09-C [Write Long Characteristic Descriptors - from Server]
+    GATT/SERVER/WR/22-C [Server Writes Long Characteristic Descriptors]
 """
-def gatt_sr_gaw_bv_09_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_22_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2540,9 +2540,9 @@ def gatt_sr_gaw_bv_09_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BV-11-C [Characteristic Value Reliable Writes - No Pending Prepared Write Requests]
+    GATT/SERVER/WR/19-C [No Pending Prepared Write Requests error - Characteristic Value Reliable Writes]
 """
-def gatt_sr_gaw_bv_11_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_19_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset = 1;
@@ -2563,9 +2563,9 @@ def gatt_sr_gaw_bv_11_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-32-C [Write Characteristic Value - Invalid Attribute Value Length]
+    GATT/SERVER/WR/23-C [Invalid Attribute Value Length error - Writing Characteristic Value]
 """
-def gatt_sr_gaw_bi_32_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_23_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 92, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2594,9 +2594,9 @@ def gatt_sr_gaw_bi_32_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAW/BI-33-C [Write Long Characteristic Value - Invalid Attribute Value Length]
+    GATT/SERVER/WR/24-C [Invalid Attribute Value Length error - Writing Long Characteristic Value]
 """
-def gatt_sr_gaw_bi_33_c(transport, upperTester, lowerTester, trace):
+def gatt_server_wr_24_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2625,9 +2625,9 @@ def gatt_sr_gaw_bi_33_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAN/BV-01-C [Characteristic Value Notification - by Server]
+    GATT/SERVER/NOT/1-C [Server generates Characteristic Value Notification]
 """
-def gatt_sr_gan_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_not_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2660,9 +2660,9 @@ def gatt_sr_gan_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAI/BV-01-C [Characteristic Value Indication - by Server]
+    GATT/SERVER/IND/1-C [Server generates Characteristic Value Indication]
 """
-def gatt_sr_gai_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_ind_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 2, ATTData(), GATTData.instance();
@@ -2695,9 +2695,9 @@ def gatt_sr_gai_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GAS/BV-01-C [Service Changed Characteristic - from Server]
+    GATT/SERVER/SER/1-C [Server accepts Service Changed Characteristic Indication]
 """
-def gatt_sr_gas_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_ser_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         sset, attData, gattData = 1, ATTData(), GATTData.instance();
@@ -2735,9 +2735,9 @@ def gatt_sr_gas_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/UNS/BI-01-C [Unsupported ATT Request on Server]
+    GATT/SERVER/UNS/1-C [Server sends Unsupported ATT Requests]
 """
-def gatt_sr_uns_bi_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_uns_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData = ATTData();
@@ -2762,9 +2762,9 @@ def gatt_sr_uns_bi_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/UNS/BI-02-C [Unsupported ATT Commands on Server]
+    GATT/SERVER/UNS/2-C [Server sends Unsupported ATT Commands]
 """
-def gatt_sr_uns_bi_02_c(transport, upperTester, lowerTester, trace):
+def gatt_server_uns_2_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData = ATTData();
@@ -2787,9 +2787,9 @@ def gatt_sr_uns_bi_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-01-C [Primary Service Declaration, from Server]
+    GATT/SERVER/ATT/1-C [Server Reads Primary Service Declaration]
 """
-def gatt_sr_gpa_bv_01_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_1_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -2819,9 +2819,9 @@ def gatt_sr_gpa_bv_01_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-02-C [Secondary Service Declaration, from Server]
+    GATT/SERVER/ATT/2-C [Server Reads Secondary Service Declaration]
 """
-def gatt_sr_gpa_bv_02_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_2_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -2854,9 +2854,9 @@ def gatt_sr_gpa_bv_02_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-03-C [Include Declaration, from Server]
+    GATT/SERVER/ATT/3-C [Server Reads Include Declaration]
 """
-def gatt_sr_gpa_bv_03_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_3_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -2889,9 +2889,9 @@ def gatt_sr_gpa_bv_03_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-04-C [Characteristic Declaration, from Server]
+    GATT/SERVER/ATT/4-C [Server Reads Characteristic Declaration]
 """
-def gatt_sr_gpa_bv_04_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_4_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -2928,9 +2928,9 @@ def gatt_sr_gpa_bv_04_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-05-C [Characteristic Extended Properties Declaration, from Server]
+    GATT/SERVER/ATT/5-C [Server Reads Characteristic Extended Properties Declaration]
 """
-def gatt_sr_gpa_bv_05_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_5_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -2975,9 +2975,9 @@ def gatt_sr_gpa_bv_05_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-06-C [Characteristic User Description Descriptor, from Server]
+    GATT/SERVER/ATT/6-C [Server Reads Characteristic User Description Descriptor]
 """
-def gatt_sr_gpa_bv_06_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_6_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -3022,9 +3022,9 @@ def gatt_sr_gpa_bv_06_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-07-C [Client Characteristic Configuration Descriptor, from Server]
+    GATT/SERVER/ATT/7-C [Server Reads Client Characteristic Configuration Descriptor]
 """
-def gatt_sr_gpa_bv_07_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_7_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -3069,9 +3069,9 @@ def gatt_sr_gpa_bv_07_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-08-C [Server Characteristic Configuration Descriptor, from Server]
+    GATT/SERVER/ATT/8-C [Server Reads Server Characteristic Configuration Descriptor]
 """
-def gatt_sr_gpa_bv_08_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_8_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -3116,9 +3116,9 @@ def gatt_sr_gpa_bv_08_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GATT/SR/GPA/BV-12-C [Characteristic Presentation Format Descriptors, from Server]
+    GATT/SERVER/ATT/9-C [Server handles Characteristic Presentation Format Descriptors]
 """
-def gatt_sr_gpa_bv_12_c(transport, upperTester, lowerTester, trace):
+def gatt_server_att_9_c(transport, upperTester, lowerTester, trace):
     success, mtuSize, initiator = preambleConnected(transport, upperTester, 46, trace);
     if success:
         attData, gattData = ATTData(), GATTData.instance();
@@ -3168,80 +3168,80 @@ def gatt_sr_gpa_bv_12_c(transport, upperTester, lowerTester, trace):
     return success;
 
 __tests__ = { 
-    "GAP/GAT/BV-01-C":       [ gap_gat_bv_01_c,       'GAP Mandatory Characteristics' ],
-#   "GAP/GAT/BV-02-C":       [ gap_gat_bv_02_c,       'GAP Peripheral Privacy Flag Characteristic' ],
-#   "GAP/GAT/BV-03-C":       [ gap_gat_bv_03_c,       'GAP Reconnection Address Characteristic' ],
-    "GAP/GAT/BV-04-C":       [ gap_gat_bv_04_c,       'Peripheral Preferred Connection Parameters Characteristic' ],
-#   "GAP/GAT/BV-05-C":       [ gap_gat_bv_05_c,       'Writable Device Name' ],
-    "GAP/IDLE/NAMP/BV-01-C": [ gap_idle_namp_bv_01_c, 'Name Discovery Procedure GATT Client' ],
-#   "GAP/GAT/BX-01-C":       [ gap_gat_bx_01_c,       'Discover All Services' ],
+    "GAP/GAPC/1-C":        [ gap_gapc_1_c,        'Mandatory Characteristics' ],
+#   "GAP/GAPC/2-C":        [ gap_gapc_2_c,        'Peripheral Privacy Flag Characteristic' ],
+#   "GAP/GAPC/3-C":        [ gap_gapc_3_c,        'Reconnection Address Characteristic' ],
+    "GAP/GAPC/4-C":        [ gap_gapc_4_c,        'Peripheral Preferred Connection Parameters Characteristic' ],
+#   "GAP/GAPC/5-C":        [ gap_gapc_5_c,        'Changing Device Name' ],
+    "GAP/IMP/NDP/1-C":     [ gap_imp_ndp_1_c,     'Name Discovery Procedure GATT Client' ],
+#   "GAP/GAT/BX-01-C":     [ gap_gat_bx_01_c,     'Discover All Services' ],
 
-    "GATT/SR/GAC/BV-01-C":   [ gatt_sr_gac_bv_01_c,   'Server Configuration - of Server' ],
-    "GATT/SR/GAD/BV-01-C":   [ gatt_sr_gad_bv_01_c,   'Discover All Primary Services - from Server' ],
-    "GATT/SR/GAD/BV-02-C":   [ gatt_sr_gad_bv_02_c,   'Discover Primary Services by Service UUID - from Server' ],
-    "GATT/SR/GAD/BV-03-C":   [ gatt_sr_gad_bv_03_c,   'Find Included Services - from Server' ],
-    "GATT/SR/GAD/BV-04-C":   [ gatt_sr_gad_bv_04_c,   'Discover All Characteristics of a Service - from Server' ],
-    "GATT/SR/GAD/BV-05-C":   [ gatt_sr_gad_bv_05_c,   'Discover Characteristics by UUID - from Server' ],
-    "GATT/SR/GAD/BV-06-C":   [ gatt_sr_gad_bv_06_c,   'Discover All Characteristic Descriptors - from Server' ],
-    "GATT/SR/GAR/BV-01-C":   [ gatt_sr_gar_bv_01_c,   'Read Characteristic Value - from Server' ],
-    "GATT/SR/GAR/BI-01-C":   [ gatt_sr_gar_bi_01_c,   'Read Characteristic Value - Invalid Handle' ],
-    "GATT/SR/GAR/BI-02-C":   [ gatt_sr_gar_bi_02_c,   'Read Characteristic Value - Read Not Permitted' ],
-    "GATT/SR/GAR/BI-03-C":   [ gatt_sr_gar_bi_03_c,   'Read Characteristic Value - Insufficient Authorization' ],
-    "GATT/SR/GAR/BI-04-C":   [ gatt_sr_gar_bi_04_c,   'Read Characteristic Value - Insufficient Authentication' ],
-    "GATT/SR/GAR/BV-03-C":   [ gatt_sr_gar_bv_03_c,   'Read Using Characteristic UUID - from Server' ],
-    "GATT/SR/GAR/BI-06-C":   [ gatt_sr_gar_bi_06_c,   'Read Using Characteristic UUID - Read Not Permitted' ],
-    "GATT/SR/GAR/BI-07-C":   [ gatt_sr_gar_bi_07_c,   'Read Using Characteristic UUID - Attribute Not Found' ],
-    "GATT/SR/GAR/BI-09-C":   [ gatt_sr_gar_bi_09_c,   'Read Using Characteristic UUID - Insufficient Authorization' ],
-    "GATT/SR/GAR/BI-10-C":   [ gatt_sr_gar_bi_10_c,   'Read Using Characteristic UUID - Insufficient Authentication' ],
-    "GATT/SR/GAR/BI-11-C":   [ gatt_sr_gar_bi_11_c,   'Read Using Characteristic UUID - Insufficient Encryption Key Size' ],
-    "GATT/SR/GAR/BV-04-C":   [ gatt_sr_gar_bv_04_c,   'Read Long Characteristic Value - from Server' ],
-    "GATT/SR/GAR/BI-12-C":   [ gatt_sr_gar_bi_12_c,   'Read Long Characteristic Value - Read Not Permitted' ],
-    "GATT/SR/GAR/BI-13-C":   [ gatt_sr_gar_bi_13_c,   'Read Long Characteristic Value - Invalid Offset' ],
-    "GATT/SR/GAR/BI-14-C":   [ gatt_sr_gar_bi_14_c,   'Read Long Characteristic Value - Invalid Handle' ],
-    "GATT/SR/GAR/BI-15-C":   [ gatt_sr_gar_bi_15_c,   'Read Long Characteristic Value - Insufficient Authorization' ],
-    "GATT/SR/GAR/BI-16-C":   [ gatt_sr_gar_bi_16_c,   'Read Long Characteristic Value - Insufficient Authentication' ],
-    "GATT/SR/GAR/BI-17-C":   [ gatt_sr_gar_bi_17_c,   'Read Long Characteristic Value - Insufficient Encryption Key Size' ],
-    "GATT/SR/GAR/BV-05-C":   [ gatt_sr_gar_bv_05_c,   'Read Multiple Characteristic Values - from Server' ],
-    "GATT/SR/GAR/BI-18-C":   [ gatt_sr_gar_bi_18_c,   'Read Multiple Characteristic Values - Read not permitted' ],
-    "GATT/SR/GAR/BI-19-C":   [ gatt_sr_gar_bi_19_c,   'Read Multiple Characteristic Values - Invalid Handle' ],
-    "GATT/SR/GAR/BI-20-C":   [ gatt_sr_gar_bi_20_c,   'Read Multiple Characteristic Values - Insufficient Authorization' ],
-    "GATT/SR/GAR/BI-21-C":   [ gatt_sr_gar_bi_21_c,   'Read Multiple Characteristic Values - Insufficient Authentication' ],
-    "GATT/SR/GAR/BI-22-C":   [ gatt_sr_gar_bi_22_c,   'Read Multiple Characteristic Values - Insufficient Encryption Key Size' ],
-    "GATT/SR/GAR/BV-06-C":   [ gatt_sr_gar_bv_06_c,   'Read Characteristic Descriptors - from Server' ],
-    "GATT/SR/GAR/BV-07-C":   [ gatt_sr_gar_bv_07_c,   'Read Long Characteristic Descriptor - from Server' ],
-    "GATT/SR/GAW/BV-01-C":   [ gatt_sr_gaw_bv_01_c,   'Write without Response - from Server' ],
-    "GATT/SR/GAW/BV-03-C":   [ gatt_sr_gaw_bv_03_c,   'Write Characteristic Value - from Server' ],
-    "GATT/SR/GAW/BI-02-C":   [ gatt_sr_gaw_bi_02_c,   'Write Characteristic Value - Invalid handle' ],
-    "GATT/SR/GAW/BI-03-C":   [ gatt_sr_gaw_bi_03_c,   'Write Characteristic Value - Write Not Permitted' ],
-    "GATT/SR/GAW/BI-04-C":   [ gatt_sr_gaw_bi_04_c,   'Write Characteristic Value - Insufficient Authorization' ],
-    "GATT/SR/GAW/BI-05-C":   [ gatt_sr_gaw_bi_05_c,   'Write Characteristic Value - Insufficient Authentication' ],
-    "GATT/SR/GAW/BI-06-C":   [ gatt_sr_gaw_bi_06_c,   'Write Characteristic Value - Insufficient Encryption Key Size' ],
-    "GATT/SR/GAW/BV-05-C":   [ gatt_sr_gaw_bv_05_c,   'Write Long Characteristic Value - from Server' ],
-    "GATT/SR/GAW/BI-07-C":   [ gatt_sr_gaw_bi_07_c,   'Write Long Characteristic Value - Invalid handle' ],
-    "GATT/SR/GAW/BI-08-C":   [ gatt_sr_gaw_bi_08_c,   'Write Long Characteristic Value - Write Not Permitted' ],
-    "GATT/SR/GAW/BI-09-C":   [ gatt_sr_gaw_bi_09_c,   'Write Long Characteristic Value - Invalid Offset' ],
-    "GATT/SR/GAW/BI-11-C":   [ gatt_sr_gaw_bi_11_c,   'Write Long Characteristic Value - Insufficient Authorization' ],
-    "GATT/SR/GAW/BI-12-C":   [ gatt_sr_gaw_bi_12_c,   'Write Long Characteristic Value - Insufficient Authentication' ],
-    "GATT/SR/GAW/BI-13-C":   [ gatt_sr_gaw_bi_13_c,   'Write Long Characteristic Value - Insufficient Encryption Key Size' ],
-    "GATT/SR/GAW/BV-08-C":   [ gatt_sr_gaw_bv_08_c,   'Write Characteristic Descriptors - from Server' ],
-    "GATT/SR/GAW/BV-09-C":   [ gatt_sr_gaw_bv_09_c,   'Write Long Characteristic Descriptors - from Server' ],
-    "GATT/SR/GAW/BV-11-C":   [ gatt_sr_gaw_bv_11_c,   'Characteristic Value Reliable Writes - No Pending Prepared Write Requests' ],
-    "GATT/SR/GAW/BI-32-C":   [ gatt_sr_gaw_bi_32_c,   'Write Characteristic Value - Invalid Attribute Value Length' ],
-    "GATT/SR/GAW/BI-33-C":   [ gatt_sr_gaw_bi_33_c,   'Write Long Characteristic Value - Invalid Attribute Value Length' ],
-    "GATT/SR/GAN/BV-01-C":   [ gatt_sr_gan_bv_01_c,   'Characteristic Value Notification - by Server' ],
-    "GATT/SR/GAI/BV-01-C":   [ gatt_sr_gai_bv_01_c,   'Characteristic Value Indication - by Server' ],
-    "GATT/SR/GAS/BV-01-C":   [ gatt_sr_gas_bv_01_c,   'Service Changed Characteristic - from Server' ],
-    "GATT/SR/UNS/BI-01-C":   [ gatt_sr_uns_bi_01_c,   'Unsupported ATT Request on Server' ],
-    "GATT/SR/UNS/BI-02-C":   [ gatt_sr_uns_bi_02_c,   'Unsupported ATT Commands on Server' ],
-    "GATT/SR/GPA/BV-01-C":   [ gatt_sr_gpa_bv_01_c,   'Primary Service Declaration, from Server' ],
-    "GATT/SR/GPA/BV-02-C":   [ gatt_sr_gpa_bv_02_c,   'Secondary Service Declaration, from Server' ],
-    "GATT/SR/GPA/BV-03-C":   [ gatt_sr_gpa_bv_03_c,   'Include Declaration, from Server' ],
-    "GATT/SR/GPA/BV-04-C":   [ gatt_sr_gpa_bv_04_c,   'Characteristic Declaration, from Server' ],
-    "GATT/SR/GPA/BV-05-C":   [ gatt_sr_gpa_bv_05_c,   'Characteristic Extended Properties Declaration, from Server' ],
-    "GATT/SR/GPA/BV-06-C":   [ gatt_sr_gpa_bv_06_c,   'Characteristic User Description Descriptor, from Server' ],
-    "GATT/SR/GPA/BV-07-C":   [ gatt_sr_gpa_bv_07_c,   'Client Characteristic Configuration Descriptor, from Server' ],
-    "GATT/SR/GPA/BV-08-C":   [ gatt_sr_gpa_bv_08_c,   'Server Characteristic Configuration Descriptor, from Server' ],
-    "GATT/SR/GPA/BV-12-C":   [ gatt_sr_gpa_bv_12_c,   'Characteristic Presentation Format Descriptors, from Server' ]
+    "GATT/SERVER/SC/1-C":  [ gatt_server_sc_1_c,  'Server accepts Server Configuration' ],
+    "GATT/SERVER/DIS/1-C": [ gatt_server_dis_1_c, 'Server Discovers All Primary Services' ],
+    "GATT/SERVER/DIS/2-C": [ gatt_server_dis_2_c, 'Server Discovers Primary Services by Service UUID' ],
+    "GATT/SERVER/DIS/3-C": [ gatt_server_dis_3_c, 'Server Finds Included Services' ],
+    "GATT/SERVER/DIS/4-C": [ gatt_server_dis_4_c, 'Server Discovers All Characteristics of a Service' ],
+    "GATT/SERVER/DIS/5-C": [ gatt_server_dis_5_c, 'Server Discovers Characteristics by UUID' ],
+    "GATT/SERVER/DIS/6-C": [ gatt_server_dis_6_c, 'Server Discovers All Characteristic Descriptors' ],
+    "GATT/SERVER/RD/1-C":  [ gatt_server_rd_1_c,  'Server Reads Characteristic Value' ],
+    "GATT/SERVER/RD/2-C":  [ gatt_server_rd_2_c,  'Read Not Permitted error - Reading Characteristic Value' ],
+    "GATT/SERVER/RD/3-C":  [ gatt_server_rd_3_c,  'Invalid Handle error - Reading Characteristic Value' ],
+    "GATT/SERVER/RD/4-C":  [ gatt_server_rd_4_c,  'Insufficient Authorization error - Reading Characteristic Value' ],
+    "GATT/SERVER/RD/5-C":  [ gatt_server_rd_5_c,  'Insufficient Authentication error - Reading Characteristic Value' ],
+    "GATT/SERVER/RD/7-C":  [ gatt_server_rd_7_c,  'Server Reads using Characteristic UUID' ],
+    "GATT/SERVER/RD/8-C":  [ gatt_server_rd_8_c,  'Read Not Permitted error - Reading Characteristic by UUID' ],
+    "GATT/SERVER/RD/9-C":  [ gatt_server_rd_9_c,  'Attribute Not Found error - Reading Characteristic by UUID' ],
+    "GATT/SERVER/RD/11-C": [ gatt_server_rd_11_c, 'Insufficient Authorization error - Reading Using Characteristic UUID' ],
+    "GATT/SERVER/RD/12-C": [ gatt_server_rd_12_c, 'Insufficient Authentication error - Reading Using Characteristic UUID' ],
+    "GATT/SERVER/RD/13-C": [ gatt_server_rd_13_c, 'Insufficient Encryption Key Size error - Reading Using Characteristic UUID' ],
+    "GATT/SERVER/RD/14-C": [ gatt_server_rd_14_c, 'Server Reads Long Characteristic Value' ],
+    "GATT/SERVER/RD/15-C": [ gatt_server_rd_15_c, 'Read Not Permitted error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/16-C": [ gatt_server_rd_16_c, 'Invalid Offset error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/17-C": [ gatt_server_rd_17_c, 'Invalid Handle error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/18-C": [ gatt_server_rd_18_c, 'Insufficient Authorization error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/19-C": [ gatt_server_rd_19_c, 'Insufficient Authentication error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/20-C": [ gatt_server_rd_20_c, 'Insufficient Encryption Key Size error - Reading Long Characteristic Value' ],
+    "GATT/SERVER/RD/21-C": [ gatt_server_rd_21_c, 'Server Reads Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/22-C": [ gatt_server_rd_22_c, 'Read Not Permitted error - Reading Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/23-C": [ gatt_server_rd_23_c, 'Invalid Handle error - Reading Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/24-C": [ gatt_server_rd_24_c, 'Insufficient Authorization error - Reading Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/25-C": [ gatt_server_rd_25_c, 'Insufficient Authentication error - Reading Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/26-C": [ gatt_server_rd_26_c, 'Insufficient Encryption Key Size error - Reading Multiple Characteristic Values' ],
+    "GATT/SERVER/RD/27-C": [ gatt_server_rd_27_c, 'Server Reads Characteristic Descriptors' ],
+    "GATT/SERVER/RD/28-C": [ gatt_server_rd_28_c, 'Server Reads Long Characteristic Descriptor' ],
+    "GATT/SERVER/WR/1-C":  [ gatt_server_wr_1_c,  'Server Writes Without Response' ],
+    "GATT/SERVER/WR/4-C":  [ gatt_server_wr_4_c,  'Server Writes Characteristic Value' ],
+    "GATT/SERVER/WR/5-C":  [ gatt_server_wr_5_c,  'Invalid Handle error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/6-C":  [ gatt_server_wr_6_c,  'Write Not Permitted error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/7-C":  [ gatt_server_wr_7_c,  'Insufficient Authorization error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/8-C":  [ gatt_server_wr_8_c,  'Insufficient Authentication error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/9-C":  [ gatt_server_wr_9_c,  'Insufficient Encryption Key Size error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/10-C": [ gatt_server_wr_10_c, 'Server Writes Long Characteristic Value' ],
+    "GATT/SERVER/WR/11-C": [ gatt_server_wr_11_c, 'Invalid Handle error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/12-C": [ gatt_server_wr_12_c, 'Write Not Permitted error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/13-C": [ gatt_server_wr_13_c, 'Invalid Offset error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/14-C": [ gatt_server_wr_14_c, 'Insufficient Authorization error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/15-C": [ gatt_server_wr_15_c, 'Insufficient Authentication error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/16-C": [ gatt_server_wr_16_c, 'Insufficient Encryption Key Size error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/WR/21-C": [ gatt_server_wr_21_c, 'Server Writes Characteristic Descriptors' ],
+    "GATT/SERVER/WR/22-C": [ gatt_server_wr_22_c, 'Server Writes Long Characteristic Descriptors' ],
+    "GATT/SERVER/WR/19-C": [ gatt_server_wr_19_c, 'No Pending Prepared Write Requests error - Characteristic Value Reliable Writes' ],
+    "GATT/SERVER/WR/23-C": [ gatt_server_wr_23_c, 'Invalid Attribute Value Length error - Writing Characteristic Value' ],
+    "GATT/SERVER/WR/24-C": [ gatt_server_wr_24_c, 'Invalid Attribute Value Length error - Writing Long Characteristic Value' ],
+    "GATT/SERVER/NOT/1-C": [ gatt_server_not_1_c, 'Server generates Characteristic Value Notification' ],
+    "GATT/SERVER/IND/1-C": [ gatt_server_ind_1_c, 'Server generates Characteristic Value Indication' ],
+    "GATT/SERVER/SER/1-C": [ gatt_server_ser_1_c, 'Server accepts Service Changed Characteristic Indication' ],
+    "GATT/SERVER/UNS/1-C": [ gatt_server_uns_1_c, 'Server sends Unsupported ATT Requests' ],
+    "GATT/SERVER/UNS/2-C": [ gatt_server_uns_2_c, 'Server sends Unsupported ATT Commands' ],
+    "GATT/SERVER/ATT/1-C": [ gatt_server_att_1_c, 'Server Reads Primary Service Declaration' ],
+    "GATT/SERVER/ATT/2-C": [ gatt_server_att_2_c, 'Server Reads Secondary Service Declaration' ],
+    "GATT/SERVER/ATT/3-C": [ gatt_server_att_3_c, 'Server Reads Include Declaration' ],
+    "GATT/SERVER/ATT/4-C": [ gatt_server_att_4_c, 'Server Reads Characteristic Declaration' ],
+    "GATT/SERVER/ATT/5-C": [ gatt_server_att_5_c, 'Server Reads Characteristic Extended Properties Declaration' ],
+    "GATT/SERVER/ATT/6-C": [ gatt_server_att_6_c, 'Server Reads Characteristic User Description Descriptor' ],
+    "GATT/SERVER/ATT/7-C": [ gatt_server_att_7_c, 'Server Reads Client Characteristic Configuration Descriptor' ],
+    "GATT/SERVER/ATT/8-C": [ gatt_server_att_8_c, 'Server Reads Server Characteristic Configuration Descriptor' ],
+    "GATT/SERVER/ATT/9-C": [ gatt_server_att_9_c, 'Server handles Characteristic Presentation Format Descriptors' ]
 };
 
 _maxNameLength = max([ len(key) for key in __tests__ ]);
