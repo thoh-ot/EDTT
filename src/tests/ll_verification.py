@@ -820,8 +820,6 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
                             deltas += [eventTime - prevTime];
                         prevTime = eventTime;
             
-        flush_events(transport, lowerTester, 100);
-            
         success = success and preamble_scan_enable(transport, lowerTester, Scan.DISABLE, ScanFilterDuplicate.DISABLE, trace);
         success = success and preamble_ext_advertise_enable(transport, upperTester, Advertise.DISABLE, SHandle, SDuration, SMaxExtAdvEvts, trace);
             
@@ -3006,9 +3004,6 @@ def ll_con_sla_bv_24_c(transport, upperTester, lowerTester, trace):
     """
         The test consists of 3 cases for specific connection intervals and supervision timeouts
     """
-    intervals = [6, 32, 6]
-    supervisionTimeouts = [300, 3200, 300]
-
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
@@ -3026,51 +3021,28 @@ def ll_con_sla_bv_24_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     transport.wait(200)
     if connected:
-        for i in range(0,len(intervals)):
-            le_connection_update(transport, upperTester, initiator.handles[1], intervals[i], intervals[i], initiator.latency, \
-                                 supervisionTimeouts[i], initiator.minCeLen, initiator.maxCeLen, 100)
-            transport.wait(100)
-            status, handle = le_remote_connection_parameter_request_reply(transport, lowerTester, initiator.handles[0], intervals[i], \
-                                intervals[i], initiator.latency, supervisionTimeouts[i], initiator.minCeLen, initiator.maxCeLen, 100)
+        initiator.switchRoles();
+
+        for interval, timeout in zip([ 6, 32, 6 ], [ 300, 3200, 300 ]):
             """
-                UpperTester expects a HCI_Command_Status event after sending the HCI_LE_Connection_Update command
+                Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
             """
-            if(has_event(transport, upperTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-                success = success and (status == 0)
-            else:
-                success = False
+            success = success and initiator.update(interval, interval, initiator.latency, timeout);
             """
-                LowerTester expects a BT_HCI_EVT_LE_CONN_PARAM_REQ control PDU from the IUT
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
             """
-            if(has_event(transport, lowerTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                          (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-                showEvent(event, eventData, trace)
-            else:
-                success = False
-            transport.wait(400) # send some empty data packets
+            success = success and initiator.acceptUpdate();
             """
-                Upper Tester expects an HCI_LE_Connection_Update_Complete from the IUT
+                Both lower and upper Tester should receive a LE Connection Update Complete Event...
             """
-            if(has_event(transport, upperTester, 100)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                          (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (status == 0) and (timeout == supervisionTimeouts[i])
-            else:
-                success = False
-            trace.trace(7, "Test case #" + str(i+1) + (" PASSED" if success else " FAILED"))
-            flush_events(transport, lowerTester, 100) #flush events before the next test case
+            success = success and initiator.updated();
+
+            transport.wait(int(4 * interval * 1.25));
+
+        initiator.resetRoles();
+        success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
-
-    success = success and initiator.disconnect(0x3E)
 
     return success
 
@@ -3137,7 +3109,6 @@ def ll_con_sla_bv_25_c(transport, upperTester, lowerTester, trace):
                         (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
         else:
             success = False
-        flush_events(transport, lowerTester, 100) #flush events before the next test case
     else:
         advertiser.disable()
 
