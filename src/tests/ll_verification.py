@@ -1863,42 +1863,6 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
     success = RPAs.clear();
     success = success and RPAs.add( peerAddress );
     """
-        Set resolvable private address timeout in seconds ( sixty seconds )
-    """
-    success = success and RPAs.timeout(60);
-    success = success and RPAs.enable();
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
-    advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_38, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-    initiatorAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
-    initiator = Initiator(transport, upperTester, lowerTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ));
-    success = success and advertiser.enable();
-
-    success = success and initiator.connect();
-        
-    transport.wait(1000);
-        
-    if success:
-        success = success and initiator.disconnect(0x3E);
-
-    return success
-
-"""
-    LL/CON/INI/BV-08-C [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]
-"""
-def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
-
-    """
-        Add Public address of lowerTester to the Resolving List
-    """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    success = RPAs.clear();
-    success = success and RPAs.add( peerAddress );
-    """
         Set resolvable private address timeout in seconds ( two seconds )
     """
     success = success and RPAs.timeout(2);
