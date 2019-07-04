@@ -259,7 +259,7 @@ class Initiator:
             """
                 Check for LE Connection Complete Event | LE Enhanced Connection Complete Event in initiator...
             """
-            initiatorConnected, handle, role, localRPA, interval = self.__hasConnectionCompleteEvent(self.initiator, 200);
+            initiatorConnected, handle, role, localRPA, interval = self.__hasConnectionCompleteEvent(self.initiator, 300);
             if initiatorConnected:
                 self.handles[0] = handle; self.prevInterval = interval;
                 self.RPAs[0] = localRPA[ : ];

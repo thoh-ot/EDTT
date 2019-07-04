@@ -2040,6 +2040,7 @@ def ll_con_ini_bv_06_c(transport, upperTester, lowerTester, trace):
             if (i < 2):
                 success = success and not connected;
                 success = success and advertiser.disable();
+                transport.wait(150);
             else:
                 success = success and connected;
         
@@ -2127,48 +2128,6 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
         """
             Set resolvable private address timeout in seconds ( sixty seconds )
         """
-        success = success and RPAs.timeout(60);
-        success = success and RPAs.enable();
-
-        ownAddress = Address( ExtendedAddressType.PUBLIC );
-        peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
-        advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_38, Advertising.CONNECTABLE_UNDIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-        advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-        initiatorAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
-        initiator = Initiator(transport, upperTester, lowerTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ));
-        success = success and advertiser.enable();
-
-        success = success and initiator.connect();
-        
-        transport.wait(1000);
-        
-        if success:
-            success = success and initiator.disconnect(0x3E);
-
-    except Exception as e: 
-        trace.trace(3, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test failed: %s" % str(e));
-        success = False;
-
-    trace.trace(2, "Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator test " + ("PASSED" if success else "FAILED"));
-    return success
-
-"""
-    LL/CON/INI/BV-08-C [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]
-"""
-def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
-    trace.trace(2, "LL/CON/INI/BV-08-C [Network Privacy – Connection Establishment responding to connectable undirected advertising, Initiator]");
-
-    try:
-        """
-            Add Public address of lowerTester to the Resolving List
-        """
-        RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK );
-        peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-        success = RPAs.clear();
-        success = success and RPAs.add( peerAddress );
-        """
-            Set resolvable private address timeout in seconds ( two seconds )
-        """
         success = success and RPAs.timeout(2);
         success = success and RPAs.enable();
 
@@ -2180,7 +2139,16 @@ def ll_con_ini_bv_08_c(transport, upperTester, lowerTester, trace):
         initiator = Initiator(transport, upperTester, lowerTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ));
         success = success and advertiser.enable();
 
-        success = success and initiator.connect();
+        connected = initiator.connect();
+
+        """
+        If connect did not succeed, try again in case address resolve took time....
+        """
+        if (not connected):
+            transport.wait(200)
+            connected = initiator.connect()
+
+        success = success and connected;
         
         transport.wait(1000);
         
@@ -2212,6 +2180,7 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
         success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
         success = success and RPAs[upperTester].add( peerAddress, lowerIRK );
         success = success and RPAs[lowerTester].add( ownAddress, upperIRK );
+ 
         """
             Set resolvable private address timeout in seconds ( sixty seconds )
         """
@@ -2222,7 +2191,6 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
         initiator = Initiator(transport, upperTester, lowerTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ));
 
         success = success and initiator.preConnect();
-
         success = success and RPAs[lowerTester].clear();
         RPAs[lowerTester].localIRK = randIRK[ : ];
         success = success and RPAs[lowerTester].add( ownAddress, upperIRK );
@@ -2231,8 +2199,8 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
         peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
         advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
         advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-
         success = success and advertiser.enable();
+
         connected = initiator.postConnect();
         success = success and not connected;
         success = success and advertiser.disable();
@@ -2240,9 +2208,9 @@ def ll_con_ini_bv_09_c(transport, upperTester, lowerTester, trace):
         success = success and RPAs[lowerTester].clear();
         RPAs[lowerTester].localIRK = lowerIRK[ : ];
         success = success and RPAs[lowerTester].add( peerAddress, upperIRK );
-
         success = success and advertiser.enable();
         connected = initiator.postConnect();
+
         success = success and connected;
 
         if connected:
@@ -2371,6 +2339,7 @@ def ll_con_ini_bv_11_c(transport, upperTester, lowerTester, trace):
 
         success = success and advertiser.enable();
         connected = initiator.postConnect();
+
         success = success and connected;
 
         if connected:
@@ -2451,8 +2420,18 @@ def ll_con_ini_bv_12_c(transport, upperTester, lowerTester, trace):
         success = success and RPAs[lowerTester].add( peerAddress, upperIRK );
 
         success = success and advertiser.enable();
+        transport.wait(1500);
         connected = initiator.postConnect();
+        """
+        If connect did not succeed, try again in case address resolve took time....
+        """
+        if (not connected):
+            connected = initiator.preConnect();
+            transport.wait(200)
+            connected = initiator.postConnect();
+
         success = success and connected;
+
 
         if connected:
             localRPAs = [ numpy.asarray(initiator.localRPA()[ : ]), numpy.asarray([ 0 for _ in range(6) ]) ];
@@ -2463,6 +2442,12 @@ def ll_con_ini_bv_12_c(transport, upperTester, lowerTester, trace):
 
             success = success and advertiser.enable();
             connected = initiator.connect();        
+            """
+            If connect did not succeed, try again in case address resolve took time....
+            """
+            if (not connected):
+                transport.wait(200)
+                connected = initiator.connect()
             success = success and connected;
 
             if connected:
@@ -6153,6 +6138,13 @@ def ll_sec_adv_bv_07_c(transport, upperTester, lowerTester, trace):
 
         success = success and advertiser.enable()
         connected = initiator.connect()
+        """
+        If connect did not succeed, try again in case address resolve took time....
+        """
+        if (connected == 0):
+            transport.wait(200)
+            connected = initiator.connect()
+
         success = success and connected
         txData = [0 for _ in range(10)]
         pbFlags = 0
@@ -6322,10 +6314,18 @@ def ll_sec_adv_bv_09_c(transport, upperTester, lowerTester, trace):
         """
         success = success and preamble_set_public_address(transport, upperTester, 0x456789ABCDEFL, trace)
         success = success and preamble_set_random_address(transport, lowerTester, initiatorAddr , trace)
+        transport.wait(1000)
 
         success = success and advertiser.enable()
 
         connected = initiator.connect()
+        """
+        If connect did not succeed, try again in case address resolve took time....
+        """
+        if (connected == 0):
+            transport.wait(200)
+            connected = initiator.connect()
+
         success = success and connected
 
         txData = [0 for _ in range(10)]
@@ -6407,6 +6407,7 @@ def ll_sec_adv_bv_10_c(transport, upperTester, lowerTester, trace):
         initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, 
                                 Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
         success = success and advertiser.enable()
+        connected = initiator.connect()
 
         success = success and (not connected)
         if not success:
@@ -6459,6 +6460,13 @@ def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
         success = success and advertiser.enable()
 
         connected = initiator.connect()
+        """
+        If connect did not succeed, try again in case address resolve took time....
+        """
+        if (connected == 0):
+            transport.wait(200)
+            connected = initiator.connect()
+
         success = success and connected
         if success:
             txData = [0 for _ in range(10)]
@@ -6540,6 +6548,13 @@ def ll_sec_adv_bv_12_c(transport, upperTester, lowerTester, trace):
                 transport.wait( 2000 ) # wait for RPA to timeout
             success = success and advertiser.enable()
             connected = initiator.connect()
+            """
+            If connect did not succeed, try again in case address resolve took time....
+            """
+            if (connected == 0):
+                transport.wait(200)
+                connected = initiator.connect()
+
             success = success and connected
             if success:
                 txData = [0 for _ in range(10)]
