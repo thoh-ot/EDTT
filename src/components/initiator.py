@@ -37,7 +37,7 @@ class Initiator:
         self.RPAs = [ [ 0 for _ in range(6) ], [ 0 for _ in range(6) ] ];        
         self.handles = [-1, -1];
         self.reasons = [-1, -1];
-        self.txPhys = self.rxPhys = -1;
+        self.txPhys, self.rxPhys = -1, -1;
 
         """
            Note: intervalMin shall not be greater than intervalMax.
@@ -58,7 +58,12 @@ class Initiator:
 
         self.status             = 0;
         self.prevInterval       = 0;
-        self.pre_connected = self.pre_updated = self.__rolesSwitched = False;
+        self.pre_connected, self.__rolesSwitched = False, False;
+        self.__savedEvent = [ None, None ];
+
+        self.updInitiatorRequest, self.updPeerRequest = False, False;
+
+        self.cpr_handle, self.cpr_minInterval, self.cpr_maxInterval, self.cpr_latency, self.cpr_timeout = -1, 0, 0, 0, 0;
 
     """
         Private Event handles procedures... 
@@ -67,7 +72,7 @@ class Initiator:
     """
     def __hasConnectionCompleteEvent(self, idx, timeout):
 
-        handle = role = interval = -1;
+        handle, role, interval = -1, -1, -1;
         localRPA = [0 for _ in range(6)];
 
         success = has_event(self.transport, idx, timeout); 
@@ -85,7 +90,7 @@ class Initiator:
     """
     def __hasDisconnectCompleteEvent(self, idx, timeout):
 
-        handle = reason = -1;
+        handle, reason = -1, -1;
 
         success = has_event(self.transport, idx, timeout);
         if success:        
@@ -103,7 +108,7 @@ class Initiator:
     """
     def __hasPhysUpdateCompleteEvent(self, idx, timeout):
         
-        txPhys = rxPhys = -1;
+        txPhys, rxPhys = -1, -1;
 
         success = has_event(self.transport, idx, timeout);
         if success:
@@ -121,15 +126,23 @@ class Initiator:
     """
     def __hasConnectionParamRequestEvent(self, idx, timeout):
 
-        handle = minInterval = maxInterval = latency = supervisionTimeout = -1;
+        handle, minInterval, maxInterval, latency, supervisionTimeout = -1, -1, -1, -1, -1;
 
         success = has_event(self.transport, idx, timeout); 
-        if success:
+        while success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ;
-            showEvent(event, eventData, self.trace);
             if success:
+                showEvent(event, eventData, self.trace);
                 handle, minInterval, maxInterval, latency, supervisionTimeout = remoteConnectionParameterRequest(eventData);
+                break;
+            else:
+                """
+                    We didn't get a LE Connection Parameter Update Request Event...
+                    We could receive a LE Connection Parameter Update Complete Event instead - save it!
+                """
+                self.__savedEvent[idx] = { 'Time': eventTime, 'Event': event, 'Meta': subEvent, 'Data': eventData };
+                success = has_event(self.transport, idx, timeout);
 
         return success, handle, minInterval, maxInterval, latency, supervisionTimeout;
 
@@ -137,11 +150,19 @@ class Initiator:
         Check for LE Connection Parameter Update Complete Event...
     """
     def __hasConnectionUpdateCompleteEvent(self, idx, timeout):
-        status = handle = interval = latency = visionTimeout = -1;
+        status, handle, interval, latency, visionTimeout = -1, -1, -1, -1, -1;
         
-        success = has_event(self.transport, idx, timeout);
+        success = not self.__savedEvent[idx] is None;
+        if success:        
+            eventTime, event, subEvent, eventData = self.__savedEvent[idx]['Time'], self.__savedEvent[idx]['Event'], \
+                                                    self.__savedEvent[idx]['Meta'], self.__savedEvent[idx]['Data'];
+            self.__savedEvent[idx] = None;
+        else:
+            success = has_event(self.transport, idx, timeout);
+            if success:
+                eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
+
         if success:
-            eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE;
             showEvent(event, eventData, self.trace);
             if success:                    
@@ -156,7 +177,9 @@ class Initiator:
     def __initiating(self):
 
         try:
-            le_create_connection(self.transport, self.initiator, self.scanInterval, self.scanWindow, self.filterPolicy, self.peerAddress.type, self.peerAddress.address, self.initiatorAddress.type, self.intervalMin, self.intervalMax, self.latency, self.supervisionTimeout, self.minCeLen, self.maxCeLen, 100);
+            le_create_connection(self.transport, self.initiator, self.scanInterval, self.scanWindow, self.filterPolicy, self.peerAddress.type, \
+                                 self.peerAddress.address, self.initiatorAddress.type, self.intervalMin, self.intervalMax, self.latency, \
+                                 self.supervisionTimeout, self.minCeLen, self.maxCeLen, 100);
             eventTime, event, subEvent, eventData = get_event(self.transport, self.initiator, 100);
             self.status = ord(eventData[0]);
             success = (event == Events.BT_HCI_EVT_CMD_STATUS) and (self.status == 0);
@@ -329,29 +352,31 @@ class Initiator:
         Update connection parameters...
     """
     def update(self, minInterval, maxInterval, latency, timeout):
-        self.pre_updated = self.__update(minInterval, maxInterval, latency, timeout) if not self.handles[0] == -1 else False;
-        return self.pre_updated;
+        self.updInitiatorRequest = self.__update(minInterval, maxInterval, latency, timeout) if not self.handles[0] == -1 else False;
+        if self.updInitiatorRequest:
+            if not self.peer is None:
+                self.updPeerRequest, self.cpr_handle, self.cpr_minInterval, self.cpr_maxInterval, self.cpr_latency, self.cpr_timeout = \
+                    self.__hasConnectionParamRequestEvent(self.peer, 3200);
+            else:
+                self.updPeerRequest = False;
+        return self.updInitiatorRequest;
     
     """
         Accept the request for connection parameters update, by responding to the LE Remote Connection Parameter Request Event...
     """
     def acceptUpdate(self):
-        success = self.pre_updated;
+        success = self.updInitiatorRequest and self.updPeerRequest;
         
-        if success and not self.peer is None:
+        if success:
             """
-                Verify that the peer receives a LE Remote Connection Parameter Request Event...
+                Send a LL_CONNECTION_PARAM_RSP as a reaction to the LE Remote Connection Parameter Request Event...
             """
-            success, handle, minInterval, maxInterval, latency, timeout = self.__hasConnectionParamRequestEvent(self.peer, 3200);
-            if success:
-                """
-                    Send a LL_CONNECTION_PARAM_RSP as a reaction to the LE Remote Connection Parameter Request Event...
-                """
-                status, handle = le_remote_connection_parameter_request_reply(self.transport, self.peer, handle, minInterval, maxInterval, latency, timeout, self.minCeLen, self.maxCeLen, 100);
-                success = (status == 0);
-                eventTime, event, subEvent, eventData = get_event(self.transport, self.peer, 100);
-                showEvent(event, eventData, self.trace);
-                success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
+            status, handle = le_remote_connection_parameter_request_reply(self.transport, self.peer, self.cpr_handle, self.cpr_minInterval, self.cpr_maxInterval, \
+                                                                              self.cpr_latency, self.cpr_timeout, self.minCeLen, self.maxCeLen, 100);
+            success = (status == 0);
+            eventTime, event, subEvent, eventData = get_event(self.transport, self.peer, 100);
+            showEvent(event, eventData, self.trace);
+            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
 
         return success;
 
@@ -359,34 +384,30 @@ class Initiator:
         Reject the request for connection parameters update, by responding to the LE Remote Connection Parameter Request Event...
     """
     def rejectUpdate(self, reason):
-        success = self.pre_updated;
+        success = self.updInitiatorRequest and self.updPeerRequest;
         
-        if success and not self.peer is None:
+        if success:
             """
-                Verify that the peer receives a LE Remote Connection Parameter Request Event...
+                Send a LL_REJECT_EXT_IND as a reaction to the LE Remote Connection Parameter Request Event...
             """
-            success, handle, minInterval, maxInterval, latency, timeout = self.__hasConnectionParamRequestEvent(self.peer, 3200);
-            if success:
-                """
-                    Send a LL_REJECT_EXT_IND as a reaction to the LE Remote Connection Parameter Request Event...
-                """
-                status, handle = le_remote_connection_parameter_request_negative_reply(self.transport, self.peer, handle, reason, 100);
-                success = status == 0;
-                eventTime, event, subEvent, eventData = get_event(self.transport, self.peer, 100);
-                showEvent(event, eventData, self.trace);
-                success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
+            status, handle = le_remote_connection_parameter_request_negative_reply(self.transport, self.peer, self.cpr_handle, reason, 100);
+            success = status == 0;
+            eventTime, event, subEvent, eventData = get_event(self.transport, self.peer, 100);
+            showEvent(event, eventData, self.trace);
+            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
 
         return success;
 
     def updated(self):
-        success = self.pre_updated;
+        success = self.updInitiatorRequest;
 
         if success:
             """
                 Check for LE Connection Update Complete Event in initiator...
                 NOTE: Timing depends on the connect interval in effect - update is usually 6 events after previous reponse event
             """
-            initiatorUpdated, self.status, handle, interval, latency, timeout = self.__hasConnectionUpdateCompleteEvent(self.initiator, 100 * int((99 + 10 * self.prevInterval) / 100));
+            initiatorUpdated, self.status, handle, interval, latency, timeout = \
+                self.__hasConnectionUpdateCompleteEvent(self.initiator, 100 * int((99 + 10 * self.prevInterval) / 100));
             initiatorUpdated = initiatorUpdated and (self.handles[0] == handle);           
             if initiatorUpdated:
                 self.intervalMin = self.intervalMax = self.prevInterval = interval;
