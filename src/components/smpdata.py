@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 import string;
 from enum import IntEnum;
 from components.utils import *;
@@ -320,4 +323,3 @@ class SMPData:
             return errorTexts[code];
         else:
             return "Unknown error code (%d)" % code;
-

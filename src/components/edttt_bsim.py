@@ -1,5 +1,8 @@
-#PTT Transport driver for BabbleSim
-# Any PTT Transport shall implement the following API:
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
+#EDTT Transport driver for BabbleSim
+# Any EDTT Transport shall implement the following interface:
 #   __init__(args)
 #   connect()
 #   send(idx, message)
@@ -50,12 +53,12 @@ class EDTTT:
     COM_SEND       = 2;
     COM_RCV        = 3;
 
-    TO_PTT  = 0;
+    TO_EDTT  = 0;
     TO_BRIDGE =1;
     FIFOs = [-1, -1];
     FIFOnames = [ "" , "" ];
     verbosity = 0;
-    last_t =  0;#last timestamp received from the bridge
+    last_t =  0; #last timestamp received from the bridge
     Connected = False;
     n_devices = 0;
 
@@ -63,8 +66,8 @@ class EDTTT:
         self.Trace = TraceClass;
         import argparse
         parser = argparse.ArgumentParser(prog="BabbleSim transport options:", add_help=False)
-        parser.add_argument("-s", "--sim_id", required=True, help="When connecting to a simulated device, simulation id");
-        parser.add_argument("-d", "--bridge-device-nbr", required=True, help="When connecting to a simulated device, device number of the PTT bridge");
+        parser.add_argument("-s", "--sim_id", required=True, help="Simulation id");
+        parser.add_argument("-d", "--bridge-device-nbr", required=True, help="Device number of the EDTT bridge");
         (args, discard) = parser.parse_known_args(pending_args)
 
         self.device_nbr = args.bridge_device_nbr;
@@ -73,29 +76,29 @@ class EDTTT:
     def connect(self):
         Com_path = create_com_folder(self.sim_id);
 
-        self.Trace.trace(3,"Connecting to PTT bridge");
+        self.Trace.trace(3,"Connecting to EDTT bridge");
 
         #Note that python ignores SIGPIPE by default
 
-        self.FIFOnames[self.TO_PTT] = \
+        self.FIFOnames[self.TO_EDTT] = \
             Com_path + "/Device" + str(self.device_nbr) + ".ToPTT";
         self.FIFOnames[self.TO_BRIDGE] = \
             Com_path + "/Device" + str(self.device_nbr) + ".ToBridge";
 
-        Create_FIFO_if_not_there(self.FIFOnames[self.TO_PTT]);
+        Create_FIFO_if_not_there(self.FIFOnames[self.TO_EDTT]);
         Create_FIFO_if_not_there(self.FIFOnames[self.TO_BRIDGE]);
 
         self.FIFOs[self.TO_BRIDGE] = os.open(self.FIFOnames[self.TO_BRIDGE], os.O_WRONLY);
-        self.FIFOs[self.TO_PTT] = os.open(self.FIFOnames[self.TO_PTT], os.O_RDONLY);
+        self.FIFOs[self.TO_EDTT] = os.open(self.FIFOnames[self.TO_EDTT], os.O_RDONLY);
 
         if (self.FIFOs[self.TO_BRIDGE] == -1):
             raise Exception("Could not open FIFO %s"% self.FIFOnames[self.TO_BRIDGE]);
 
-        if (self.FIFOs[self.TO_PTT] == -1):
-            raise Exception("Could not open FIFO %s"% self.FIFOnames[self.TO_PTT]);
+        if (self.FIFOs[self.TO_EDTT] == -1):
+            raise Exception("Could not open FIFO %s"% self.FIFOnames[self.TO_EDTT]);
 
         self.Connected = True;
-        self.Trace.trace(4,"Connected to PTT bridge");
+        self.Trace.trace(4,"Connected to EDTT bridge");
 
         packet = self.read(2);
         self.n_devices = struct.unpack('<H',packet[0:2])[0];
@@ -105,10 +108,10 @@ class EDTTT:
         try:
             os.close(self.FIFOs[self.TO_BRIDGE]);
             self.Trace.trace(9,"Closed FIFO to Bridge");
-            os.close(self.FIFOs[self.TO_PTT]);
-            self.Trace.trace(9,"Closed FIFO to PTT");
+            os.close(self.FIFOs[self.TO_EDTT]);
+            self.Trace.trace(9,"Closed FIFO to EDTT");
             os.remove(self.FIFOnames[self.TO_BRIDGE]);
-            os.remove(self.FIFOnames[self.TO_PTT]);
+            os.remove(self.FIFOnames[self.TO_EDTT]);
         except OSError:
             self.Trace.trace(9,"(minor) Error closing FIFO "
                              "(most likely either file does not exist yet)");
@@ -132,19 +135,19 @@ class EDTTT:
             if written != len(content):
                 raise;
         except:
-            self.Trace.trace(4,"The PTT bridge disapeared when trying to write "
-                             "to it");
+            self.Trace.trace(4,"The EDTT bridge disappeared when trying to "
+                             "write to it");
             self.cleanup();
             raise Exception("Abruptly disconnected from bridge");
 
-    def ll_recv(self, nbytes):
+    def ll_read(self, nbytes):
         try:
-            pkt = os.read(self.FIFOs[self.TO_PTT], nbytes);
+            pkt = os.read(self.FIFOs[self.TO_EDTT], nbytes);
             if len(pkt) == 0:
                 raise;
             return pkt;
         except:
-           self.Trace.trace(4,"The PTT bridge disapeared when trying to read "
+           self.Trace.trace(4,"The EDTT bridge disapeared when trying to read "
                               "from it");
            self.cleanup();
            raise Exception("Abruptly disconnected from bridge");
@@ -163,7 +166,7 @@ class EDTTT:
       packet ="";
       #print "Will try to pick " + str(nbytes) + " bytes"
       while ( len(packet) < nbytes):
-        packet += self.ll_recv(nbytes - received_nbytes);
+        packet += self.ll_read(nbytes - received_nbytes);
         #print "Got so far " + str(len(packet)) + " bytes"
         #print 'packet: "' + repr(packet) + '"' 
       return packet;
@@ -172,7 +175,7 @@ class EDTTT:
         if (idx > self.n_devices -1):
             raise Exception("Trying to access unconnected device %i"%idx);
 
-        #print ("PTT: ("+str(idx)+") request rcv of "+ str(number_bytes) + " bytes; to = " + str(to));
+        #print ("EDTT: ("+str(idx)+") request rcv of "+ str(number_bytes) + " bytes; to = " + str(to));
         if to == None:
             to = self.default_to
         if ( number_bytes == 0 ):
@@ -180,7 +183,7 @@ class EDTTT:
 
         timeout = to*1000 + self.last_t;
         # Poll the bridge for a response
-        #print ("PTT: ("+str(idx)+") request rcv of "+ str(number_bytes) + " bytes; timeout = " + str(timeout));
+        #print ("EDTT: ("+str(idx)+") request rcv of "+ str(number_bytes) + " bytes; timeout = " + str(timeout));
 
         self.ll_send(struct.pack('<BBQH', self.COM_RCV, idx, timeout, number_bytes));
 

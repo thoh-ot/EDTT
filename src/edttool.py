@@ -1,10 +1,13 @@
 #! /usr/bin/env python2
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 import os;
 import random;
 
 def parse_arguments():
     import argparse
-    parser = argparse.ArgumentParser(description="Zephyr EDTT (Embedded Device Test Tool)",
+    parser = argparse.ArgumentParser(description="EDTT (Embedded Device Test Tool)",
                                      epilog="Note: A transport can have its own options")
 
     parser.add_argument("-v", "--verbose", default=2, type=int, help="Verbosity level");
@@ -36,7 +39,7 @@ def try_to_import(module_path, type, def_path):
         else: #The user seems to want to load the module from a place off-tree
             #If the user forgot Let's fill in the extension
             if module_path[-3:] != ".py":
-              module_path = module_path + ".py"
+                module_path = module_path + ".py"
             import imp;
             loaded_module = imp.load_source('%s', module_path);
 
@@ -58,7 +61,7 @@ def run_one_test(args, xtra_args, transport, trace, test_mod, test_spec, nameLen
     if test_spec.number_devices > transport.n_devices:
         raise Exception("This test needs %i connected devices but you only connected to %i" %
                         (test_spec.number_devices, transport.n_devices));
-    
+
     result = test_mod.run_a_test(args, transport, trace, test_spec);
     trace.trace(2, "%-*s %s %s" % (nameLen, test_spec.name, test_spec.description[1:], ("PASSED" if result == 0 else "FAILED")));
 
@@ -135,7 +138,7 @@ def main():
         
         random.seed(args.seed);
 
-        trace = Trace(args.verbose); #TODO: replace with Logger
+        trace = Trace(args.verbose);
 
         transport = init_transport(args.transport, xtra_args, trace);
 
@@ -152,4 +155,4 @@ def main():
         raise;
 
 if __name__ == "__main__":
-  main();
+    main();

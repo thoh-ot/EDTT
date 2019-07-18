@@ -1,3 +1,6 @@
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 from components.basic_commands import le_receiver_test;
 from components.basic_commands import le_transmitter_test;
 from components.basic_commands import le_test_end;

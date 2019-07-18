@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# Copyright 2019 Oticon A/S
+# SPDX-License-Identifier: Apache-2.0
+
 from enum import IntEnum;
 from components.utils import *;
 from components.basic_commands import *;
@@ -46,7 +49,7 @@ class Advertiser:
     """
     """
         Constructor:
-            transport     - PTTT_nwtsim object
+            transport     - EDTTT object
             idx           - Number; Device identifier
             trace         - Trace object
             channels      - AdvertiseChannels enum holding the channel or channels to advertise on
@@ -165,7 +168,7 @@ class Advertiser:
             success = False;
 
         return success;
-    
+
     """
         Enable advertising - start emitting Advertise packages
     """
