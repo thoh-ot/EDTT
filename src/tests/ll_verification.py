@@ -38,14 +38,197 @@ class PreferredPhysicalChannel(IntEnum):
     LE_1M    = 0                   # 0 ~ The Host prefers to use the LE 1M transmitter PHY (possibly among others)
     LE_2M    = 1                   # 1 ~ The Host prefers to use the LE 2M transmitter PHY (possibly among others)
     LE_CODED = 2                   # 2 ~ The Host prefers to use the LE Coded transmitter PHY (possibly among others)
-    
-def local_resolvable_address(transport, idx, identityAddress, trace):
-    status, resolvableAddress = le_read_local_resolvable_address(transport, idx, identityAddress.type, identityAddress.address, 100);
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
+
+"""
+    ========================================================================================================================
+    BEGIN                                      U T I L I T Y   P R O C E D U R E S
+    ========================================================================================================================
+"""
+def verifyAndShowEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
     showEvent(event, eventData, trace);
-    return status, resolvableAddress;
+    return (event == expectedEvent);
+
+def verifyAndShowMetaEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (subEvent == expectedEvent);
+
+def verifyAndFetchEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (event == expectedEvent), eventData;
+
+def verifyAndFetchMetaEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (subEvent == expectedEvent), eventData;
+
+def getCommandCompleteEvent(transport, idx, trace):
+
+    return verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_CMD_COMPLETE, trace);
+    
+def readLocalResolvableAddress(transport, idx, identityAddress, trace):
+
+    status, resolvableAddress = le_read_local_resolvable_address(transport, idx, identityAddress.type, identityAddress.address, 100);
+    trace.trace(6, "LE Read Local Resolvable Address returns status: 0x%02X" % status);
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0), resolvableAddress;
+
+"""
+    Issue a channel Map Update
+"""
+def channelMapUpdate(transport, idx, channelMap, trace):
+
+    status = le_set_host_channel_classification(transport, idx, toArray(channelMap, 5), 100);
+    trace.trace(6, "LE Set Host Channel Classification returns status: 0x%02X" % status);
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+
+def setEventMask(transport, idx, events, trace):
+
+    status = le_set_event_mask(transport, idx, events, 100);
+    trace.trace(6, "LE Set Event Mask returns status: 0x%02X" % status);
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+
+def setPrivacyMode(transport, idx, address, mode, trace):
+
+    status = le_set_privacy_mode(transport, idx, address.type, address.address, mode, 100);
+    trace.trace(6, "LE Set Privacy Mode returns status: 0x%02X" % status);
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+
+def setDataLength(transport, idx, handle, octets, time, trace):
+
+    status, handle = le_set_data_length(transport, idx, handle, octets, time, 100);
+    trace.trace(6, "LE Set Data Length returns status: 0x%02X handle: 0x%04X" % (status, handle));
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+
+def readBufferSize(transport, idx, trace):
+
+    status, maxPacketLength, maxPacketNumbers = le_read_buffer_size(transport, idx, 100);
+    trace.trace(6, "LE Read Buffer Size returns status: 0x%02X - Data Packet length %d, Number of Data Packets %d" % (status, maxPacketLength, maxPacketNumbers));
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0), maxPacketLength, maxPacketNumbers;
+
+def readLocalFeatures(transport, idx, trace):
+
+    status, features = le_read_local_supported_features(transport, idx, 100)
+    trace.trace(6, "LE Read Local Supported Features returns status: 0x%02X" % status);
+    return getCommandCompleteEvent(transport, idx, trace) and (status == 0), features;
+
+def readRemoteFeatures(transport, idx, handle, trace):
+
+    status = le_read_remote_features(transport, idx, handle, 100);
+    trace.trace(6, "LE Read Remote Features returns status: 0x%02X" % status);
+    return verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_CMD_STATUS, trace) and (status == 0);
+
+def readRemoteVersionInformation(transport, idx, handle, trace):
+
+    status = read_remote_version_information(transport, idx, handle, 100);
+    trace.trace(6, "Read Remote Version Information returns status: 0x%02X" % status);
+    return verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_CMD_STATUS, trace) and (status == 0);
+
+"""
+    Send a DATA package...
+"""
+def writeData(transport, idx, handle, pbFlags, txData, trace):
+
+    status = le_data_write(transport, idx, handle, pbFlags, 0, txData, 100);
+    trace.trace(6, "LE Data Write returns status: 0x%02X" % status);
+    success = status == 0;
+
+    dataSent = has_event(transport, idx, 200);
+    success = success and dataSent;
+    if dataSent:
+        dataSent = verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS, trace);
+        success = success and dataSent;
+
+    return success;
+
+"""
+    Read a single DATA Package...
+"""
+def readData(transport, idx, trace, timeout=200):
+    rxData = [];
+
+    dataReady = le_data_ready(transport, idx, timeout);
+    if dataReady:
+        rxPBFlags, rxBCFlags, rxDataPart = le_data_read(transport, idx, 100)[2:];
+        trace.trace(6, "LE Data Read returns PB=%d BC=%d - %2d data bytes: %s" % \
+                       (rxPBFlags, rxBCFlags, len(rxDataPart), formatArray(rxDataPart)));
+        rxData = rxDataPart;
+
+    return (len(rxData) > 0), rxData;
+
+"""
+    Read and concatenate multiple DATA Packages...
+"""
+def readDataFragments(transport, idx, trace, timeout=100):
+    success, rxData = True, [];
+
+    while success:
+        dataReady = le_data_ready(transport, idx, timeout);
+        success = success and dataReady;
+        if dataReady:
+            rxPBFlags, rxBCFlags, rxDataPart = le_data_read(transport, idx, 100)[2:];
+            trace.trace(6, "LE Data Read returns PB=%d BC=%d - %2d data bytes: %s" % \
+                           (rxPBFlags, rxBCFlags, len(rxDataPart), formatArray(rxDataPart)));
+            rxData += rxDataPart;
+            timeout = 99;
+
+    return (len(rxData) > 0), rxData;
+
+def hasConnectionUpdateCompleteEvent(transport, idx, trace):
+
+    success, status = has_event(transport, idx, 100), -1;
+    if success:
+        success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE, trace);
+        if success:
+            status, handle, interval, latency, timeout = connectionUpdated(eventData);
+    return success, status;
+
+def hasChannelSelectionAlgorithmEvent(transport, idx, trace):
+
+    success, status, chSelAlgorithm = has_event(transport, idx, 100), -1, -1;
+    if success:
+        success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO, trace);
+        if success:
+            status, handle, chSelAlgorithm = channelSelectionAlgorithm(eventData);
+    return success, handle, chSelAlgorithm;
+
+def hasDataLengthChangedEvent(transport, idx, trace):
+
+    success, handle, maxTxOctets, maxTxTime, maxRxOctets, maxRxTime = has_event(transport, idx, 200), -1, -1, -1, -1, -1;
+    if success:
+        success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE, trace);
+        if success:
+            handle, maxTxOctets, maxTxTime, maxRxOctets, maxRxTime = dataLengthChanged(eventData);
+    return success, handle, maxTxOctets, maxTxTime, maxRxOctets, maxRxTime;
+
+def hasReadRemoteFeaturesCompleteEvent(transport, idx, trace):
+
+    success, handle, features = has_event(transport, idx, 100), -1, [];
+    if success:
+        success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE, trace);
+        if success:
+            handle, features = remoteFeatures(eventData)[1:];
+    return success, handle, features;
+
+def hasReadRemoteVersionInformationCompleteEvent(transport, idx, trace):
+
+    success, handle, version, manufacturer, subVersion = has_event(transport, idx, 100), -1, -1, -1, -1;
+    if success:
+        success, eventData = verifyAndFetchEvent(transport, idx, Events.BT_HCI_EVT_REMOTE_VERSION_INFO, trace);
+        if success:
+            handle, version, manufacturer, subVersion = remoteVersion(eventData)[1:];
+    return success, handle, version, manufacturer, subVersion;
+
+"""
+    ========================================================================================================================
+                                               U T I L I T Y   P R O C E D U R E S                                       END
+    ========================================================================================================================
+"""
 
 """
     LINK/DED/ADV/1-C [Non-Connectable Advertising Packets on one channel]
@@ -509,7 +692,6 @@ def link_ded_adv_10_c(transport, upperTester, lowerTester, trace):
     success = success and scanner.enable();
     success = success and advertiser.enable();
     scanner.monitor(True);
-  # success = success and advertiser.disable();
     success = success and scanner.disable();
     success = success and advertiser.timeout();
         
@@ -1312,7 +1494,7 @@ def link_ded_sca_12_c(transport, upperTester, lowerTester, trace):
         success = success and scanner.qualifyResponses( 5, advertiser.responseData );
         success = success and scanner.disable();
 
-        status, resolvableAddresses[i] = local_resolvable_address(transport, upperTester, Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL ), trace);
+        addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL ), trace);
         trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[i]));
 
     success = success and advertiser.disable();
@@ -1458,11 +1640,7 @@ def link_ded_sca_22_c(transport, upperTester, lowerTester, trace):
     """
         Set Privacy Mode
     """
-    status = le_set_privacy_mode(transport, upperTester, lowerAddress.type, lowerAddress.address, PrivacyMode.DEVICE_PRIVACY, 100);
-    success = success and (status == 0);
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success = success and setPrivacyMode(transport, upperTester, lowerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Set resolvable private address timeout in seconds ( sixty seconds )
     """
@@ -1572,12 +1750,7 @@ def link_con_adv_9_c(transport, upperTester, lowerTester, trace):
     """
     events = [0xFF, 0xFF, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00];
         
-    status = le_set_event_mask(transport, upperTester, events, 100);
-    trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success = setEventMask(transport, upperTester, events, trace);
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1598,16 +1771,8 @@ def link_con_adv_9_c(transport, upperTester, lowerTester, trace):
         """
             Check for LE Channel Selection Algorithm Event in upper Tester...
         """
-        gotEvent = has_event(transport, upperTester, 100);
-        success = success and gotEvent;
-        if gotEvent:
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-            showEvent(event, eventData, trace);
-            rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO);
-            success = success and rightEvent;
-            if rightEvent:
-                status, handle, chSelAlgorithm = channelSelectionAlgorithm(eventData);
-                success = success and (chSelAlgorithm == 1);
+        success, handle, chSelAlgorithm = hasChannelSelectionAlgorithmEvent(transport, upperTester, trace);
+        success = success and (chSelAlgorithm == 1);
 
         transport.wait(200);
 
@@ -1628,12 +1793,7 @@ def link_con_adv_10_c(transport, upperTester, lowerTester, trace):
     """
     events = [0xFF, 0xFF, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00];
         
-    status = le_set_event_mask(transport, upperTester, events, 100);
-    trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success = setEventMask(transport, upperTester, events, trace);
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1654,15 +1814,8 @@ def link_con_adv_10_c(transport, upperTester, lowerTester, trace):
         """
             Check for LE Channel Selection Algorithm Event in upper Tester...
         """
-        gotEvent = has_event(transport, upperTester, 100);
-        success = success and gotEvent;
-        if gotEvent:
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-            showEvent(event, eventData, trace);
-            rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO);
-            if rightEvent:
-                status, handle, chSelAlgorithm = channelSelectionAlgorithm(eventData);
-                success = success and (chSelAlgorithm == 1);
+        success, handle, chSelAlgorithm = hasChannelSelectionAlgorithmEvent(transport, upperTester, trace);
+        success = success and (chSelAlgorithm == 1);
 
         transport.wait(200);
 
@@ -1706,9 +1859,7 @@ def link_con_ini_1_c(transport, upperTester, lowerTester, trace):
             status = le_set_random_address(transport, upperTester, randAddress, 100);
             trace.trace(6, "LE Set Random Address Command returns status: 0x%02X" % status);
             success = success and (status == 0x0C);
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, trace);
+            getCommandCompleteEvent(transport, upperTester, trace);
 
             success = success and advertiser.enable();
 
@@ -2154,12 +2305,7 @@ def link_con_ini_15_c(transport, upperTester, lowerTester, trace):
         
     success = True;
     for idx in [ upperTester, lowerTester ]:
-        status = le_set_event_mask(transport, idx, events, 100);
-        trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = success and setEventMask(transport, idx, events, trace);
 
         ownAddress = Address( ExtendedAddressType.PUBLIC );
         peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2180,16 +2326,8 @@ def link_con_ini_15_c(transport, upperTester, lowerTester, trace):
             """
                 Check for LE Channel Selection Algorithm Event in upper Tester...
             """
-            gotEvent = has_event(transport, upperTester, 100);
-            success = success and gotEvent;
-            if gotEvent:
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                showEvent(event, eventData, trace);
-                rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO);
-                success = success and rightEvent;
-                if rightEvent:
-                    status, handle, chSelAlgorithm = channelSelectionAlgorithm(eventData);
-                    success = success and (chSelAlgorithm == 1);
+            success, handle, chSelAlgorithm = hasChannelSelectionAlgorithmEvent(transport, upperTester, trace);
+            success = success and (chSelAlgorithm == 1);
 
             transport.wait(200);
 
@@ -2212,12 +2350,7 @@ def link_con_ini_16_c(transport, upperTester, lowerTester, trace):
        
     success = True;
     for idx in [ upperTester, lowerTester ]:
-        status = le_set_event_mask(transport, idx, events, 100);
-        trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = success and setEventMask(transport, idx, events, trace);
 
         ownAddress = Address( ExtendedAddressType.PUBLIC );
         peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -2238,16 +2371,8 @@ def link_con_ini_16_c(transport, upperTester, lowerTester, trace):
             """
                 Check for LE Channel Selection Algorithm Event in upper Tester...
             """
-            gotEvent = has_event(transport, upperTester, 100);
-            success = success and gotEvent;
-            if gotEvent:
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                showEvent(event, eventData, trace);
-                rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO);
-                success = success and rightEvent;
-                if rightEvent:
-                    status, handle, chSelAlgorithm = channelSelectionAlgorithm(eventData);
-                    success = success and (chSelAlgorithm == 1);
+            success, handle, chSelAlgorithm = hasChannelSelectionAlgorithmEvent(transport, upperTester, trace);
+            success = success and (chSelAlgorithm == 1);
 
             transport.wait(200);
 
@@ -2364,11 +2489,7 @@ def link_con_ini_19_c(transport, upperTester, lowerTester, trace):
     """
         Set Privacy Mode
     """
-    status = le_set_privacy_mode(transport, upperTester, peerAddress.type, peerAddress.address, PrivacyMode.DEVICE_PRIVACY, 100);
-    success = success and (status == 0);
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Set resolvable private address timeout in seconds ( three seconds )
     """
@@ -2414,11 +2535,7 @@ def link_con_ini_20_c(transport, upperTester, lowerTester, trace):
     """
         Set Privacy Mode
     """
-    status = le_set_privacy_mode(transport, upperTester, peerAddress.type, peerAddress.address, PrivacyMode.DEVICE_PRIVACY, 100);
-    success = success and (status == 0);
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Set resolvable private address timeout in seconds ( three seconds )
     """
@@ -2464,12 +2581,7 @@ def link_con_sla_2_c(transport, upperTester, lowerTester, trace):
     """
         Obtain maximum Data Packet size and maximum number of Data Packets
     """
-    status, maxPacketLength, maxPacketNumbers = le_read_buffer_size(transport, upperTester, 100);
-    trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X - Data Packet length %d, Number of Data Packets %d" % (status, maxPacketLength, maxPacketNumbers));
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success, maxPacketLength, maxPacketNumbers = readBufferSize(transport, upperTester, trace);
 
     success = success and advertiser.enable();
 
@@ -2485,21 +2597,12 @@ def link_con_sla_2_c(transport, upperTester, lowerTester, trace):
         for count in [ 100, 100, 1, 99 ]:
             pbFlags ^= 1;
             for j in range(count):
-                status = le_data_write(transport, upperTester, initiator.handles[1], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, upperTester, 200);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    hasData = le_data_ready(transport, lowerTester, 200);
-                    success = success and hasData;
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+
+                dataSent = writeData(transport, upperTester, initiator.handles[1], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, lowerTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
             
         if maxPacketLength > 27:
             """
@@ -2509,26 +2612,13 @@ def link_con_sla_2_c(transport, upperTester, lowerTester, trace):
             count = 1 + int(1000/maxPacketLength);
 
             for j in range(count):
-                txData = [0 for _ in range(random.randint(28,maxPacketLength))];
+                txData = [0 for _ in range(random.randint(28, maxPacketLength))];
 
-                status = le_data_write(transport, upperTester, initiator.handles[1], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, upperTester, 100);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    rxDataLength = 0;
-                    while success and (rxDataLength < len(txData)):
-                        hasData = le_data_ready(transport, lowerTester, 100);
-                        success = success and hasData;
-                        if hasData:
-                            time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                            trace.trace(6, "LE Data Read Command returns PB=%d BC=%d - %2d data bytes: %s" % (rxPBFlags, rxBCFlags, len(rxData), formatArray(rxData)));
-                            rxDataLength += len(rxData);
+                dataSent = writeData(transport, upperTester, initiator.handles[1], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readDataFragments(transport, lowerTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
 
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -2564,21 +2654,11 @@ def link_con_sla_3_c(transport, upperTester, lowerTester, trace):
         for count in [ 100, 100, 1, 99 ]:
             pbFlags ^= 1;
             for j in range(count):
-                status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, lowerTester, 200);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    hasData = le_data_ready(transport, upperTester, 200);
-                    success = success and hasData;
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100);
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+                dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, upperTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
             
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -2615,39 +2695,19 @@ def link_con_sla_4_c(transport, upperTester, lowerTester, trace):
             """
                 Upper Tester is sending Data...
             """
-            status = le_data_write(transport, upperTester, initiator.handles[1], pbFlags, 0, txData, 100);
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-            success = success and (status == 0);
-            if success:
-                dataSent = has_event(transport, upperTester, 200);
-                success = success and dataSent;
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                hasData = le_data_ready(transport, lowerTester, 200);
-                success = success and hasData;
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                    trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+            dataSent = writeData(transport, upperTester, initiator.handles[1], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readData(transport, lowerTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Lower Tester is sending Data...
             """
-            status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100);
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-            success = success and (status == 0);
-            if success:
-                dataSent = has_event(transport, lowerTester, 200);
-                success = success and dataSent;
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                hasData = le_data_ready(transport, upperTester, 200);
-                success = success and hasData;
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100);
-                    trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+            dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readData(transport, upperTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -2806,34 +2866,20 @@ def link_con_sla_9_c(transport, upperTester, lowerTester, trace):
     connected = initiator.connect()
     success = success and connected
 
-    if connected:   # Wait for supervision timer to run out
+    if connected:
         transport.wait(100)
         """
             Send LL_FEATURE_REQ to IUT
         """
-        le_read_remote_features(transport, lowerTester, initiator.handles[0], 100)
-        if has_event(transport, lowerTester, 100):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_CMD_STATUS)
-        else:
-            success = False
-
+        success = success and readRemoteFeatures(transport, lowerTester, initiator.handles[0], trace);
         """
             Verify if lower tester received LE Read Remote Features Complete Event
         """
-        if has_event(transport, lowerTester, 100):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            numPackets, opCode, status = struct.unpack('<BHB', eventData[:4])
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE)
-        else:
-            success = False
+        success = success and hasReadRemoteFeaturesCompleteEvent(transport, lowerTester, trace)[0]; 
+
+        success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
-
-    success = success and initiator.disconnect(0x3E)
 
     return success
 
@@ -2860,18 +2906,9 @@ def link_con_sla_14_c(transport, upperTester, lowerTester, trace):
     transport.wait(260)
 
     if connected:   # Request remote version information if connected
-        read_remote_version_information(transport, upperTester, initiator.handles[1], 100)
-        if(has_event(transport, upperTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            success = success and (event == Events.BT_HCI_EVT_CMD_STATUS)
-        else:
-            success = False
-        if(has_event(transport, upperTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle, version, manufacturer, subVersion = struct.unpack('<BHBHH', eventData[0:8])
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_REMOTE_VERSION_INFO)
+        success = success and readRemoteVersionInformation(transport, upperTester, initiator.handles[1], trace);
+
+        success = success and hasReadRemoteVersionInformationCompleteEvent(transport, upperTester, trace)[0];
     else:
         advertiser.disable()
 
@@ -2903,21 +2940,12 @@ def link_con_sla_15_c(transport, upperTester, lowerTester, trace):
 
     if connected:   # Request remote version information if connected
         transport.wait(100)
-        read_remote_version_information(transport, lowerTester, initiator.handles[0], 100)
-        if has_event(transport, lowerTester, 100):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            success = success and (event == Events.BT_HCI_EVT_CMD_STATUS)
+        success = success and readRemoteVersionInformation(transport, lowerTester, initiator.handles[0], trace);
         """
             Check that the IUT has responded to the remote version information request
         """
-        if has_event(transport, lowerTester, 100):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle, version, manufacturer, subVersion = struct.unpack('<BHBHH', eventData[0:8])
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_REMOTE_VERSION_INFO)
-        transport.wait(200)
-            
+        success = success and hasReadRemoteVersionInformationCompleteEvent(transport, lowerTester, trace)[0];
+
         success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
@@ -2950,43 +2978,16 @@ def link_con_sla_17_c(transport, upperTester, lowerTester, trace):
         """
             Upper Tester sends an HCI_LE_Read_Local_Supported_Features command...
         """
-        status, features = le_read_local_supported_features(transport, upperTester, 100)
-        success = success and (status == 0x00)
+        success = success and readLocalFeatures(transport, upperTester, trace)[0];
         """
-            Verify that upper tester has received Command Complete Event with status 0x00
+            Upper Tester sends an HCI_LE_Read_Remote_Features command...
         """
-        if(has_event(transport, upperTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            numPackets, opCode, status = struct.unpack('<BHB', eventData[:4])
-            success = success and (opCode == 0x2003) and (status == 0x00) 
-        else:
-            success = False
- 
-        le_read_remote_features(transport, upperTester, initiator.handles[1], 100)
-        """
-            Upper tester expects command status event from IUT...
-        """
-        if (has_event(transport, upperTester, 200) and success):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-            success = success and (opCode == 0x2016) and (status == 0x00)
-        else:
-            success = False
-
+        success = success and readRemoteFeatures(transport, upperTester, initiator.handles[1], trace); 
         """
             Upper tester expects LE Read Remote Features Complete event...
         """
-        if (has_event(transport, upperTester, 100) and success):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle = struct.unpack('<BH', eventData[1:4])
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE) and (status == 0x00)
-        else:
-            success = False
+        success = success and hasReadRemoteFeaturesCompleteEvent(transport, upperTester, trace)[0];
 
-        transport.wait(500)
         success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
@@ -3008,9 +3009,8 @@ def link_con_sla_19_c(transport, upperTester, lowerTester, trace):
     advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ]
     initiatorAddress = Address( ExtendedAddressType.PUBLIC )
     initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ))
-    success = True
 
-    success = success and advertiser.enable()
+    success = advertiser.enable()
     """
         Lower Tester initiates a connection in the master role
     """
@@ -3048,10 +3048,6 @@ def link_con_sla_19_c(transport, upperTester, lowerTester, trace):
 """
 def link_con_sla_20_c(transport, upperTester, lowerTester, trace):
 
-    testInterval = 6
-    testSupervision = 300
-    errCode = 0x0C
-
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
@@ -3059,9 +3055,8 @@ def link_con_sla_20_c(transport, upperTester, lowerTester, trace):
     advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ]
     initiatorAddress = Address( ExtendedAddressType.PUBLIC )
     initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ))
-    success = True
 
-    success = success and advertiser.enable()
+    success = advertiser.enable()
     """
         Lower Tester initiates a connection in the master role
     """
@@ -3069,47 +3064,28 @@ def link_con_sla_20_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     transport.wait(200)
     if connected:
-        le_connection_update(transport, upperTester, initiator.handles[1], testInterval, testInterval, initiator.latency, \
-                             testSupervision, initiator.minCeLen, initiator.maxCeLen, 100)
-        transport.wait(100)
-        status, handle = le_remote_connection_parameter_request_negative_reply(transport, lowerTester, initiator.handles[0], errCode, 100)
-        success = success and (status == 0)
+        initiator.switchRoles();
+
+        interval, timeout = 6, 300;
         """
-            UpperTester expects a HCI_Command_Status event after sending the HCI_LE_Connection_Update command
+            Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
         """
-        if (has_event(transport, upperTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-            success = success and (status == 0)
-        else:
-            success = False
+        success = success and initiator.update(interval, interval, initiator.latency, timeout);
         """
-            LowerTester expects a BT_HCI_EVT_LE_CONN_PARAM_REQ control PDU from the IUT
+            Reject the LE Remote Connection Parameter Request Event by issuing a LL_REJECTEXT_IND...
         """
-        if (has_event(transport, lowerTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                        (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-            showEvent(event, eventData, trace)
-        else:
-            success = False
-        transport.wait(400) # send some empty data packets
+        success = success and initiator.rejectUpdate(0x0C);
         """
-            Upper Tester expects an HCI_LE_Connection_Update_Complete from the IUT with the assigned error code
+            Both lower and upper Tester should receive a LE Connection Update Complete Event... if request was accepted
         """
-        if (has_event(transport, upperTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                        (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
-        else:
-            success = False
+        success = success and not initiator.updated() and initiator.status == 0x0C;
+
+        transport.wait(int(4 * interval * 1.25));
+
+        initiator.resetRoles();
+        success = success and initiator.disconnect(0x3E)
     else:
         advertiser.disable()
-
-    success = success and initiator.disconnect(0x3E)
 
     return success
 
@@ -3117,9 +3093,6 @@ def link_con_sla_20_c(transport, upperTester, lowerTester, trace):
     LINK/CON/SLA/21-C [Slave requests Connection Parameters – same procedure collision]
 """
 def link_con_sla_21_c(transport, upperTester, lowerTester, trace):
-    interval = 6
-    testSupervision = 300
-    errCode = 0x23
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3137,96 +3110,51 @@ def link_con_sla_21_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     transport.wait(100)
     if connected:
+        initiator.switchRoles();
+
+        interval, timeout, errCode = 6, 300, 0x23;
         """
-            Send HCI_LE_Connection_Update command to the IUT from slave...
+            Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
         """
-        le_connection_update(transport, upperTester, initiator.handles[1], interval, interval, initiator.latency, \
-                       testSupervision, initiator.minCeLen, initiator.maxCeLen, 100)
+        success = success and initiator.update(interval, interval, initiator.latency, timeout);
         """
-            Verify that upper tester receives the command status 0x00
+            Reject the LE Remote Connection Parameter Request Event by issuing a LL_REJECTEXT_IND...
+            NOTE: Not according to test specification, LL_CONNECTION_PARAM_REQ should be issued prior to LL_REJECTEXT_IND,
+                  but Zephyr is preventing us from sending the the LL_CONNECTION_PARAM_REQ first, returning COMMAND DISALLOWED
         """
-        if(has_event(transport, upperTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-            showEvent(event, eventData, trace)
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_CMD_STATUS)
-        else:
-            success = False
+        success = success and initiator.rejectUpdate(errCode);
+
+	initiator.resetRoles();
         """
-            Verify that lower tester receives a LE Remote Connection Parameter Request Event...
+            Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
         """
-        if(has_event(transport, lowerTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-            success = success and rightEvent
-            """
-                Send LL_REJECT_EXT_IND to IUT with error code 0x23 to IUT...
-            """
-            le_remote_connection_parameter_request_negative_reply(transport, lowerTester, initiator.handles[0], errCode, 100)
-            if(has_event(transport, lowerTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                showEvent(event, eventData, trace)
-            """
-                Expect an LE_Connection_Update_Complete event with error code 0x23 from IUT
-            """
-            if(has_event(transport, upperTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                            (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
-            else:
-                success = False
-            """
-                Send LL_CONNECTION_PARAM_REQ to IUT...
-            """
-            success = success and initiator.update(interval, interval, initiator.latency, testSupervision)
-            """
-                Upper tester expects HCI_LE_Remote_Connection_Parameter_Request_Event
-            """
-            if(has_event(transport, upperTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                """
-                    Upper tester sends HCI_LE_Remote_Connection_Parameter_Request_Reply
-                """
-                status, handle = le_remote_connection_parameter_request_reply(transport, upperTester, initiator.handles[1], interval, interval, \
-                                                                              0, 300, initiator.minCeLen, initiator.maxCeLen, 100)
-                success = success and (status == 0x00)
-            else:
-                success = False
-                
-            get_event(transport, upperTester, 100) # command status event
-            """
-                Verify if upper tester received LE Connection Update Complete event
-            """
-            if(has_event(transport, upperTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                            (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == 0x00)
-            else:
-                success = False
-            """
-                Verify if lower tester received LE Connection Update Complete event
-            """
-            if(has_event(transport, lowerTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                showEvent(event, eventData, trace)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                            (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == 0x00)
-            else:
-                success = False
-            transport.wait(int(4 * interval * 1.25))
-        else:
-            advertiser.disable()
+        updInitiatorRequest = initiator.update(interval, interval, initiator.latency, timeout);
+        updPeerRequest = initiator.updPeerRequest;
+        success = success and updInitiatorRequest and updPeerRequest;
+
+        initiator.switchRoles();
+        """
+            Both lower and upper Tester should receive a LE Connection Update Complete Event... if request was accepted
+        """
+        updated = initiator.updated();
+        success = success and not updated and (initiator.status == errCode);
+
+	initiator.resetRoles();
+        """
+            Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
+        """
+        initiator.updInitiatorRequest, initiator.updPeerRequest = updInitiatorRequest, updPeerRequest;
+        success = success and initiator.acceptUpdate();
+        """
+            Both lower and upper Tester should receive a LE Connection Update Complete Event...
+        """
+        success = success and initiator.updated();
+
+        transport.wait(int(4 * interval * 1.25));
 
         success = success and initiator.disconnect(0x3E)
     else:
-        success = False
+        advertiser.disable()
 
     return success
 
@@ -3234,10 +3162,6 @@ def link_con_sla_21_c(transport, upperTester, lowerTester, trace):
     LINK/CON/SLA/22-C [Slave requests Connection Parameters – channel map update procedure collision]
 """
 def link_con_sla_22_c(transport, upperTester, lowerTester, trace):
-
-    interval = 6
-    testSupervision = 300
-    errCode = 0x2A
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -3254,66 +3178,31 @@ def link_con_sla_22_c(transport, upperTester, lowerTester, trace):
     connected = initiator.connect()
     success = success and connected
     if connected:
-        transport.wait(100)
-        """
-            Send HCI_LE_Connection_Update command to the IUT from slave...
-        """
-        le_connection_update(transport, upperTester, initiator.handles[1], interval, interval, initiator.latency, \
-                       testSupervision, initiator.minCeLen, initiator.maxCeLen, 100)
-        """
-            Verify that upper tester receives the command status 0x00
-        """
-        if(has_event(transport, upperTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-            showEvent(event, eventData, trace)
-            success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_CMD_STATUS)
-        else:
-            success = False
-        """
-            Verify that lower tester receives a LE Remote Connection Parameter Request Event...
-        """
-        if (has_event(transport, lowerTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-            success = success and rightEvent
-        else:
-            success = False
-        """
-            Use only even channels for sending a LL_CHANNEL_MAP_REQ...
-        """
-        channelMap = 0x1555555555
-        status = le_set_host_channel_classification(transport, lowerTester, toArray(channelMap,5), 100)
-        success = success and (status == 0x00)
-        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-        showEvent(event, eventData, trace)
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-        """
-            Send LL_REJECT_EXT_IND to IUT with error code 0x23 to IUT...
-        """
-        le_remote_connection_parameter_request_negative_reply(transport, lowerTester, initiator.handles[0], errCode, 100)
-        if (has_event(transport, lowerTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-        else:
-            success = False
-        """
-            Expect an LE_Connection_Update_Complete event with error code 0x23 from IUT
-        """
-        if (has_event(transport, upperTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                        (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
-        else:
-            advertiser.disable()
+        initiator.switchRoles();
 
-        transport.wait(int(8 * interval * 1.25))
+        interval, timeout, errCode, channelMap = 6, 300, 0x23, 0x1555555555;
+        """
+            Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
+        """
+        success = success and initiator.update(interval, interval, initiator.latency, timeout);
+        """
+            Request an update of used channels - sends an LL_CHANNEL_MAP_IND...
+        """
+        success = success and channelMapUpdate(transport, lowerTester, channelMap, trace);
+        """
+            Reject the LE Remote Connection Parameter Request Event by issuing a LL_REJECTEXT_IND...
+        """
+        success = success and initiator.rejectUpdate(errCode);
+        """
+            Both lower and upper Tester should receive a LE Connection Update Complete Event... if request was accepted
+        """
+        success = success and not initiator.updated() and initiator.status == errCode;
 
-        success = success and initiator.disconnect(0x3E)
+	initiator.resetRoles();
+
+        transport.wait(int(4 * interval * 1.25));
+
+        success = success and initiator.disconnect(0x3E);
     else:
         success = False
 
@@ -3324,9 +3213,6 @@ def link_con_sla_22_c(transport, upperTester, lowerTester, trace):
 """
 def link_con_sla_24_c(transport, upperTester, lowerTester, trace):
 
-    intervals = [6, 32, 6]
-    testSupervision = [300, 3200, 300]
-
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
@@ -3342,61 +3228,22 @@ def link_con_sla_24_c(transport, upperTester, lowerTester, trace):
     connected = initiator.connect()
     success = success and connected
     if connected:
-        for i in range(0, len(intervals)):
-            #transport.wait(100)
+        for interval, timeout in zip([6, 32, 6], [300, 3200, 200]):
             """
-                Send HCI_LE_Connection_Update command to the IUT from slave...
+                Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
             """
-            le_connection_update(transport, lowerTester, initiator.handles[0], intervals[i], intervals[i], initiator.latency, \
-                        testSupervision[i], initiator.minCeLen, initiator.maxCeLen, 100)
+            success = success and initiator.update(interval, interval, initiator.latency, timeout);
             """
-                Verify that lower tester receives the command status 0x00
+                Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
             """
-            if (has_event(transport, lowerTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                status, numPackets, opCode = struct.unpack('<BBH', eventData[:4])
-                showEvent(event, eventData, trace)
-                success = success and (status == 0x00) and (event == Events.BT_HCI_EVT_CMD_STATUS)
-            else:
-                success = False
+            success = success and initiator.acceptUpdate();
             """
-                Verify that upper tester receives a LE Remote Connection Parameter Request Event...
+                Both lower and upper Tester should receive a LE Connection Update Complete Event... if request was accepted
             """
-            if (has_event(transport, upperTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-            else:
-                success = False
-            """
-                Send LE Remote Connection Parameter Request Reply from upper tester to IUT...
-            """
-            le_remote_connection_parameter_request_reply(transport, upperTester, initiator.handles[1], intervals[i], intervals[i], \
-                                                         initiator.latency, testSupervision[i], initiator.minCeLen, initiator.maxCeLen, 100)
-            if (has_event(transport, upperTester, 200)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-            else:
-                success = False
-            """
-                Expect an LE_Connection_Update_Complete event with error code 0x00 from IUT
-            """
-            if (has_event(transport, upperTester, 500)):
-                eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                showEvent(event, eventData, trace)
-                status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                            (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == 0x00)
-            else:
-                success = False
+            success = success and initiator.updated();
 
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            showEvent(event, eventData, trace)
-            status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and \
-                        (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == 0x00)
-            transport.wait(int(15 * interval * 1.25))
+            transport.wait(int(4 * interval * 1.25));
+
         disconnected = initiator.disconnect(0x3E)
         success = success and disconnected
     else:
@@ -3409,10 +3256,6 @@ def link_con_sla_24_c(transport, upperTester, lowerTester, trace):
 """
 def link_con_sla_28_c(transport, upperTester, lowerTester, trace):
 
-    interval = 6
-    testSupervision = 300
-    errCode = 0x3B
-
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
@@ -3429,29 +3272,28 @@ def link_con_sla_28_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     if connected:
         transport.wait(100)
+        interval, timeout, errCode = 6, 300, 0x3B;
         """
             Mask LE Remote Connection Parameter Request Event
         """
         events = [0x1F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
-        status = le_set_event_mask(transport, upperTester, events, 100)
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-        showEvent(event, eventData, trace)
-        success = success and (status == 0) and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
+        success = success and setEventMask(transport, upperTester, events, trace);        
         """
             Send LL_CONNECTION_PARAM_REQ to IUT...
         """
-        updated = initiator.update(interval, interval, initiator.latency, testSupervision)
-        success = success and updated
+        requested = initiator.update(interval, interval, initiator.latency, timeout)
+        success = success and requested and not initiator.updPeerRequest;
         """
             Verify that lower tester receives a LL_REJECT_EXT_IND... unfortunately we cannot verify that (but it appears in the trace)!
         """
-        success = success and initiator.updated()
+        updated = initiator.updated();
+        success = success and updated;
 
-        transport.wait(int(8 * initiator.intervalMin * 1.25))
+        transport.wait(int(4 * interval * 1.25))
         connected = not initiator.disconnect(0x3E)
         success = success and not connected
     else:
-        success = False
+        advertiser.disable();
 
     return success
 
@@ -3484,35 +3326,19 @@ def link_con_sla_29_c(transport, upperTester, lowerTester, trace):
         """
             Send LL_CONNECTION_PARAM_REQ to IUT...
         """
-        status = initiator.update(interval, interval, initiator.latency, testSupervision)
-        success = success and status
+        updated = initiator.update(interval, interval, initiator.latency, testSupervision)
+        success = success and updated
         """
-            Upper tester expects HCI_LE_Remote_Connection_Parameter_Request_Event
+            Reject the LE Remote Connection Parameter Request Event by issuing a LL_REJECT_EXT_IND...
         """
-        if (has_event(transport, upperTester, 200)):
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ)
-            """
-                Upper tester sends HCI_LE_Remote_Connection_Parameter_Request_Reply
-            """
-            status, handle = le_remote_connection_parameter_request_negative_reply(transport, upperTester, initiator.handles[1], errCode, 100)
-            success = success and (status == 0x00)
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            showEvent(event, eventData, trace)
-        else:
-            success = False
+        success = success and initiator.rejectUpdate(errCode);
+        """
+            Both lower and upper Tester should receive a LE Connection Update Complete Event... if request was accepted
+        """
+        success = success and not initiator.updated() and (initiator.status == errCode);
 
-        if (has_event(transport, lowerTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-            showEvent(event, eventData, trace)
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE) and (status == errCode)
-        else:
-            success = False
-
-        transport.wait(int(8 * initiator.intervalMin * 1.25))
-        success = success and initiator.disconnect(0x3E)
+        disconnected = initiator.disconnect(0x3E);
+        success = success and disconnected;
     else:
         advertiser.disable()
 
@@ -3551,9 +3377,9 @@ def link_con_sla_30_c(transport, upperTester, lowerTester, trace):
     """
     connected = initiator.connect()
     success = success and connected
-    initiator.switchRoles()
     if connected:
         transport.wait(100)
+        initiator.switchRoles()
 
         for i in range(0, len(columns[0])):
             if (tx_phys[i] == 0 or tx_phys[i] > 3 or rx_phys[i] == 0 or rx_phys[i] > 3):
@@ -3631,23 +3457,11 @@ def link_con_sla_67_c(transport, upperTester, lowerTester, trace):
     success = success and connected
     if connected:
         for TxOctets, TxTime in zip([ 60, 27, 251 ], [ 728, 728, 728 ]):
-            status, handle = le_set_data_length(transport, upperTester, initiator.handles[1], TxOctets, TxTime, 100)
-            trace.trace(6, "LE Set Data Length Command returns status: 0x%02X handle: 0x%04X" % (status, handle))
-            success = success and (status == 0)
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-            showEvent(event, eventData, trace)
-        
-            if has_event(transport, lowerTester, 200):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                if success:
-                    showEvent(event, eventData, trace)
-                    if has_event(transport, upperTester, 200):
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                        success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                        if success:
-                            showEvent(event, eventData, trace)
+
+            success = success and setDataLength(transport, upperTester, initiator.handles[1], TxOctets, TxTime, trace);
+
+            success = success and hasDataLengthChangedEvent(transport, lowerTester, trace)[0];
+            success = success and hasDataLengthChangedEvent(transport, upperTester, trace)[0];
                     
         """
             Note: Disconnect can generate another LE Data Length Change event...
@@ -3688,23 +3502,13 @@ def link_con_sla_70_c(transport, upperTester, lowerTester, trace):
         success = success and initiator.updatePhys(allPhys, txPhys, rxPhys, optionPhys)
         success = success and (initiator.txPhys == txPhys) and (initiator.rxPhys == rxPhys)
         initiator.resetRoles()
+
         for TxOctets, TxTime in zip([ 60, 27, 251 ], [ 728, 728, 728 ]):
-            status, handle = le_set_data_length(transport, upperTester, initiator.handles[1], TxOctets, TxTime, 100)
-            trace.trace(6, "LE Set Data Length Command returns status: 0x%02X handle: 0x%04X" % (status, handle))
-            success = success and (status == 0)
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-            showEvent(event, eventData, trace)
-        
-            if has_event(transport, lowerTester, 200):
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                if success:
-                    showEvent(event, eventData, trace)
-                    if has_event(transport, upperTester, 200):
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                        success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                        showEvent(event, eventData, trace)
+
+            success = success and setDataLength(transport, upperTester, initiator.handles[1], TxOctets, TxTime, trace);
+
+            success = success and hasDataLengthChangedEvent(transport, lowerTester, trace)[0];
+            success = success and hasDataLengthChangedEvent(transport, upperTester, trace)[0];
         """
             Note: Disconnect can generate another LE Data Length Change event...
         """
@@ -3741,26 +3545,18 @@ def link_con_sla_81_c(transport, upperTester, lowerTester, trace):
         """
             Send LL_CONNECTION_PARAM_REQ to IUT...
         """
-        status = initiator.update(interval, interval, initiator.latency, 300)
-        success = success and status
+        updated = initiator.update(interval, interval, initiator.latency, 300)
+        success = success and updated;
         """
-            Verify that lower tester receives a LL_REJECT_EXT_IND...
+            Verify that lower tester receives a CONNECTION UPDATE COMPLETE Event...
         """
-        if(has_event(transport, lowerTester, 100)):
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-            success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE)
-            status, handle, interval, latency, timeout = struct.unpack('<BHHHH', eventData[1:10])
-            success = success and (status == errCode)
-            showEvent(event, eventData, trace)
-        else:
-            success = False
-
-        transport.wait(int(8 * initiator.intervalMin * 1.25))
+        rejected, status = hasConnectionUpdateCompleteEvent(transport, lowerTester, trace);        
+        success = success and rejected and (status == errCode);
+        
+        disconnected = initiator.disconnect(0x3E)
+        success = success and disconnected
     else:
         advertiser.disable()
-        
-    disconnected = initiator.disconnect(0x3E)
-    success = success and disconnected
 
     return success
 
@@ -3780,12 +3576,7 @@ def link_con_mas_2_c(transport, upperTester, lowerTester, trace):
     """
        Obtain maximum Data Packet size and maximum number of Data Packets
     """
-    status, maxPacketLength, maxPacketNumbers = le_read_buffer_size(transport, lowerTester, 100);
-    trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X - Data Packet length %d, Number of Data Packets %d" % (status, maxPacketLength, maxPacketNumbers));
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success, maxPacketLength, maxPacketNumbers = readBufferSize(transport, lowerTester, trace);
 
     success = success and advertiser.enable();
     connected = initiator.connect();
@@ -3800,21 +3591,11 @@ def link_con_mas_2_c(transport, upperTester, lowerTester, trace):
         for count in [ 100, 100, 1, 99 ]:
             pbFlags ^= 1;
             for j in range(count):
-                status = le_data_write(transport, upperTester, initiator.handles[0], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, upperTester, 200);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    hasData = le_data_ready(transport, lowerTester, 200);
-                    success = success and hasData;
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+                dataSent = writeData(transport, upperTester, initiator.handles[0], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, lowerTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
             
         if maxPacketLength > 27:
             """
@@ -3826,24 +3607,11 @@ def link_con_mas_2_c(transport, upperTester, lowerTester, trace):
             for j in range(count):
                 txData = [0 for _ in range(random.randint(28,maxPacketLength))];
 
-                status = le_data_write(transport, upperTester, initiator.handles[0], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, upperTester, 100);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    rxDataLength = 0;
-                    while success and (rxDataLength < len(txData)):
-                        hasData = le_data_ready(transport, lowerTester, 100);
-                        success = success and hasData;
-                        if hasData:
-                            time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                            trace.trace(6, "LE Data Read Command returns PB=%d BC=%d - %2d data bytes: %s" % (rxPBFlags, rxBCFlags, len(rxData), formatArray(rxData)));
-                            rxDataLength += len(rxData);
+                dataSent = writeData(transport, upperTester, initiator.handles[0], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readDataFragments(transport, lowerTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
 
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -3879,21 +3647,11 @@ def link_con_mas_3_c(transport, upperTester, lowerTester, trace):
         for count in [ 100, 100, 1, 99 ]:
             pbFlags ^= 1;
             for j in range(count):
-                status = le_data_write(transport, lowerTester, initiator.handles[1], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, lowerTester, 200);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    hasData = le_data_ready(transport, upperTester, 200);
-                    success = success and hasData;
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100);
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+                dataSent = writeData(transport, lowerTester, initiator.handles[1], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, upperTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
             
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -3930,46 +3688,19 @@ def link_con_mas_4_c(transport, upperTester, lowerTester, trace):
             """
                 Upper Tester is sending Data...
             """
-            status = le_data_write(transport, upperTester, initiator.handles[0], pbFlags, 0, txData, 100);
-            dataSent = status == 0;
+            dataSent = writeData(transport, upperTester, initiator.handles[0], pbFlags, txData, trace);
             success = success and dataSent;
             if dataSent:
-                dataSent = has_event(transport, upperTester, 100);
-                success = success and dataSent;
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                hasData = le_data_ready(transport, lowerTester, 200);
-                success = success and hasData;
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                else:
-                    trace.trace(6, "Lower Tester didn't receive any data!");
-            else:
-                trace.trace(6, "LE Data Write Command failed in Upper Tester - returns status: 0x%02X" % status);
-
+                dataReceived, rxData = readData(transport, lowerTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Lower Tester is sending Data...
             """
-            status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100);
-            dataSent = status == 0;
+            dataSent = writeData(transport, lowerTester, initiator.handles[1], pbFlags, txData, trace);
             success = success and dataSent;
             if dataSent:
-                dataSent = has_event(transport, lowerTester, 100);
-                success = success and dataSent;
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                hasData = le_data_ready(transport, upperTester, 200);
-                success = success and hasData;
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100);
-                else:
-                    trace.trace(6, "Upper Tester didn't receive any data!");
-            else:
-                trace.trace(6, "LE Data Write Command failed in Lower Tester - returns status: 0x%02X" % status);
+                dataReceived, rxData = readData(transport, upperTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -4103,30 +3834,20 @@ def link_con_mas_9_c(transport, upperTester, lowerTester, trace):
         """
             Issue the LE Read Local Supported Features Command, verify the reception of a Command Complete Event
         """
-        status, features = le_read_local_supported_features(transport, upperTester, 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showLEFeatures(features, trace);
+        hasFeatures, features = readLocalFeatures(transport, upperTester, trace);
+        success = success and hasFeatures;
+        if hasFeatures:
+            showLEFeatures(features, trace);
         """
             Issue the LE Read Remote Features Command, verify the reception of a Command Status Event
         """
-        status = le_read_remote_features(transport, upperTester, initiator.handles[1], 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_STATUS);
+        success = success and readRemoteFeatures(transport, upperTester, initiator.handles[1], trace);
         """
             Await the reception of a LE Read Remote Features Command Complete Event
         """
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        isLRRFCCEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE);
-        success = success and isLRRFCCEvent;
-        if isLRRFCCEvent:
-            status, handle, features = remoteFeatures(eventData);
-            success = success and (status == 0);
+        hasFeatures, handle, features = hasReadRemoteFeaturesCompleteEvent(transport, upperTester, trace);
+        success = success and hasFeatures;
+        if hasFeatures:
             showLEFeatures(features, trace);
 
         disconnected = initiator.disconnect(0x3E);
@@ -4158,21 +3879,11 @@ def link_con_mas_16_c(transport, upperTester, lowerTester, trace):
         """
             Issue the Read Remote Version Information Command, verify the reception of a Command Status Event
         """
-        status = read_remote_version_information(transport, upperTester, initiator.handles[1], 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_STATUS);
+        success = success and readRemoteVersionInformation(transport, upperTester, initiator.handles[1], trace);
         """
             Await the reception of a Read Remote Version Information Complete Event
         """
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        isRRVICEvent = (event == Events.BT_HCI_EVT_REMOTE_VERSION_INFO);
-        success = success and isRRVICEvent;
-        if isRRVICEvent:
-            status, handle, version, manufacturerID, subVersion = remoteVersion(eventData);
-            success = success and (status == 0);
+        success = success and hasReadRemoteVersionInformationCompleteEvent(transport, upperTester, trace)[0];
 
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -4203,21 +3914,11 @@ def link_con_mas_17_c(transport, upperTester, lowerTester, trace):
         """
             Issue the Read Remote Version Information Command, verify the reception of a Command Status Event
         """
-        status = read_remote_version_information(transport, lowerTester, initiator.handles[1], 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_STATUS);
+        success = success and readRemoteVersionInformation(transport, lowerTester, initiator.handles[1], trace);
         """
             Await the reception of a Read Remote Version Information Complete Event
         """
-        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-        showEvent(event, eventData, trace);
-        isRRVICEvent = (event == Events.BT_HCI_EVT_REMOTE_VERSION_INFO);
-        success = success and isRRVICEvent;
-        if isRRVICEvent:
-            status, handle, version, manufacturerID, subVersion = remoteVersion(eventData);
-            success = success and (status == 0);
+        success = success and hasReadRemoteVersionInformationCompleteEvent(transport, lowerTester, trace)[0];
 
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -4248,21 +3949,13 @@ def link_con_mas_19_c(transport, upperTester, lowerTester, trace):
         """
             Issue the LE Read Remote Features Command, verify the reception of a Command Status Event
         """
-        status = le_read_remote_features(transport, lowerTester, initiator.handles[1], 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_STATUS);
+        success = success and readRemoteFeatures(transport, lowerTester, initiator.handles[1], trace);
         """
             Await the reception of a LE Read Remote Features Command Complete Event
         """
-        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-        showEvent(event, eventData, trace);
-        isLRRFCCEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE);
-        success = success and isLRRFCCEvent;
-        if isLRRFCCEvent:
-            status, handle, features = remoteFeatures(eventData);
-            success = success and (status == 0);
+        hasFeatures, handle, features = hasReadRemoteFeaturesCompleteEvent(transport, lowerTester, trace);
+        success = success and hasFeatures;
+        if hasFeatures:
             showLEFeatures(features, trace);
 
         disconnected = initiator.disconnect(0x3E);
@@ -4383,57 +4076,41 @@ def link_con_mas_22_c(transport, upperTester, lowerTester, trace):
     success = success and connected;
             
     if connected:
-        transport.wait(100);
-    
-        interval = 6; timeout = 300;
+        interval, timeout = 6, 300;
         """
             Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
         """
-        success = success and initiator.update(interval, interval, initiator.latency, timeout);
+        updRequested = initiator.update(interval, interval, initiator.latency, timeout);
+        success = success and updRequested;
         """
             Verify that the lower tester receives a LE Remote Connection Parameter Request Event...
         """
-        gotEvent = has_event(transport, lowerTester, 3200);
-        success = success and gotEvent;
-        if gotEvent:
-            eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-            showEvent(event, eventData, trace);
-            rightEvent = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ);
-            success = success and rightEvent;
-            if rightEvent:
-                handle, minInterval, maxInterval, latency, timeout = remoteConnectionParameterRequest(eventData);
-                success = success and (minInterval == interval) and (maxInterval == interval);
-                """
-                    Send a LL_CONNECTION_PARAM_REQ as a reaction to the LE Remote Connection Parameter Request Event...
-                    NOTE: We use a little nasty trick here. Swap the roles of initiator and peer and swap assigned handles...
-                """
-                initiator.switchRoles();
-                """
-                    Update request will be rejected with an error code 0x0C - command disallowed...
-                """
-                success = success and not initiator.update(interval, interval, initiator.latency, timeout) and initiator.status == 0x0C;
-                """
-                    Get back to original roles of initiator and peer...
-                """
-                initiator.resetRoles();
-                initiator.pre_updated = True;
-                """
-                    Send a LL_CONNECTION_PARAM_RSP as a reaction to the original LE Remote Connection Parameter Request Event...
-                """
-                minCeLen = maxCeLen = 0;
-                status, handle = le_remote_connection_parameter_request_reply(transport, lowerTester, handle, minInterval, maxInterval, \
-                                                                              latency, timeout, minCeLen, maxCeLen, 100);
-
-                success = success and (status == 0);
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                showEvent(event, eventData, trace);
-                success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-                """
-                    Both lower and upper Tester should receive a LE Connection Update Complete Event...
-                """
-                success = success and initiator.updated();
+        updPeerInvolved = initiator.updPeerRequest;
+        success = success and updPeerInvolved;
+        """
+            Send a LL_CONNECTION_PARAM_REQ as a reaction to the LE Remote Connection Parameter Request Event...
+            NOTE: We use a little nasty trick here. Swap the roles of initiator and peer and swap assigned handles...
+        """
+        initiator.switchRoles();
+        """
+            Update request will be rejected with an error code 0x0C - command disallowed...
+        """
+        success = success and not initiator.update(interval, interval, initiator.latency, timeout) and initiator.status == 0x0C;
+        """
+            Get back to original roles of initiator and peer...
+        """
+        initiator.resetRoles();
+        """
+            Send a LL_CONNECTION_PARAM_RSP as a reaction to the original LE Remote Connection Parameter Request Event...
+        """
+        initiator.updInitiatorRequest, initiator.updPeerRequest = updRequested, updPeerInvolved;
+        success = success and initiator.acceptUpdate();
+        """
+            Both lower and upper Tester should receive a LE Connection Update Complete Event...
+        """
+        success = success and initiator.updated();
                                 
-                transport.wait(int(4 * interval * 1.25));
+        transport.wait(int(4 * interval * 1.25));
 
         disconnected = initiator.disconnect(0x3E);
         success = success and disconnected;
@@ -4465,12 +4142,7 @@ def link_con_mas_23_c(transport, upperTester, lowerTester, trace):
         """
             Use only even channels...
         """
-        channelMap = 0x1555555555;
-        status = le_set_host_channel_classification(transport, upperTester, toArray(channelMap,5), 100);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-        showEvent(event, eventData, trace);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
+        success = success and channelMapUpdate(transport, upperTester, 0x1555555555, trace);
 
         interval = 6; timeout = 300;
         """
@@ -4620,13 +4292,8 @@ def link_con_mas_30_c(transport, upperTester, lowerTester, trace):
         Disable the LE Remote Connection Parameter Request event (Bit 5)
     """
     events = [0xDF, 0xFF, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00];
-        
-    status = le_set_event_mask(transport, upperTester, events, 100);
-    trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-    success = success and (status == 0);
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    
+    success = success and setEventMask(transport, upperTester, events, trace);
             
     if connected:
         transport.wait(100);
@@ -4808,12 +4475,7 @@ def link_con_mas_65_c(transport, upperTester, lowerTester, trace):
     """
         Obtain maximum Data Packet size and maximum number of Data Packets
     """
-    status, maxPacketLength, maxPacketNumbers = le_read_buffer_size(transport, lowerTester, 100);
-    trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X - Data Packet length %d, Number of Data Packets %d" % (status, maxPacketLength, maxPacketNumbers));
-    success = status == 0;
-    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    showEvent(event, eventData, trace);
+    success, maxPacketLength, maxPacketNumbers = readBufferSize(transport, lowerTester, trace);
 
     success = success and advertiser.enable();
 
@@ -4824,80 +4486,37 @@ def link_con_mas_65_c(transport, upperTester, lowerTester, trace):
 
     if connected:
         for txOctets, txTime in zip([ 60, 27, 251, 60, 27, 251, 60, 27, 251, 60, 27, 251 ], [ 2120, 2120, 2120, 328, 328, 328, 2120, 2120, 2120, 2120, 2120, 2120 ]):
-            status, handle = le_set_data_length(transport, upperTester, initiator.handles[0], txOctets, txTime, 100);
-            trace.trace(6, "LE Set Data Length Command returns status: 0x%02X handle: 0x%04X Tx: (%d, %d)" % (status, handle, txOctets, txTime));
-            success = success and (status == 0);
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, trace);
+
+            success = success and setDataLength(transport, upperTester, initiator.handles[0], txOctets, txTime, trace);
 
             changed = not ((cmaxTxOctets == min(txOctets, 60)) and (cmaxTxTime == min(txTime, 592)));
 
             if changed:
-                """
-                    Both upper- and lower-Tester should receive a LE Data Length Change event with the new parameters
-                """
-                hasEvent = has_event(transport, upperTester, 100);
-                success = success and hasEvent;
-                if hasEvent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE);
-                    if success:
-                        showEvent(event, eventData, trace);
-                        handle, cmaxTxOctets, cmaxTxTime, maxRxOctets, maxRxTime = dataLengthChanged(eventData);
-                    
-                hasEvent = has_event(transport, lowerTester, 100);
-                success = success and hasEvent;
-                if hasEvent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE);
-                    if success:
-                        showEvent(event, eventData, trace);
+                gotEvent, handle, cmaxTxOctets, cmaxTxTime, maxRxOctets, maxRxTime = hasDataLengthChangedEvent(transport, upperTester, trace);
+                success = success and gotEvent;
+                gotEvent = hasDataLengthChangedEvent(transport, lowerTester, trace)[0];
+                success = success and gotEvent;
             
             pbFlags = 0;
             """
                 Upper Tester is sending Data...
             """
             txData = [_ for _ in range(maxPacketLength)];
-            status = le_data_write(transport, upperTester, initiator.handles[0], pbFlags, 0, txData, 100);
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-            success = success and (status == 0);
-            if success:
-                dataSent = has_event(transport, upperTester, 200);
-                success = success and dataSent;
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    rxDataLength = 0;
-                    while success and (rxDataLength < len(txData)):
-                        hasData = le_data_ready(transport, lowerTester, 100);
-                        success = success and hasData;
-                        if hasData:
-                            time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100);
-                            trace.trace(6, "LE Data Read Command returns PB=%d BC=%d - %2d data bytes: %s" % (rxPBFlags, rxBCFlags, len(rxData), formatArray(rxData)));
-                            rxDataLength += len(rxData);
-
+            dataSent = writeData(transport, upperTester, initiator.handles[0], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readDataFragments(transport, lowerTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Lower Tester is sending Data...
             """
+            txData = [_ for _ in range(27)];
             for i in range(20):
-                txData = [_ for _ in range(27)];
-                status = le_data_write(transport, lowerTester, initiator.handles[1], pbFlags, 0, txData, 100);
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status);
-                success = success and (status == 0);
-                if success:
-                    dataSent = has_event(transport, lowerTester, 200);
-                    success = success and dataSent;
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS);
-                    
-                    hasData = le_data_ready(transport, upperTester, 200);
-                    success = success and hasData;
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100);
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)));
+                dataSent = writeData(transport, lowerTester, initiator.handles[1], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, upperTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
 
         """
             Note: Disconnect can generate another LE Data Length Change event...
@@ -4926,12 +4545,7 @@ def link_con_mas_68_c(transport, upperTester, lowerTester, trace):
     """
         Obtain maximum Data Packet size and maximum number of Data Packets
     """
-    status, maxPacketLength, maxPacketNumbers = le_read_buffer_size(transport, lowerTester, 100)
-    trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X - Data Packet length %d, Number of Data Packets %d" % (status, maxPacketLength, maxPacketNumbers))
-    success = status == 0
-    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-    showEvent(event, eventData, trace)
+    success, maxPacketLength, maxPacketNumbers = readBufferSize(transport, lowerTester, trace); 
 
     success = success and advertiser.enable()
 
@@ -4948,80 +4562,37 @@ def link_con_mas_68_c(transport, upperTester, lowerTester, trace):
         success = success and initiator.updatePhys(allPhys, txPhys, rxPhys, optionPhys)
         success = success and (initiator.txPhys == txPhys) and (initiator.rxPhys == rxPhys)
         for txOctets, txTime in zip([ 60, 27, 251, 60, 27, 251, 60, 27, 251, 60, 27, 251 ], [ 2120, 2120, 2120, 328, 328, 328, 2120, 2120, 2120, 2120, 2120, 2120 ]):
-            status, handle = le_set_data_length(transport, upperTester, initiator.handles[0], txOctets, txTime, 100)
-            trace.trace(6, "LE Set Data Length Command returns status: 0x%02X handle: 0x%04X Tx: (%d, %d)" % (status, handle, txOctets, txTime))
-            success = success and (status == 0)
-            eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-            showEvent(event, eventData, trace)
 
-            changed = not ((cmaxTxOctets == min(txOctets, 60)) and (cmaxTxTime == min(txTime, 592)))
+            success = success and setDataLength(transport, upperTester, initiator.handles[0], txOctets, txTime, trace);
+
+            changed = not ((cmaxTxOctets == min(txOctets, 60)) and (cmaxTxTime == min(txTime, 592)));
 
             if changed:
-                """
-                    Both upper- and lower-Tester should receive a LE Data Length Change event with the new parameters
-                """
-                hasEvent = has_event(transport, upperTester, 100)
-                success = success and hasEvent
-                if hasEvent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                    success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                    if success:
-                        showEvent(event, eventData, trace)
-                        handle, cmaxTxOctets, cmaxTxTime, maxRxOctets, maxRxTime = dataLengthChanged(eventData)
-                    
-                hasEvent = has_event(transport, lowerTester, 100)
-                success = success and hasEvent
-                if hasEvent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                    success = success and (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE)
-                    if success:
-                        showEvent(event, eventData, trace)
-            
+                gotEvent, handle, cmaxTxOctets, cmaxTxTime, maxRxOctets, maxRxTime = hasDataLengthChangedEvent(transport, upperTester, trace);
+                success = success and gotEvent;
+                gotEvent = hasDataLengthChangedEvent(transport, lowerTester, trace)[0];
+                success = success and gotEvent;
+
             pbFlags = 0
             """
                 Upper Tester is sending Data...
             """
             txData = [_ for _ in range(maxPacketLength)]
-            status = le_data_write(transport, upperTester, initiator.handles[0], pbFlags, 0, txData, 100)
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-            success = success and (status == 0)
-            if success:
-                dataSent = has_event(transport, upperTester, 200)
-                success = success and dataSent
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-                    
-                    rxDataLength = 0
-                    while success and (rxDataLength < len(txData)):
-                        hasData = le_data_ready(transport, lowerTester, 100)
-                        success = success and hasData
-                        if hasData:
-                            time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, lowerTester, 100)
-                            trace.trace(6, "LE Data Read Command returns PB=%d BC=%d - %2d data bytes: %s" % (rxPBFlags, rxBCFlags, len(rxData), formatArray(rxData)))
-                            rxDataLength += len(rxData)
-
+            dataSent = writeData(transport, upperTester, initiator.handles[0], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readDataFragments(transport, lowerTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Lower Tester is sending Data...
             """
+            txData = [_ for _ in range(27)]
             for i in range(20):
-                txData = [_ for _ in range(27)]
-                status = le_data_write(transport, lowerTester, initiator.handles[1], pbFlags, 0, txData, 100)
-                trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-                success = success and (status == 0)
-                if success:
-                    dataSent = has_event(transport, lowerTester, 200)
-                    success = success and dataSent
-                    if dataSent:
-                        eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                        success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-                    
-                    hasData = le_data_ready(transport, upperTester, 200)
-                    success = success and hasData
-                    if hasData:
-                        time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                        trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+                dataSent = writeData(transport, lowerTester, initiator.handles[1], pbFlags, txData, trace);
+                success = success and dataSent;
+                if dataSent:
+                    dataReceived, rxData = readData(transport, upperTester, trace);
+                    success = success and dataReceived and (len(rxData) == len(txData));
 
         """
             Note: Disconnect can generate another LE Data Length Change event...
@@ -5058,7 +4629,8 @@ def link_con_mas_77_c(transport, upperTester, lowerTester, trace):
         """
         initiator.switchRoles();
 
-        success = success and initiator.update(interval, interval, initiator.latency, timeout);
+        updated = initiator.update(interval, interval, initiator.latency, timeout);
+        success = success and updated;
         """
             Verify that the update was rejected...
         """
@@ -5084,43 +4656,39 @@ def link_sec_adv_1_c(transport, upperTester, lowerTester, trace):
     """
         Setting static address for upper tester and lower tester; adding lower tester's address to the whitelist
     """
-    lowerAddress = [[ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(lowerRandomAddress) | 0xC00000000000L]]
-    preamble_specific_white_listed(transport, upperTester, lowerAddress, trace)
-    preamble_set_random_address(transport, lowerTester, toNumber(lowerRandomAddress) | 0xC00000000000L, trace)
+    ownAddress = Address( ExtendedAddressType.RANDOM, toNumber(upperRandomAddress) | 0xC00000000000L );
+    peerAddress = Address( SimpleAddressType.RANDOM, toNumber(lowerRandomAddress) | 0xC00000000000L );
 
-    upperAddress = [[ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(upperRandomAddress) | 0xC00000000000L]]
-    preamble_set_random_address(transport, upperTester, toNumber(upperRandomAddress) | 0xC00000000000L, trace)
+    preamble_specific_white_listed(transport, upperTester, [ [ peerAddress.type, toNumber(peerAddress.address) ] ], trace);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM)
-    peerAddress = Address(ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(lowerRandomAddress) | 0xC00000000000L)
+    preamble_set_random_address(transport, upperTester, toNumber(ownAddress.address), trace);
+    preamble_set_random_address(transport, lowerTester, toNumber(peerAddress.address), trace);
+
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ]
+                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30, 5);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30)
-
-    success = advertiser.enable()
+    success = advertiser.enable();
     """
         Start scanning...
     """
-    success = success and scanner.enable()
-    scanner.monitor()
-    transport.wait(200)
+    success = success and scanner.enable();
+    scanner.monitor();
     """
         Attempt to change advertiser (upperTester) address...
     """
-    success = success and not preamble_set_random_address(transport, upperTester, address_scramble_OUI(toNumber(upperRandomAddress)) | 0xC00000000000L, trace)
+    success = success and not preamble_set_random_address(transport, upperTester, address_scramble_OUI( toNumber(peerAddress.address) ), trace);
 
-    disabled = scanner.disable()
-    success = success and disabled
-    success = success and scanner.qualifyReports( 5 )
-    success = success and scanner.qualifyResponses(5, advertiser.responseData)
+    disabled = scanner.disable();
+    success = success and disabled;
+    success = success and scanner.qualifyReports( 5 );
+    success = success and scanner.qualifyResponses(5, advertiser.responseData);
 
-    disabled = advertiser.disable()
-    success = success and disabled
+    disabled = advertiser.disable();
+    success = success and disabled;
 
-    return success
+    return success;
 
 """
     LINK/SEC/ADV/2-C [Non Connectable Undirected Advertising with non-resolvable private address]
@@ -5199,7 +4767,7 @@ def link_sec_adv_3_c(transport, upperTester, lowerTester, trace):
     """
         Read local address in resolving list.
     """
-    status, resolvableAddresses[0] = local_resolvable_address(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
+    addressRead, resolvableAddresses[0] = readLocalResolvableAddress(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
     success = success and scanner.qualifyReports( 10 )
     trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[0]))
     transport.wait(2000) # Wait for RPA timeout to expire
@@ -5210,7 +4778,7 @@ def link_sec_adv_3_c(transport, upperTester, lowerTester, trace):
     """
         Read local address in resolving list.
     """
-    status, resolvableAddresses[1] = local_resolvable_address(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
+    addressRead, resolvableAddresses[1] = readLocalResolvableAddress(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
     success = success and scanner.qualifyReports( 10 )
     trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[1]))
 
@@ -5315,7 +4883,7 @@ def link_sec_adv_5_c(transport, upperTester, lowerTester, trace):
         success = success and scanner.qualifyReports(10)
         success = success and scanner.qualifyResponses(1)
         success = success and scanner.disable()
-        status, resolvableAddresses[i] = local_resolvable_address(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
+        addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
         trace.trace(6, "AdvA: %s" % formatAddress(resolvableAddresses[i]))
 
     success = success and advertiser.disable()
@@ -5412,28 +4980,19 @@ def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
     success = success and advertiser.enable()
     connected = initiator.connect()
     success = success and connected
-    txData = [0 for _ in range(10)]
-    pbFlags = 0
 
     if connected:
         transport.wait(200)
         """
             Lower Tester is sending Data...
         """
-        status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-        trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-        success = success and (status == 0)
-        if success:
-            dataSent = has_event(transport, lowerTester, 200)
-            success = success and dataSent
-            if dataSent:
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-            hasData = le_data_ready(transport, upperTester, 200)
-            success = success and hasData
-            if hasData:
-                time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+        txData = [0 for _ in range(10)]
+        pbFlags = 0
+        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+        success = success and dataSent;
+        if dataSent:
+            dataReceived, rxData = readData(transport, upperTester, trace);
+            success = success and dataReceived and (len(rxData) == len(txData));
         """
             Upper tester (SLAVE) terminates the connection
         """
@@ -5443,7 +5002,6 @@ def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
         success = success and disconnected
     else:
         advertiser.disable()
-        success = False
 
     success = success and RPAs.disable()
     success = success and RPAs_lower.disable()
@@ -5456,81 +5014,59 @@ def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_8_c(transport, upperTester, lowerTester, trace):
 
     """
-        Set advertiser and scanner to use resolvable private addresses
+        Configure RPAs to use the IRKs for address resolutions
     """
-    initiatorAddr = (toNumber(lowerRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
-    upperAddr = (toNumber( upperRandomAddress ) | 0x400000000000L) & 0x7FFFFFFFFFFFL
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Configure RPAs to use the upperIRK for address resolutions
+        Add Identity Addresses to Resolving Lists
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, initiatorAddr ), upperIRK)
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+    success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 2 );
+    """
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
+    """
+    success = success and preamble_specific_white_listed(transport, upperTester, [ [ IdentityAddressType.PUBLIC, 0x456789ABCDEFL ] ], trace);
 
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    addresses = [ [ ExtendedAddressType.RESOLVABLE_OR_PUBLIC, initiatorAddr ] ]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, initiatorAddr)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    initiatorAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
-    """
-        Setting the private resolvable address to upper and lower tester
-    """
-    success = success and preamble_set_public_address(transport, lowerTester, initiatorAddr , trace)
-    success = success and preamble_set_public_address(transport, upperTester, upperAddr, trace)
+                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
 
-    success = success and advertiser.enable()
-    connected = initiator.connect()
-    success = success and connected
-
-    txData = [0 for _ in range(10)]
-    pbFlags = 0
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
 
     if connected:
-        transport.wait(200)
         """
             Lower Tester is sending Data...
         """
-        status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-        trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-        success = success and (status == 0)
-        if success:
-            dataSent = has_event(transport, lowerTester, 200)
-            success = success and dataSent
-            if dataSent:
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-            hasData = le_data_ready(transport, upperTester, 200)
-            success = success and hasData
-            if hasData:
-                time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+        txData = [0 for _ in range(10)];
+        pbFlags = 0;
+        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+        success = success and dataSent;
+        if dataSent:
+            dataReceived, rxData = readData(transport, upperTester, trace);
+            success = success and dataReceived and (len(rxData) == len(txData));
         """
             Upper tester (SLAVE) terminates the connection
         """
-        initiator.switchRoles()
-        disconnected = initiator.disconnect(0x13)
-        initiator.resetRoles()
-        success = success and disconnected
+        initiator.switchRoles();
+        disconnected = initiator.disconnect(0x13);
+        initiator.resetRoles();
+        success = success and disconnected;
     else:
-        advertiser.disable()
-        success = False
+        advertiser.disable();
 
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = success and RPAs[upperTester].disable() and RPAs[lowerTester].disable();
 
-    return success
+    return success;
 
 """
     LINK/SEC/ADV/9-C [Connecting with Undirected Connectable Advertiser with no Local IRK but peer IRK]
@@ -5568,28 +5104,18 @@ def link_sec_adv_9_c(transport, upperTester, lowerTester, trace):
     connected = initiator.connect()
     success = success and connected
 
-    txData = [0 for _ in range(10)]
-    pbFlags = 0
-
     if connected:
         transport.wait(200)
         """
             Lower Tester is sending Data...
         """
-        status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-        trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-        success = success and (status == 0)
-        if success:
-            dataSent = has_event(transport, lowerTester, 200)
-            success = success and dataSent
-            if dataSent:
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-            hasData = le_data_ready(transport, upperTester, 200)
-            success = success and hasData
-            if hasData:
-                time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+        txData = [0 for _ in range(10)]
+        pbFlags = 0
+        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+        success = success and dataSent;
+        if dataSent:
+            dataReceived, rxData = readData(transport, upperTester, trace);
+            success = success and dataReceived and (len(rxData) == len(txData));
         """
             Upper tester (SLAVE) terminates the connection
         """
@@ -5599,7 +5125,6 @@ def link_sec_adv_9_c(transport, upperTester, lowerTester, trace):
         success = success and disconnected
     else:
         advertiser.disable()
-        success = False
             
     success = success and RPAs.disable()
 
@@ -5684,26 +5209,17 @@ def link_sec_adv_11_c(transport, upperTester, lowerTester, trace):
     connected = initiator.connect()
     success = success and connected
     if success:
-        txData = [0 for _ in range(10)]
-        pbFlags = 0
         transport.wait(200)
         """
             Attempt to send data from lower tester...
         """
-        status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-        trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-        success = success and (status == 0)
-        if success:
-            dataSent = has_event(transport, lowerTester, 200)
-            success = success and dataSent
-            if dataSent:
-                eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-            hasData = le_data_ready(transport, upperTester, 200)
-            success = success and hasData
-            if hasData:
-                time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+        txData = [0 for _ in range(10)]
+        pbFlags = 0
+        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+        success = success and dataSent;
+        if dataSent:
+            dataReceived, rxData = readData(transport, upperTester, trace);
+            success = success and dataReceived and (len(rxData) == len(txData));
         """
             Upper tester (SLAVE) terminates the connection
         """
@@ -5755,31 +5271,22 @@ def link_sec_adv_12_c(transport, upperTester, lowerTester, trace):
         connected = initiator.connect()
         success = success and connected
         if success:
-            txData = [0 for _ in range(10)]
-            pbFlags = 0
             resolvableAddresses = [ 0, 0 ]
             transport.wait(200)
             """
                 Attempt to send data from lower tester...
             """
-            status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-            success = success and (status == 0)
-            if success:
-                dataSent = has_event(transport, lowerTester, 200)
-                success = success and dataSent
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-                hasData = le_data_ready(transport, upperTester, 200)
-                success = success and hasData
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                    trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+            txData = [0 for _ in range(10)]
+            pbFlags = 0
+            dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readData(transport, upperTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Read the resolvable address used in the AdvA field
             """
-            status, resolvableAddresses[i] = local_resolvable_address(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, lowerAddr ), trace)
+            addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, lowerAddr ), trace)
             trace.trace(6, "AdvA Address: %s" % formatAddress(resolvableAddresses[i]))
             """
                 Upper tester (SLAVE) terminates the connection
@@ -5790,7 +5297,6 @@ def link_sec_adv_12_c(transport, upperTester, lowerTester, trace):
             success = success and disconnected
         else:
             advertiser.disable()
-            success = False
             break
         
     success = success and (resolvableAddresses[0] != resolvableAddresses[1])
@@ -5836,31 +5342,22 @@ def link_sec_adv_13_c(transport, upperTester, lowerTester, trace):
         connected = initiator.connect()
         success = success and connected
         if success:
-            txData = [0 for _ in range(10)]
-            pbFlags = 0
             resolvableAddresses = [ 0, 0 ]
             transport.wait(200)
             """
                 Attempt to send data from lower tester...
             """
-            status = le_data_write(transport, lowerTester, initiator.handles[0], pbFlags, 0, txData, 100)
-            trace.trace(6, "LE Data Write Command returns status: 0x%02X" % status)
-            success = success and (status == 0)
-            if success:
-                dataSent = has_event(transport, lowerTester, 200)
-                success = success and dataSent
-                if dataSent:
-                    eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100)
-                    success = success and (event == Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS)
-                hasData = le_data_ready(transport, upperTester, 200)
-                success = success and hasData
-                if hasData:
-                    time, handle, rxPBFlags, rxBCFlags, rxData = le_data_read(transport, upperTester, 100)
-                    trace.trace(6, "LE Data Read Command returns %d data bytes: %s" % (len(rxData), formatArray(rxData)))
+            txData = [0 for _ in range(10)]
+            pbFlags = 0
+            dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
+            success = success and dataSent;
+            if dataSent:
+                dataReceived, rxData = readData(transport, upperTester, trace);
+                success = success and dataReceived and (len(rxData) == len(txData));
             """
                 Read the resolvable address used in the InitA field
             """
-            status, resolvableAddresses[i] = local_resolvable_address(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
+            addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
             trace.trace(6, "AdvA Address: %s" % formatAddress(resolvableAddresses[i]))
             success = success and (status == 0)
             """
@@ -5872,7 +5369,6 @@ def link_sec_adv_13_c(transport, upperTester, lowerTester, trace):
             success = success and disconnected
         else:
             advertiser.disable()
-            success = False
             break
 
     success = success and (resolvableAddresses[0] != resolvableAddresses[1])
@@ -5967,16 +5463,12 @@ def link_sec_adv_15_c(transport, upperTester, lowerTester, trace):
     """
         Enable device privacy mode...
     """
-    status = le_set_privacy_mode(transport, upperTester, ExtendedAddressType.RESOLVABLE_OR_PUBLIC, toArray(lowerAddr, 6), 0, 200)
-    success = success and (status == 0)
-    if has_event(transport, upperTester, 100):
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-        showEvent(event, eventData, trace)
+    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.NETWORK_PRIVACY, trace);
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
     ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS)
 
@@ -6087,10 +5579,7 @@ def link_sec_adv_17_c(transport, upperTester, lowerTester, trace):
     success = success and preamble_set_random_address(transport, upperTester, 0x456789ABCDEFL, trace)
     success = success and preamble_set_public_address(transport, lowerTester, 0x123456789ABCL, trace)
 
-    status = le_set_privacy_mode(transport, upperTester, SimpleAddressType.PUBLIC, toArray(0x023456789ABCL, 6), 0, 2000)
-    if has_event(transport, upperTester, 100):
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-        showEvent(event, eventData, trace)
+    success = success and setPrivacyMode(transport, upperTester, Address( SimpleAddressType.PUBLIC, 0x023456789ABCL ), PrivacyMode.NETWORK_PRIVACY, trace);
 
     success = success and advertiser.enable()
     connected = initiator.connect()
@@ -6138,15 +5627,12 @@ def link_sec_adv_18_c(transport, upperTester, lowerTester, trace):
     """
         Enable device privacy mode...
     """
-    status = le_set_privacy_mode(transport, upperTester, ExtendedAddressType.RESOLVABLE_OR_PUBLIC, toArray(lowerAddr, 6), 1, 200)
-    if has_event(transport, upperTester, 100):
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-        showEvent(event, eventData, trace)
+    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
     ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS)
 
@@ -6213,11 +5699,7 @@ def link_sec_adv_19_c(transport, upperTester, lowerTester, trace):
     success = success and preamble_set_random_address(transport, upperTester, upperAddr, trace)
     success = success and preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
 
-    status = le_set_privacy_mode(transport, upperTester, SimpleAddressType.PUBLIC, toArray(lowerAddr, 6), 1, 200)
-    if has_event(transport, upperTester, 100):
-        eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-        showEvent(event, eventData, trace)
-    success = success and (status == 0)
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Start advertising and attempt to connect...
     """
@@ -6252,11 +5734,7 @@ def link_sec_adv_20_c(transport, upperTester, lowerTester, trace):
     """
         Enabling device privacy mode...
     """
-    status = le_set_privacy_mode(transport, upperTester, peerAddress.type, peerAddress.address, PrivacyMode.DEVICE_PRIVACY, 200)
-    success = success and status == 0
-    eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE)
-    showEvent(event, eventData, trace)
+    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
     """
         Enable RPAs...
     """
@@ -6394,7 +5872,7 @@ __tests__ = {
     "LINK/SEC/ADV/5-C":  [ link_sec_adv_5_c,  "Scannable Undirected Advertising with resolvable private address" ],
     "LINK/SEC/ADV/6-C":  [ link_sec_adv_6_c,  "Connecting with Undirected Connectable Advertiser using non-resolvable private address" ],
     "LINK/SEC/ADV/7-C":  [ link_sec_adv_7_c,  "Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK" ],
-#   "LINK/SEC/ADV/8-C":  [ link_sec_adv_8_c,  "Connecting with Undirected Connectable Advertiser with both Local and Peer IRK" ],
+    "LINK/SEC/ADV/8-C":  [ link_sec_adv_8_c,  "Connecting with Undirected Connectable Advertiser with both Local and Peer IRK" ],
     "LINK/SEC/ADV/9-C":  [ link_sec_adv_9_c,  "Connecting with Undirected Connectable Advertiser with no Local IRK but peer IRK" ],
     "LINK/SEC/ADV/10-C": [ link_sec_adv_10_c, "Connecting with Undirected Connectable Advertiser where Peer Device Identity address not in White List" ],
     "LINK/SEC/ADV/11-C": [ link_sec_adv_11_c, "Connecting with Directed Connectable Advertiser using local and remote IRK" ],
