@@ -38,17 +38,21 @@ class ResolvableAddresses:
         self.trace = trace;
         self.localIRK = [ 0 for _ in range(16) ] if localIRK is None else localIRK[ : ];
 
+    def __verifyAndShowEvent(self, expectedEvent):
+        event, subEvent, eventData = get_event(self.transport, self.idx, 100)[1:];
+        showEvent(event, eventData, self.trace);
+        return (event == expectedEvent);
+
+    def __getCommandCompleteEvent(self):
+        return self.__verifyAndShowEvent(Events.BT_HCI_EVT_CMD_COMPLETE);
+    
     """
         Clear list of Resolvable Addresses
     """
     def clear(self):
         status = le_clear_resolving_list(self.transport, self.idx, 100);
         self.trace.trace(6, "LE Clear Resolving List Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, self.trace);
-        return success;
+        return self.__getCommandCompleteEvent() and (status == 0);
 
     """
         Add entry to list of Resolvable Addresses
@@ -61,11 +65,7 @@ class ResolvableAddresses:
             peerIRK = [ 0 for _ in range(16) ];
         status = le_add_device_to_resolving_list(self.transport, self.idx, peerAddress.type, peerAddress.address, peerIRK, self.localIRK, 100);
         self.trace.trace(6, "LE Add Device to Resolving List Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, self.trace);
-        return success;
+        return self.__getCommandCompleteEvent() and (status == 0);
 
     """
         Remove entry from list of Resolvable Addresses
@@ -75,20 +75,12 @@ class ResolvableAddresses:
     def remove(self, peerAddress):
         status = le_remove_device_from_resolving_list(self.transport, self.idx, peerAddress.type, peerAddress.address, 100);
         self.trace.trace(6, "LE Remove Device from Resolving List Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, self.trace);
-        return success;
+        return self.__getCommandCompleteEvent() and (status == 0);
         
     def __enable(self, enable):
         status = le_set_address_resolution_enable(self.transport, self.idx, enable, 100);
         self.trace.trace(6, "LE Set Address Resolution " + ("Enable" if enable else "Disable") + " Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, self.trace);
-        return success;
+        return self.__getCommandCompleteEvent() and (status == 0);
         
     """
         Enable Address Resolution via list of Resolvable Addresses
@@ -108,8 +100,5 @@ class ResolvableAddresses:
     def timeout(self, timeout):
         status = le_set_resolvable_private_address_timeout(self.transport, self.idx, timeout, 100);
         self.trace.trace(6, "LE Set Resolvable Private Address Timeout Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, self.trace);
-        return success;
+        return self.__getCommandCompleteEvent() and (status == 0);
+
