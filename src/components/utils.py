@@ -456,9 +456,12 @@ def eventEnhancedConnection(eventData, trace):
     peerResolvableAddress = numpy.asarray(struct.unpack('<6B', eventData[17:23]));
     interval, latency, timeout, accuracy = struct.unpack('<HHHB', eventData[23:30]);
     if (localResolvableAddress == emptyAddress).all() and (peerResolvableAddress == emptyAddress).all():
-        trace.trace(7, 'LE Enhanced Connection Complete Event for Handle 0x%04X status 0x%02X Peer Address %s(%d) role 0x%02X (%s)' % (handle, status, formatAddress(peerAddress), addressType, role, ('MASTER' if (role == 0) else 'SLAVE')));
+        trace.trace(7, 'LE Enhanced Connection Complete Event for Handle 0x%04X status 0x%02X Peer Address %s(%d) role 0x%02X (%s)' % \
+                       (handle, status, formatAddress(peerAddress), addressType, role, ('MASTER' if (role == 0) else 'SLAVE')));
     else:
-        trace.trace(7, 'LE Enhanced Connection Complete Event for Handle 0x%04X status 0x%02X Peer Address %s(%d) RPAs %s and %s role 0x%02X (%s)' % (handle, status, formatAddress(peerAddress), addressType, formatAddress(localResolvableAddress), formatAddress(peerResolvableAddress), role, ('MASTER' if (role == 0) else 'SLAVE')));
+        trace.trace(7, 'LE Enhanced Connection Complete Event for Handle 0x%04X status 0x%02X Peer Address %s(%d) RPAs %s and %s role 0x%02X (%s)' % \
+                       (handle, status, formatAddress(peerAddress), addressType, formatAddress(localResolvableAddress), \
+                        formatAddress(peerResolvableAddress), role, ('MASTER' if (role == 0) else 'SLAVE')));
 
 def eventDirectAdvertisingReport(eventData, trace):
     reports = struct.unpack('<B', eventData[:1])[0];
