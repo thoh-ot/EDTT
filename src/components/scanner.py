@@ -91,41 +91,25 @@ class Scanner:
         self.lastTime = 0;
         self.pivot = 0;
         
+    def __verifyAndShowEvent(self, expectedEvent):
+        event, subEvent, eventData = get_event(self.transport, self.idx, 100)[1:];
+        showEvent(event, eventData, self.trace);
+        return (event == expectedEvent);
+
+    def __getCommandCompleteEvent(self):
+        return self.__verifyAndShowEvent(Events.BT_HCI_EVT_CMD_COMPLETE);
+    
     def __set_scan_parameters(self):
-
-        try:
-            status = le_set_scan_parameters(self.transport, self.idx, self.scanType, self.scanInterval, self.scanWindow, self.ownAddress.type, self.filterPolicy, 100);
-            self.trace.trace(6, "LE Set Scan Parameters Command returns status: 0x%02X" % status);
-            success = status == 0;
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, self.trace);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Scan Parameters Command failed: %s" % str(e));
-            success = False;
-
-        return success;
+        status = le_set_scan_parameters(self.transport, self.idx, self.scanType, self.scanInterval, self.scanWindow, self.ownAddress.type, self.filterPolicy, 100);
+        self.trace.trace(6, "LE Set Scan Parameters Command returns status: 0x%02X" % status);
+        return self.__getCommandCompleteEvent() and (status == 0);
 
     def __scan_enable(self, enable):
-        
-        try:
-            status = le_set_scan_enable(self.transport, self.idx, enable, ScanFilterDuplicate.DISABLE, 200);
-            self.trace.trace(6, "LE Set Scan Enable Command (%s) returns status: 0x%02X" % ("Enabling" if enable else "Disabling", status));
-            success = status == 0;
-            waited = 0;
-            event = Events.BT_HCI_EVT_NONE;
-            while (event != Events.BT_HCI_EVT_CMD_COMPLETE) and (waited <= 1000):
-                if has_event(self.transport, self.idx, 100):
-                    eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-                    showEvent(event, eventData, self.trace);
-                else:
-                    waited += 100;
-            success = success and (waited <= 1000);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Scan Enable Command (%s) failed: %s" % ("Enabling" if enable else "Disabling", str(e)));
-            success = False;
-
-        return success;
+        status = le_set_scan_enable(self.transport, self.idx, enable, ScanFilterDuplicate.DISABLE, 200);
+        self.trace.trace(6, "LE Set Scan Enable Command (%s) returns status: 0x%02X" % ("Enabling" if enable else "Disabling", status));
+        while not self.__getCommandCompleteEvent():
+            pass;
+        return status == 0;
 
     """
         Enable scanning...
@@ -144,34 +128,46 @@ class Scanner:
     def __quantify_deltas(self):
         pivot = self.deltas[0] if self.deltas[0] != 0 else statistics.mean(self.deltas);
         self.deltas[ : ] = [ x for x in self.deltas if x < (pivot + pivot) ];
-                    
+    
+    def __updateDeltas(self, count, thisTime, prevTime):
+        if count > 1:
+            self.deltas += [thisTime - prevTime];
+        else:
+            self.firstTime = thisTime;
+
+    def __handleReport(self, prevTime):
+        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
+
+        if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
+
+            eventType = advertiseReport(eventData)[1];
+            if   eventType == self.reportType:
+                self.reports += 1;
+                self.reportData = eventData[ : ];
+                self.__updateDeltas(self.reports, eventTime, prevTime);
+                prevTime = eventTime;
+            elif eventType == AdvertisingReport.SCAN_RSP:
+                self.responses += 1;
+                self.responseData = eventData[ : ];
+
+        elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
+
+            eventType = directedAdvertiseReport(eventData)[1];
+            if eventType == self.reportType:
+                self.directReports += 1;
+                self.reportData = eventData[ : ];
+                self.__updateDeltas(self.directReports, eventTime, prevTime);
+                prevTime = eventTime;
+
+        return prevTime;
+
     def __monitorReports(self):
         
         prevTime = 0;
         while max(self.reports, self.directReports, self.counts) < self.expectedReports:
+
             if has_event(self.transport, self.idx, 100):
-                eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-              # showEvent(event, eventData, self.trace);
-                if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
-                    eventType = advertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.reports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.reports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
-                elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
-                    eventType = directedAdvertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.directReports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.directReports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
+                prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
                     self.lastTime = prevTime;
@@ -180,33 +176,11 @@ class Scanner:
     def __monitorResponses(self):
         
         prevTime = 0;
-        while (max(self.reports, self.directReports, self.counts) < self.expectedReports) or (max(self.responses, self.counts) < self.expectedResponses):
+        while (max(self.reports, self.directReports, self.counts) < self.expectedReports) or \
+              (max(self.responses, self.reports/5, self.counts) < self.expectedResponses):
+
             if has_event(self.transport, self.idx, 100):
-                eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-              # showEvent(event, eventData, self.trace);
-                if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
-                    eventType = advertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.reports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.reports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
-                    elif eventType == AdvertisingReport.SCAN_RSP:
-                        self.responses += 1;
-                        self.responseData = eventData[ : ];
-                elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
-                    eventType = directedAdvertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.directReports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.directReports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
+                prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
                     self.lastTime = prevTime;
@@ -220,29 +194,9 @@ class Scanner:
         """
         prevTime = 0;
         while self.lastTime == 0:
+
             if has_event(self.transport, self.idx, 100):
-                eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-                # showEvent(event, eventData, self.trace);
-                if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
-                    eventType = advertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.reports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.reports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
-                elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
-                    eventType = directedAdvertiseReport(eventData)[1];
-                    if eventType == self.reportType:
-                        self.directReports += 1;
-                        self.reportData = eventData[ : ];
-                        if self.directReports > 1:
-                            self.deltas += [eventTime - prevTime];
-                        else:
-                            self.firstTime = eventTime;
-                        prevTime = eventTime;
+                prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
                     self.lastTime = prevTime;
@@ -276,7 +230,8 @@ class Scanner:
             self.trace.trace(7, "Received %d %s Advertise reports." % (self.reports, self.reportType.name) );
             if (self.reports > 1):
                 self.__quantify_deltas();
-                self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
+                self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % \
+                                    (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             success = True
             if not address is None:
                 adrType, adrAddress = advertiseReport(self.reportData)[2:4];
@@ -299,7 +254,8 @@ class Scanner:
             self.trace.trace(7, "Received %d %s directed Advertise reports." % (self.directReports, self.reportType.name) );
             if (self.directReports > 1):
                 self.__quantify_deltas();
-                self.trace.trace(7, "Mean distance between directed Advertise Events %d ms., std. deviation %.1f ms." % (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
+                self.trace.trace(7, "Mean distance between directed Advertise Events %d ms., std. deviation %.1f ms." % \
+                                    (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             success = True
             if not address is None:
                 adrType, adrAddress = directedAdvertiseReport(self.reportData)[2:4];
@@ -341,7 +297,8 @@ class Scanner:
             self.trace.trace(7, "Received %d %s Advertise reports." % (self.reports, self.reportType.name) );
             if (self.reports > 1):
                 self.__quantify_deltas();
-                self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
+                self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % \
+                                    (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             self.trace.trace(7, "Advertising stopped after %d ms." % (self.lastTime - self.firstTime) );
             success = time > (self.lastTime - self.firstTime);
         else:
