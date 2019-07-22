@@ -36,7 +36,7 @@ def gap_dmp_ndm_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -66,7 +66,7 @@ def gap_dmp_ndm_2_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -96,7 +96,7 @@ def gap_dmp_ldm_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -125,7 +125,7 @@ def gap_dmp_ldm_2_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -154,7 +154,7 @@ def gap_dmp_ldm_3_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -183,7 +183,7 @@ def gap_dmp_ldm_4_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -212,7 +212,7 @@ def gap_dmp_gdm_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -241,7 +241,7 @@ def gap_dmp_gdm_2_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -270,7 +270,7 @@ def gap_dmp_gdm_3_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -299,7 +299,7 @@ def gap_dmp_gdm_4_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -327,7 +327,7 @@ def gap_dmp_ldp_1_c(transport, upperTester, lowerTester, trace):
 
     adData = ADData();
     advertiser.advertiseData = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
-    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -354,7 +354,7 @@ def gap_dmp_ldp_2_c(transport, upperTester, lowerTester, trace):
 
     adData = ADData();
     advertiser.advertiseData = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
-    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -383,7 +383,7 @@ def gap_dmp_ldp_4_c(transport, upperTester, lowerTester, trace):
     adData = ADData();
     advertiser.advertiseData  = adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -413,7 +413,7 @@ def gap_dmp_ldp_5_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -441,7 +441,7 @@ def gap_dmp_gdp_1_c(transport, upperTester, lowerTester, trace):
 
     adData = ADData();
     advertiser.advertiseData = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
-    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -468,7 +468,7 @@ def gap_dmp_gdp_2_c(transport, upperTester, lowerTester, trace):
 
     adData = ADData();
     advertiser.advertiseData = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
-    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -496,7 +496,7 @@ def gap_dmp_gdp_4_c(transport, upperTester, lowerTester, trace):
     adData = ADData();
     advertiser.advertiseData  = adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData  = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -526,7 +526,7 @@ def gap_dmp_gdp_5_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -572,7 +572,7 @@ def gap_dmp_rpa_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
         
     success = advertiser.enable();
     if success: 
@@ -602,7 +602,7 @@ def gap_cmp_ncm_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
     """
         Attempt to initiate connection with Advertiser
     """
@@ -628,7 +628,7 @@ def gap_cmp_ncm_2_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
 
     success = advertiser.enable();
     if success: 
@@ -665,7 +665,7 @@ def gap_cmp_ncm_3_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
 
     success = advertiser.enable();
     if success: 
@@ -740,7 +740,7 @@ def gap_cmp_ucm_1_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
 
     success = advertising = advertiser.enable();
 
@@ -783,7 +783,7 @@ def gap_cmp_ucm_2_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_GENERAL_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
 
     success = advertising = advertiser.enable();
 
@@ -826,7 +826,7 @@ def gap_cmp_ucm_3_c(transport, upperTester, lowerTester, trace):
     advertiser.advertiseData  = adData.encode( ADType.FLAGS, ADFlag.LE_LIMITED_DISCOVERABLE | ADFlag.BR_EDR_NOT_SUPPORTED );
     advertiser.advertiseData += adData.encode( ADType.TX_POWER_LEVEL, -4 );
     advertiser.advertiseData += adData.encode( ADType.SLAVE_CONNECT_INT, 20, 40 );
-    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'FlÃ¸debolle' );
+    advertiser.responseData   = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Flødebolle' );
 
     success = advertising = advertiser.enable();
 
@@ -1428,8 +1428,8 @@ def gap_aspd_2_c(transport, upperTester, lowerTester, trace):
     scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 1, 1);
 
     adData = ADData();
-    advertiser.advertiseData = adData.encode( ADType.SHORTENED_LOCAL_NAME, u'BlÃ¥bÃ¦r' );
-    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'RÃ¸dgrÃ¸d med flÃ¸de' );
+    advertiser.advertiseData = adData.encode( ADType.SHORTENED_LOCAL_NAME, u'Blåbær' );
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'Rødgrød med fløde' );
         
     success = advertiser.enable();
 
@@ -1780,7 +1780,7 @@ def gap_aspd_15_c(transport, upperTester, lowerTester, trace):
 
     adData = ADData();
     advertiser.advertiseData = adData.encode( ADType.URI, u'http://www.bluetooth.org' );
-    advertiser.responseData = adData.encode( ADType.URI, u'example://z.com/Ã…lborg' );
+    advertiser.responseData = adData.encode( ADType.URI, u'example://z.com/Ålborg' );
         
     success = advertiser.enable();
 
