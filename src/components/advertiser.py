@@ -60,7 +60,8 @@ class Advertiser:
             advertiseData - Array of Bytes holding advertise data
             responseData  - Array of Bytes holding response data
     """
-    def __init__(self, transport, idx, trace, channels, advertiseType, ownAddress, peerAddress, filterPolicy=AdvertisingFilterPolicy.FILTER_NONE, advertiseData=None, responseData=None):
+    def __init__(self, transport, idx, trace, channels, advertiseType, ownAddress, peerAddress, filterPolicy=AdvertisingFilterPolicy.FILTER_NONE, \
+                       advertiseData=None, responseData=None):
         self.transport = transport;
         self.idx = idx;
         self.trace = trace;
@@ -71,13 +72,15 @@ class Advertiser:
 
             If Own_Address_Type equals 0x02 or 0x03, the Peer_Address parameter contains the peer’s Identity Address and
             the Peer_Address_Type parameter contains the Peer’s Identity Type (i.e. 0x00 or 0x01).
-            These parameters are used to locate the corresponding local IRK in the resolving list; this IRK is used to generate the own address used in the advertisement.
+            These parameters are used to locate the corresponding local IRK in the resolving list; this IRK is used to generate 
+            the own address used in the advertisement.
 
-            If Own_Address_Type equals 0x02 or 0x03, the Controller generates the peer’s Resolvable Private Address using the peer’s IRK corresponding to the peer’s Identity Address
-            contained in the Peer_Address parameter and peer’s Identity Address Type (i.e. 0x00 or 0x01) contained in the Peer_Address_Type parameter.
+            If Own_Address_Type equals 0x02 or 0x03, the Controller generates the peer’s Resolvable Private Address using the 
+            peer’s IRK corresponding to the peer’s Identity Address contained in the Peer_Address parameter and peer’s Identity 
+            Address Type (i.e. 0x00 or 0x01) contained in the Peer_Address_Type parameter.
 
-            If directed advertising is performed, i.e. when Advertising_Type is set to 0x01 (ADV_DIRECT_IND, high duty cycle) or 0x04 (ADV_DIRECT_IND, low duty cycle mode),
-            then the Peer_Address_Type and Peer_Address shall be valid.
+            If directed advertising is performed, i.e. when Advertising_Type is set to 0x01 (ADV_DIRECT_IND, high duty cycle) or 
+            0x04 (ADV_DIRECT_IND, low duty cycle mode), then the Peer_Address_Type and Peer_Address shall be valid.
         """
         self.ownAddress = ownAddress;
         self.peerAddress = peerAddress;
@@ -86,7 +89,8 @@ class Advertiser:
         self.responseData = [] if responseData is None else responseData[ : ];
         """
             The Advertising_Interval_Min shall be less than or equal to the Advertising_Interval_Max.
-            The Advertising_Interval_Min and Advertising_Interval_Max should not be the same value to enable the Controller to determine the best advertising interval given other activities.
+            The Advertising_Interval_Min and Advertising_Interval_Max should not be the same value to enable the Controller to 
+            determine the best advertising interval given other activities.
 
             For high duty cycle directed advertising, i.e. when Advertising_Type is 0x01 (ADV_DIRECT_IND, high duty cycle),
             the Advertising_Interval_Min and Advertising_Interval_Max parameters are not used and shall be ignored.
@@ -95,6 +99,14 @@ class Advertiser:
         self.maxInterval = 32; # Maximum Advertise Interval = 32 x 0.625 ms = 20.00 ms
         self.filterPolicy = filterPolicy;
         self.status = 0;
+    
+    def __verifyAndShowEvent(self, expectedEvent):
+        event, subEvent, eventData = get_event(self.transport, self.idx, 100)[1:];
+        showEvent(event, eventData, self.trace);
+        return (event == expectedEvent);
+
+    def __getCommandCompleteEvent(self):
+        return self.__verifyAndShowEvent(Events.BT_HCI_EVT_CMD_COMPLETE);
     
     def __confined_array(self, data, limit):
         dataSize = len(data) if len(data) <= limit else limit;
@@ -107,67 +119,32 @@ class Advertiser:
     
     def __set_advertise_parameters(self):
 
-        try:
-            self.status = le_set_advertising_parameters(self.transport, self.idx, self.minInterval, self.maxInterval, self.advertiseType, self.ownAddress.type, self.peerAddress.type, self.peerAddress.address, self.channels, self.filterPolicy, 100);
-            self.trace.trace(6, "LE Set Advertising Parameters Command returns status: 0x%02X" % self.status);
-            success = self.status == 0;
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, self.trace);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Advertising Parameters Command failed: %s" % str(e));
-            success = False;
-
-        return success;
+        self.status = le_set_advertising_parameters(self.transport, self.idx, self.minInterval, self.maxInterval, self.advertiseType, self.ownAddress.type, \
+                                                    self.peerAddress.type, self.peerAddress.address, self.channels, self.filterPolicy, 100);
+        self.trace.trace(6, "LE Set Advertising Parameters Command returns status: 0x%02X" % self.status);
+        return self.__getCommandCompleteEvent() and (self.status == 0);
 
     def __set_advertise_data(self):
 
-        try:
-            dataSize, advertiseData = self.__confined_array(self.advertiseData, 31);
+        dataSize, advertiseData = self.__confined_array(self.advertiseData, 31);
 
-            self.status = le_set_advertising_data(self.transport, self.idx, dataSize, advertiseData, 100);
-            self.trace.trace(6, "LE Set Advertising Data Command returns status: 0x%02X" % self.status);
-            success = self.status == 0;
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, self.trace);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Advertising Data Command failed: %s" % str(e));
-            success = False;
-
-        return success;
+        self.status = le_set_advertising_data(self.transport, self.idx, dataSize, advertiseData, 100);
+        self.trace.trace(6, "LE Set Advertising Data Command returns status: 0x%02X" % self.status);
+        return self.__getCommandCompleteEvent() and (self.status == 0);
 
     def __set_scan_response(self):
 
-        try:
-            dataSize, responseData = self.__confined_array(self.responseData, 31);
+        dataSize, responseData = self.__confined_array(self.responseData, 31);
                 
-            self.status = le_set_scan_response_data(self.transport, self.idx, dataSize, responseData, 100);
-            self.trace.trace(6, "LE Set Scan Response Data Command returns status: 0x%02X" % self.status);
-            success = self.status == 0;
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, self.trace);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Scan Response Data Command failed: %s" % str(e));
-            success = False;
-
-        return success;
+        self.status = le_set_scan_response_data(self.transport, self.idx, dataSize, responseData, 100);
+        self.trace.trace(6, "LE Set Scan Response Data Command returns status: 0x%02X" % self.status);
+        return self.__getCommandCompleteEvent() and (self.status == 0);
 
     def __advertise_enable(self, enable):
         
-        try:
-            self.status = le_set_advertising_enable(self.transport, self.idx, enable, 100);
-            self.trace.trace(6, "LE Set Advertising Enable Command (%s) returns status: 0x%02X" % ("Enabling" if enable else "Disabling", self.status));
-            success = self.status == 0;
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, self.trace);
-        except Exception as e: 
-            self.trace.trace(3, "LE Set Advertising Enable Command (%s) failed: %s" % ("Enabling" if enable else "Disabling", str(e)));
-            success = False;
-
-        return success;
+        self.status = le_set_advertising_enable(self.transport, self.idx, enable, 100);
+        self.trace.trace(6, "LE Set Advertising Enable Command (%s) returns status: 0x%02X" % ("Enabling" if enable else "Disabling", self.status));
+        return self.__getCommandCompleteEvent() and (self.status == 0);
 
     """
         Enable advertising - start emitting Advertise packages
@@ -191,9 +168,9 @@ class Advertiser:
     def timeout(self):
         self.status = 0;
         if has_event(self.transport, self.idx, 100):
-            eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
+            event, subEvent, eventData = get_event(self.transport, self.idx, 100)[1:];
             showEvent(event, eventData, self.trace);
-            if (event == Events.BT_HCI_EVT_LE_META_EVENT) and ((subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE)):
+            if (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE):
                 self.status = connectionComplete(eventData)[0];
                 self.trace.trace(6, "Connection Complete status = 0x%02X" % self.status);
         return self.status == 0x3C;
