@@ -69,7 +69,7 @@ class Initiator:
         self.cpr_handle, self.cpr_minInterval, self.cpr_maxInterval, self.cpr_latency, self.cpr_timeout = -1, 0, 0, 0, 0;
 
     """
-        Private Event handles procedures... 
+        Private Event handler procedures... 
 
         Check for LE Connection Complete Event | LE Enhanced Connection Complete Event...
     """
@@ -221,6 +221,18 @@ class Initiator:
         return success;
 
     """
+        Send Create Connection Cancel command...
+    """
+    def __cancel(self):
+
+        status = le_create_connection_cancel(self.transport, self.initiator, 100);         
+        event, subEvent, eventData = get_event(self.transport, self.initiator, 100)[1:];
+        success = (event == Events.BT_HCI_EVT_CMD_COMPLETE) and (status == 0);
+        self.trace.trace(6, "LE Create Connection Cancel Command returns status: 0x%02X" % status);
+        showEvent(event, eventData, self.trace);
+        return success;
+
+    """
         Send LE Connection Update command...
     """
     def __update(self, minInterval, maxInterval, latency, timeout):
@@ -351,6 +363,16 @@ class Initiator:
                         
         return success and initiatorDisconnected and peerDisconnected;
 
+    def cancelConnect(self):
+        success = self.pre_connected;
+
+        if success:
+            success = self.__cancel();
+            if success:
+                self.__hasConnectionCompleteEvent(self.initiator, 100)[0];
+
+        return success;
+
     """
         Update connection parameters...
     """
@@ -375,7 +397,7 @@ class Initiator:
                 Send a LL_CONNECTION_PARAM_RSP as a reaction to the LE Remote Connection Parameter Request Event...
             """
             status, handle = le_remote_connection_parameter_request_reply(self.transport, self.peer, self.cpr_handle, self.cpr_minInterval, self.cpr_maxInterval, \
-                                                                              self.cpr_latency, self.cpr_timeout, self.minCeLen, self.maxCeLen, 100);
+                                                                          self.cpr_latency, self.cpr_timeout, self.minCeLen, self.maxCeLen, 100);
             success = (status == 0);
             eventTime, event, subEvent, eventData = get_event(self.transport, self.peer, 100);
             showEvent(event, eventData, self.trace);
