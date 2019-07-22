@@ -132,6 +132,11 @@ def readRemoteVersionInformation(transport, idx, handle, trace):
     trace.trace(6, "Read Remote Version Information returns status: 0x%02X" % status);
     return verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_CMD_STATUS, trace) and (status == 0);
 
+def addAddressesToWhiteList(transport, idx, addresses, trace):
+
+    _addresses = [ [ _.type, toNumber(_.address) ] for _ in addresses ];
+    return preamble_specific_white_listed(transport, idx, _addresses, trace);
+ 
 """
     Send a DATA package...
 """
@@ -4661,11 +4666,12 @@ def link_sec_adv_1_c(transport, upperTester, lowerTester, trace):
     """
     ownAddress = Address( ExtendedAddressType.RANDOM, toNumber(upperRandomAddress) | 0xC00000000000L );
     peerAddress = Address( SimpleAddressType.RANDOM, toNumber(lowerRandomAddress) | 0xC00000000000L );
-
-    preamble_specific_white_listed(transport, upperTester, [ [ peerAddress.type, toNumber(peerAddress.address) ] ], trace);
-
     preamble_set_random_address(transport, upperTester, toNumber(ownAddress.address), trace);
     preamble_set_random_address(transport, lowerTester, toNumber(peerAddress.address), trace);
+    """
+        Adding lowerTester address to the White List
+    """
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
 
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
@@ -4681,7 +4687,7 @@ def link_sec_adv_1_c(transport, upperTester, lowerTester, trace):
     """
         Attempt to change advertiser (upperTester) address...
     """
-    success = success and not preamble_set_random_address(transport, upperTester, address_scramble_OUI( toNumber(peerAddress.address) ), trace);
+    success = success and not preamble_set_random_address(transport, upperTester, address_scramble_OUI( toNumber(ownAddress.address) ), trace);
 
     disabled = scanner.disable();
     success = success and disabled;
@@ -4701,12 +4707,12 @@ def link_sec_adv_2_c(transport, upperTester, lowerTester, trace):
     """
         Add Random address of upperTester to the Resolving List
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace );
-    success = RPAs.add( Address( SimpleAddressType.RANDOM, upperRandomAddress ) );
+    RPA = ResolvableAddresses( transport, upperTester, trace );
+    success = RPA.add( Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ) );
     """
         Enable Private Address Resolution
-    """
-    success = success and RPAs.enable();
+     """
+    success = success and RPA.enable();
 
     ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -4714,7 +4720,7 @@ def link_sec_adv_2_c(transport, upperTester, lowerTester, trace):
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100)
+    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100)
     """
         Start NON_CONNECTABLE_ADVERTISING using non-resolvable private adddress
     """
@@ -4727,6 +4733,7 @@ def link_sec_adv_2_c(transport, upperTester, lowerTester, trace):
     success = success and scanner.qualifyReports( 100, Address( ExtendedAddressType.RANDOM, upperRandomAddress ) )
 
     success = success and advertiser.disable()
+    success = success and RPA.disable();
 
     return success
 
@@ -4738,57 +4745,46 @@ def link_sec_adv_3_c(transport, upperTester, lowerTester, trace):
     """
         Add Public address of lowerTester to the Resolving List with the upperIRK
     """
-    RPAs = ResolvableAddresses( transport, lowerTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( SimpleAddressType.PUBLIC,  0x123456789ABCL ) )
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, upperIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
 
-    RPAs_upper = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs_upper.clear()
-    success = success and RPAs_upper.add( Address( SimpleAddressType.PUBLIC,  0x123456789ABCL ) )
+    success = success and RPAs[upperTester].add( identityAddresses[upperTester] );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester] );
     """
         Set resolvable private address timeout in seconds ( two seconds )
     """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_upper.enable()
+    success = success and RPAs[lowerTester].timeout( 2 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
     """ 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
-    advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress)
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
+    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+    advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
 
-    scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20)
+    scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20);
 
-    resolvableAddresses = [ 0, 0 ]
+    resolvableAddresses = [ 0, 0 ];
+    success = success and advertiser.enable();
 
-    success = success and advertiser.enable()
-    success = success and scanner.enable()
-    transport.wait(200)
-    scanner.monitor()
-    success = success and scanner.disable()
-    """
-        Read local address in resolving list.
-    """
-    addressRead, resolvableAddresses[0] = readLocalResolvableAddress(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
-    success = success and scanner.qualifyReports( 10 )
-    trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[0]))
-    transport.wait(2000) # Wait for RPA timeout to expire
+    for n in [0, 1]:
+        success = success and scanner.enable();
+        scanner.monitor();
+        success = success and scanner.disable();
+        success = success and scanner.qualifyReports( 20 );
+        """
+            Read local address in resolving list.
+        """
+        addressRead, resolvableAddresses[n] = readLocalResolvableAddress(transport, lowerTester, identityAddresses[upperTester], trace);
+        trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[n]));
+        
+        if n == 0:
+            transport.wait(2000); # Wait for RPA timeout to expire
 
-    success = success and scanner.enable()
-    scanner.monitor()
-    success = success and scanner.disable()
-    """
-        Read local address in resolving list.
-    """
-    addressRead, resolvableAddresses[1] = readLocalResolvableAddress(transport, lowerTester, Address( SimpleAddressType.PUBLIC, 0x123456789ABCL ), trace)
-    success = success and scanner.qualifyReports( 10 )
-    trace.trace(6, "Local Resolvable Address: %s" % formatAddress(resolvableAddresses[1]))
-
-    success = success and advertiser.disable()
-    success = success and toNumber(resolvableAddresses[0]) != toNumber(resolvableAddresses[1])
-    success = success and RPAs.disable()
-    success = success and RPAs_upper.disable()
+    success = advertiser.disable() and success; 
+    success = success and toNumber(resolvableAddresses[0]) != toNumber(resolvableAddresses[1]);
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
     return success
 
@@ -4797,34 +4793,36 @@ def link_sec_adv_3_c(transport, upperTester, lowerTester, trace):
 """
 def link_sec_adv_4_c(transport, upperTester, lowerTester, trace):
 
+    success = True;
     """
-        Set advertiser and scanner to use non-resolvable private addresses
+        Setting the non-resolvable Private addresses...
     """
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    peerAddress = Address( SimpleAddressType.RANDOM, toNumber(lowerRandomAddress) & 0x3FFFFFFFFFFFL)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
-
-    ownAddress = Address( ExtendedAddressType.RANDOM)
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20)
-    scanner.expectedResponses = 1
+    nrpAddresses = [ Address( SimpleAddressType.RANDOM, toNumber(upperRandomAddress) & 0x3FFFFFFFFFFFL ), \
+                     Address( SimpleAddressType.RANDOM, toNumber(lowerRandomAddress) & 0x3FFFFFFFFFFFL ) ];
+    if toNumber(nrpAddresses[upperTester].address) != toNumber(upperRandomAddress):
+       success = success and preamble_set_random_address(transport, upperTester, toNumber(nrpAddresses[upperTester].address), trace);
+    if toNumber(nrpAddresses[lowerTester].address) != toNumber(lowerRandomAddress):
+       success = success and preamble_set_random_address(transport, lowerTester, toNumber(nrpAddresses[lowerTester].address), trace);
     """
-        Setting the private non-resolvable address to upper tester
+        Set advertiser and scanner to use non-resolvable Private addresses
     """
-    success = preamble_set_random_address(transport, upperTester, toNumber(upperRandomAddress) & 0x3FFFFFFFFFFFL , trace)
-    success = success and preamble_set_random_address(transport, lowerTester, toNumber(lowerRandomAddress) & 0x3FFFFFFFFFFFL , trace)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
+    peerAddress = nrpAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
 
-    success = success and advertiser.enable()
-    scanner.expectedReports = 100
+    ownAddress  = Address( ExtendedAddressType.RANDOM );
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100, 1);
 
-    success = success and scanner.enable()
-    scanner.monitor()
-    success = success and scanner.qualifyReports( 100 )
-    success = success and scanner.qualifyResponses( 1, advertiser.responseData)
-    success = success and scanner.disable()
+    success = success and advertiser.enable();
 
-    disabled = advertiser.disable()
-    success = success and disabled
+    success = success and scanner.enable();
+    scanner.monitor();
+    success = success and scanner.disable();
+    success = success and scanner.qualifyReports( 100 );
+    success = success and scanner.qualifyResponses( 1, advertiser.responseData);
+
+    success = advertiser.disable() and success;
 
     return success
 
@@ -4834,117 +4832,100 @@ def link_sec_adv_4_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_5_c(transport, upperTester, lowerTester, trace):
 
     """
-        Retrieving random addresses and forcing them to be private resolvable
+        Add Identity addresses of upperTester and lowerTester to respective Resolving Lists with the distributed IRKs
     """
-    lowerAddr = 0x123456789ABCL
-    upperAddr = 0x456789ABCDEFL
-    """
-        Configure RPAs to use the upperIRK for address resolutions
-    """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  lowerAddr ), lowerIRK)
-        
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK )
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  upperAddr ), upperIRK )
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
     """
         Set resolvable private address timeout in seconds ( two seconds )
     """
-    success = success and RPAs.timeout( 2 )
+    success = success and RPAs[upperTester].timeout( 2 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
     """
         Adding lowerTester address to the White List
     """
-    addresses = [[ ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-        
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
+    addresses = [ [ identityAddresses[lowerTester].type, toNumber(identityAddresses[lowerTester].address) ] ];
+    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace);
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20)
-    scanner.expectedResponses = 1
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20, 1);
         
-    success = success and advertiser.enable()
+    success = success and advertiser.enable();
 
-    resolvableAddresses = [ 0, 0 ]
-    for i in range(2):
-        if i == 1:
-            """
-                Wait for RPA timeout
-            """
-            transport.wait(2000)
-        success = success and scanner.enable()
-        scanner.monitor()
-        success = success and scanner.qualifyReports(10)
-        success = success and scanner.qualifyResponses(1)
-        success = success and scanner.disable()
-        addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
-        trace.trace(6, "AdvA: %s" % formatAddress(resolvableAddresses[i]))
+    resolvableAddresses = [ 0, 0 ];
+    for n in [0, 1]:
+        success = success and scanner.enable();
+        scanner.monitor();
+        success = success and scanner.disable();
+        success = success and scanner.qualifyReports(20);
+        success = success and scanner.qualifyResponses(1);
+        addressRead, resolvableAddresses[n] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
+        trace.trace(6, "AdvA: %s" % formatAddress(resolvableAddresses[n]));
+        if n == 1:
+            transport.wait(2000); # Wait for RPA timeout
 
-    success = success and advertiser.disable()
-    success = success and toNumber(resolvableAddresses[0]) != toNumber(resolvableAddresses[1])
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = advertiser.disable() and success;
+    success = success and toNumber(resolvableAddresses[0]) != toNumber(resolvableAddresses[1]);
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
-    return success
+    return success;
 
 """
     LINK/SEC/ADV/6-C [Connecting with Undirected Connectable Advertiser using non-resolvable private address]
 """
 def link_sec_adv_6_c(transport, upperTester, lowerTester, trace):
 
-    upperAddr = toNumber(upperRandomAddress) & 0x3FFFFFFFFFFFL
-    lowerAddrType = [SimpleAddressType.PUBLIC, ExtendedAddressType.RESOLVABLE_OR_RANDOM, ExtendedAddressType.RESOLVABLE_OR_RANDOM]
-    lowerAddr = [0x456789ABCDEFL, toNumber(lowerRandomAddress) | 0xC00000000000L, (toNumber(lowerRandomAddress) & 0x3FFFFFFFFFFFL)]
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    success = True
+    """
+       Setting upper tester's non-resolvable private address
+    """
+    upperAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(upperRandomAddress) & 0x3FFFFFFFFFFFL );
+    success = preamble_set_random_address(transport, upperTester, toNumber(upperAddress.address), trace);
 
-    for i in range(len(lowerAddr)):
-        peerAddress = Address(lowerAddrType[i], lowerAddr[i])
+    lowerAddresses = [ Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ), \
+                       Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(lowerRandomAddress) | 0xC00000000000L ), \
+                       Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, toNumber(lowerRandomAddress) & 0x3FFFFFFFFFFFL ) ];
+
+    for i, lowerAddress in enumerate(lowerAddresses):
         advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                                ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
-        initiatorAddress = Address( lowerAddrType[i] )
-        initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, upperAddr ))
-        """
-            Setting upper tester's non-resolvable address
-        """
-        success = success and preamble_set_random_address(transport, upperTester, upperAddr, trace)
+                                upperAddress, lowerAddress, AdvertisingFilterPolicy.FILTER_NONE);
+        initiator  = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, upperAddress);
         if i == 0:
             """
                 Set lower tester to use Public Address
             """
-            success = success and preamble_set_public_address(transport, lowerTester, lowerAddr[i], trace)
+            success = success and preamble_set_public_address(transport, lowerTester, toNumber(lowerAddress.address), trace);
         else:
             """
                 Set lower tester to use Random Address
             """
-            success = success and preamble_set_random_address(transport, lowerTester, lowerAddr[i], trace)
+            success = success and preamble_set_random_address(transport, lowerTester, toNumber(lowerAddress.address), trace);
            
-        success = success and advertiser.enable()
+        success = success and advertiser.enable();
         """
             Attempt to connect...
         """
-        success = success and initiator.connect()
-        transport.wait(200)
+        success = success and initiator.connect();
+        transport.wait(200);
+        success = success and initiator.disconnect(0x13);
 
-        success = success and initiator.disconnect(0x13)
-        transport.wait(500)
-
-    return success
+    return success;
 
 """
     LINK/SEC/ADV/7-C [Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK]
 """
 def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
 
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
     """
         Set advertiser and scanner to use non-resolvable private addresses
     """
@@ -4959,7 +4940,7 @@ def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
     RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
 
     success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+    success = success and RPAs_lower.add( identityAddresses[lowerTester], upperIRK ) # Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
     success = success and RPAs.timeout( 2 )
     success = success and RPAs.enable()
     success = success and RPAs_lower.enable()
@@ -4987,27 +4968,65 @@ def link_sec_adv_7_c(transport, upperTester, lowerTester, trace):
     if connected:
         transport.wait(200)
         """
-            Lower Tester is sending Data...
-        """
-        txData = [0 for _ in range(10)]
-        pbFlags = 0
-        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-        success = success and dataSent;
-        if dataSent:
-            dataReceived, rxData = readData(transport, upperTester, trace);
-            success = success and dataReceived and (len(rxData) == len(txData));
-        """
             Upper tester (SLAVE) terminates the connection
         """
         initiator.switchRoles()
-        disconnected = initiator.disconnect(0x13)
+        success = initiator.disconnect(0x13) and success;
         initiator.resetRoles()
-        success = success and disconnected
     else:
         advertiser.disable()
 
     success = success and RPAs.disable()
     success = success and RPAs_lower.disable()
+
+    return success
+
+def link_sec_adv_7_x(transport, upperTester, lowerTester, trace):
+
+    """
+        Add Identity addresses of upperTester and lowerTester to respective Resolving Lists with the distributed IRKs
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester] );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
+    """
+        Set resolvable private address timeout in seconds ( sixty seconds )
+    """
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
+    """
+        Adding lowerTester address to the White List
+    """
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
+
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_CONNECTION_REQUESTS);
+
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
+
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
+
+    if connected:
+        transport.wait(200);
+        """
+            Upper tester (SLAVE) terminates the connection
+        """
+        initiator.switchRoles();
+        success = initiator.disconnect(0x13) and success;
+        initiator.resetRoles();
+    else:
+        advertiser.disable();
+
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
     return success
 
@@ -5037,9 +5056,9 @@ def link_sec_adv_8_c(transport, upperTester, lowerTester, trace):
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
     ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
 
     success = success and advertiser.enable();
@@ -5047,27 +5066,17 @@ def link_sec_adv_8_c(transport, upperTester, lowerTester, trace):
     success = success and connected;
 
     if connected:
-        """
-            Lower Tester is sending Data...
-        """
-        txData = [0 for _ in range(10)];
-        pbFlags = 0;
-        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-        success = success and dataSent;
-        if dataSent:
-            dataReceived, rxData = readData(transport, upperTester, trace);
-            success = success and dataReceived and (len(rxData) == len(txData));
+        transport.wait(200);
         """
             Upper tester (SLAVE) terminates the connection
         """
         initiator.switchRoles();
-        disconnected = initiator.disconnect(0x13);
+        success = initiator.disconnect(0x13) and success;
         initiator.resetRoles();
-        success = success and disconnected;
     else:
-        advertiser.disable();
+        success = advertiser.disable() and success;
 
-    success = success and RPAs[upperTester].disable() and RPAs[lowerTester].disable();
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
     return success;
 
@@ -5076,107 +5085,100 @@ def link_sec_adv_8_c(transport, upperTester, lowerTester, trace):
 """
 def link_sec_adv_9_c(transport, upperTester, lowerTester, trace):
 
-    initiatorAddr = (toNumber(lowerRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
     """
-        Configure RPAs to use the upperIRK for address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.PUBLIC, initiatorAddr ) )
-    success = success and RPAs.enable()
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Add initiator address to the White List
+        Add Identity Addresses to Resolving Lists
     """
-    addresses = [[ ExtendedAddressType.RESOLVABLE_OR_RANDOM, initiatorAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester] );
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, initiatorAddr)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    initiatorAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x456789ABCDEFL ))
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
     """
-        Setting the addresses to upper and lower tester
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
     """
-    success = success and preamble_set_public_address(transport, upperTester, 0x456789ABCDEFL, trace)
-    success = success and preamble_set_random_address(transport, lowerTester, initiatorAddr , trace)
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    success = success and advertiser.enable()
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
+
+    success = success and advertiser.enable();
     connected = initiator.connect()
     success = success and connected
 
     if connected:
         transport.wait(200)
         """
-            Lower Tester is sending Data...
-        """
-        txData = [0 for _ in range(10)]
-        pbFlags = 0
-        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-        success = success and dataSent;
-        if dataSent:
-            dataReceived, rxData = readData(transport, upperTester, trace);
-            success = success and dataReceived and (len(rxData) == len(txData));
-        """
             Upper tester (SLAVE) terminates the connection
         """
         initiator.switchRoles()
-        disconnected = initiator.disconnect(0x13)
+        success = initiator.disconnect(0x13) and success
         initiator.resetRoles()
-        success = success and disconnected
     else:
         advertiser.disable()
             
-    success = success and RPAs.disable()
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success
 
     return success
 
 """
-    LINK/SEC/ADV/10-C [Connecting with Undirected Connectable Advertiser where Peer Device Identity address not in White List]
+    LINK/SEC/ADV/10-C [Connecting with Undirected Connectable Advertiser where no match for Peer Device Identity]
 """
 def link_sec_adv_10_c(transport, upperTester, lowerTester, trace):
 
     """
-        Retreive resolvable private address for lower tester
+        Configure RPAs to use the IRKs for address resolutions
     """
-    lowerAddr = (toNumber(lowerRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Configure RPAs to use for address resolutions (incorrect (0) IRK for lower tester identity address)
+        Add Identity Addresses to Resolving Lists
     """
-    addresses = [[ ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ]]
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace)
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    bogusIRK = [ random.randint(0,255) for _ in range(16) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], bogusIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = success and RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ))
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    """
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
+    """
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr)
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    lowerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
-    success = success and advertiser.enable()
+                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
+    success = success and advertiser.enable();
 
-    connected = initiator.connect()
-    success = success and (not connected)
-    if not success:
-        initiator.disconnect(0x13)
+    for n in range(7):
+        connected = initiator.connect();
+        success = success and not connected;
+        if connected:
+            success = initiator.disconnect(0x13) and success;
+            break;
 
-    success = success and advertiser.disable()
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = advertiser.disable() and success;
 
-    return success
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
+
+    return success;
 
 """
     LINK/SEC/ADV/11-C [Connecting with Directed Connectable Advertiser using local and remote IRK]
@@ -5184,127 +5186,108 @@ def link_sec_adv_10_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_11_c(transport, upperTester, lowerTester, trace):
 
     """
-        Configure RPAs for use in address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), lowerIRK)
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
+    """
+        Enable use of the Resolving Lists...
+    """
+    success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 2 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
-    """
-        Enable RPAs...
-    """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL)
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    lowerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
+                            ownAddress, identityAddresses[lowerTester], AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    initiator  = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
 
-    success = success and advertiser.enable()
+    success = success and advertiser.enable();
 
-    connected = initiator.connect()
-    success = success and connected
+    connected = initiator.connect();
+    success = success and connected;
     if success:
-        transport.wait(200)
-        """
-            Attempt to send data from lower tester...
-        """
-        txData = [0 for _ in range(10)]
-        pbFlags = 0
-        dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-        success = success and dataSent;
-        if dataSent:
-            dataReceived, rxData = readData(transport, upperTester, trace);
-            success = success and dataReceived and (len(rxData) == len(txData));
+        transport.wait(200);
         """
             Upper tester (SLAVE) terminates the connection
         """
-        initiator.switchRoles()
-        disconnected = initiator.disconnect(0x13)
-        initiator.resetRoles()
-        success = success and disconnected
+        initiator.switchRoles();
+        success = initiator.disconnect(0x13) and success;
+        initiator.resetRoles();
     else:
-        advertiser.disable()
+        success = advertiser.disable() and success;
 
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
-    return success
+    return success;
 
 """
     LINK/SEC/ADV/12-C [Connecting with Directed Connectable Advertising with local IRK but without remote IRK]
 """
 def link_sec_adv_12_c(transport, upperTester, lowerTester, trace):
 
-    lowerAddr = 0x123456789ABCL
     """
-        Configure RPAs for use in address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace)
-    success = RPAs_lower.clear() and RPAs.clear() 
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester] );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
+    """
+        Enable use of the Resolving Lists...
+    """
+    success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 2 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    success = success and RPAs.add( Address( SimpleAddressType.PUBLIC, lowerAddr ))
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
-    """
-        Enable RPAs...
-    """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( SimpleAddressType.PUBLIC, lowerAddr )
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
-    lowerAddress = Address( SimpleAddressType.PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
-    success = success and preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
-    for i in range(2):
-        if i == 1:
-            transport.wait( 2000 ) # wait for RPA to timeout
-        success = success and advertiser.enable()
-        connected = initiator.connect()
-        success = success and connected
-        if success:
-            resolvableAddresses = [ 0, 0 ]
-            transport.wait(200)
-            """
-                Attempt to send data from lower tester...
-            """
-            txData = [0 for _ in range(10)]
-            pbFlags = 0
-            dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-            success = success and dataSent;
-            if dataSent:
-                dataReceived, rxData = readData(transport, upperTester, trace);
-                success = success and dataReceived and (len(rxData) == len(txData));
+                            ownAddress, identityAddresses[lowerTester], AdvertisingFilterPolicy.FILTER_NONE);
+    ownAddress = Address( SimpleAddressType.PUBLIC );
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester] );
+
+    privateAddresses = [ 0, 0 ];
+
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
+
+    if connected:
+        """
+            Read the resolvable address used in the AdvA field
+        """
+        addressRead, privateAddresses[0] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
+        trace.trace(6, "AdvA Address: %s" % formatAddress(privateAddresses[0]));
+        """
+            Upper tester (SLAVE) terminates the connection
+        """
+        initiator.switchRoles();
+        disconnected = initiator.disconnect(0x13);
+        initiator.resetRoles();
+        success = success and disconnected;
+
+        if disconnected:
+            transport.wait( 2000 ); # wait for RPA to timeout
+            success = success and advertiser.enable();
             """
                 Read the resolvable address used in the AdvA field
             """
-            addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, lowerAddr ), trace)
-            trace.trace(6, "AdvA Address: %s" % formatAddress(resolvableAddresses[i]))
-            """
-                Upper tester (SLAVE) terminates the connection
-            """
-            initiator.switchRoles()
-            disconnected = initiator.disconnect(0x13)
-            initiator.resetRoles()
-            success = success and disconnected
-        else:
-            advertiser.disable()
-            break
-        
-    success = success and (resolvableAddresses[0] != resolvableAddresses[1])
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+            addressRead, privateAddresses[1] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
+            trace.trace(6, "AdvA Address: %s" % formatAddress(privateAddresses[1]));
+            success = success and advertiser.disable();
+    else:
+        advertiser.disable();
+
+    success = success and (privateAddresses[0] != privateAddresses[1])
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success
 
     return success
 
@@ -5313,70 +5296,65 @@ def link_sec_adv_12_c(transport, upperTester, lowerTester, trace):
 """
 def link_sec_adv_13_c(transport, upperTester, lowerTester, trace):
 
-    upperAddr = toNumber( upperRandomAddress ) | 0xC00000000000L
     """
-        Configure RPAs for use in address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK)
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
-    success = RPAs.clear() 
-    success = success and RPAs_lower.clear()
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester] );
 
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ))
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, upperAddr ))
-    """
-        Enable RPAs...
-    """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
+    success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 60 );
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL )
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
+
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE)
-    lowerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM, upperAddr ))
+                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
-    for i in range(2):
-        if i == 1:
-            transport.wait( 2000 ) # wait for RPA to timeout
-        success = success and advertiser.enable()
-        connected = initiator.connect()
-        success = success and connected
-        if success:
-            resolvableAddresses = [ 0, 0 ]
-            transport.wait(200)
-            """
-                Attempt to send data from lower tester...
-            """
-            txData = [0 for _ in range(10)]
-            pbFlags = 0
-            dataSent = writeData(transport, lowerTester, initiator.handles[0], pbFlags, txData, trace);
-            success = success and dataSent;
-            if dataSent:
-                dataReceived, rxData = readData(transport, upperTester, trace);
-                success = success and dataReceived and (len(rxData) == len(txData));
-            """
-                Read the resolvable address used in the InitA field
-            """
-            addressRead, resolvableAddresses[i] = readLocalResolvableAddress(transport, upperTester, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ), trace)
-            trace.trace(6, "AdvA Address: %s" % formatAddress(resolvableAddresses[i]))
-            success = success and (status == 0)
-            """
-                Upper tester (SLAVE) terminates the connection
-            """
-            initiator.switchRoles()
-            disconnected = initiator.disconnect(0x13)
-            initiator.resetRoles()
-            success = success and disconnected
-        else:
-            advertiser.disable()
-            break
+    privateAddresses = [ 0, 0 ];
 
-    success = success and (resolvableAddresses[0] != resolvableAddresses[1])
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
+
+    if connected:
+        """
+            Read the resolvable address used in the AdvA field
+        """
+        addressRead, privateAddresses[0] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
+        trace.trace(6, "AdvA Address: %s" % formatAddress(privateAddresses[0]));
+        """
+            Upper tester (SLAVE) terminates the connection
+        """
+        initiator.switchRoles();
+        disconnected = initiator.disconnect(0x13);
+        initiator.resetRoles();
+        success = success and disconnected;
+
+        if disconnected:
+            transport.wait( 2000 ); # wait for RPA to timeout
+            success = success and advertiser.enable();
+            """
+                Read the resolvable address used in the AdvA field
+            """
+            addressRead, privateAddresses[1] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
+            trace.trace(6, "AdvA Address: %s" % formatAddress(privateAddresses[1]));
+            success = success and advertiser.disable();
+    else:
+        advertiser.disable();
+
+    success = success and (privateAddresses[0] != privateAddresses[1]);
+    RPAsDisabled = RPAs[upperTester].disable() and RPAs[lowerTester].disable();
+    success = success and RPAsDisabled;
 
     return success
 
@@ -5386,34 +5364,33 @@ def link_sec_adv_13_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_14_c(transport, upperTester, lowerTester, trace):
 
     """
-        Retreive resolvable private address for lower tester
+        Configure RPAs to use the IRKs for address resolutions
     """
-    lowerAddr = (toNumber(lowerRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
-    fakeIRK = [1 for _ in range(16)]
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Configure RPAs to use for address resolutions (incorrect IRK for lower tester identity address)
+        Add Identity Addresses to Resolving Lists
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace)
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ), fakeIRK)
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    bogusIRK = [ random.randint(0,255) for _ in range(16) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], bogusIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace, lowerIRK)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    """
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
+    """
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    addresses = [[ ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    lowerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
-    success = success and preamble_set_random_address(transport, lowerTester, lowerAddr, trace)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
+    peerAddress = identityAddresses[lowerTester]
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
+    peerAddress = identityAddresses[upperTester]
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress)
 
     success = success and advertiser.enable()
     """
@@ -5421,16 +5398,18 @@ def link_sec_adv_14_c(transport, upperTester, lowerTester, trace):
     """
     connected = initiator.connect()
     success = success and not connected
-    transport.wait(200)
-    if success:
-        success = success and advertiser.disable()
-    else:
-        initiator.disconnect(0x13)
-        advertiser.disable()
-        success = False
 
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    if connected:
+        transport.wait(200)
+        success = initiator.disconnect(0x13) and success
+    else:
+        """
+            Need to stop connection attempt - otherwies Resolvable List disable will fail with command not allowed...
+        """
+        success = initiator.cancelConnect() and success;
+        success = advertiser.disable() and success
+
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success
 
     return success
 
@@ -5439,111 +5418,97 @@ def link_sec_adv_14_c(transport, upperTester, lowerTester, trace):
 """
 def link_sec_adv_15_c(transport, upperTester, lowerTester, trace):
 
-    lowerAddr = 0x123456789ABCL
-    upperAddr = 0x456789ABCDEFL
     """
-        Configure RPAs to use the upperIRK for address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  lowerAddr ))
-        
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace )
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  upperAddr ), upperIRK )
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Set resolvable private address timeout in seconds ( two seconds )
+        Add Identity Addresses to Resolving Lists
     """
-    success = success and RPAs.timeout( 2 )
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
+
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
     """
-        Adding lowerTester address to the White List
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
     """
-    addresses = [[ SimpleAddressType.PUBLIC, lowerAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-        
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-    """
-        Enable device privacy mode...
-    """
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
-    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.NETWORK_PRIVACY, trace);
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
+
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20)
-    success = success and preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
-    success = success and preamble_set_public_address(transport, upperTester, upperAddr, trace)
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20, 1);
 
-    success = success and advertiser.enable()
+    success = success and advertiser.enable();
 
-    success = success and scanner.enable()
-    scanner.monitor()
-    success = success and scanner.qualifyReports(10)
-    success = success and not scanner.qualifyResponses(1)
-    success = success and scanner.disable()
+    success = success and scanner.enable();
+    scanner.monitor();
+    success = success and scanner.qualifyReports(20);
+    success = success and not scanner.qualifyResponses(1);
+    success = success and scanner.disable();
 
-    success = success and advertiser.disable()
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = success and advertiser.disable();
 
-    return success
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
+
+    return success;
 
 """
     LINK/SEC/ADV/16-C [Undirected Connectable Advertising with resolvable private address; no Connection to Identity Address]
 """
 def link_sec_adv_16_c(transport, upperTester, lowerTester, trace):
 
-    upperAddr = (toNumber(upperRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
-    lowerAddrType = SimpleAddressType.PUBLIC
-    lowerAddr = 0x456789ABCDEFL
+    """
+        Configure RPAs to use the IRKs for address resolutions
+    """
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( SimpleAddressType.PUBLIC,  lowerAddr ))
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    """
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
+    """
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace )
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  upperAddr ), upperIRK )
-    """
-        Set resolvable private address timeout in seconds ( two seconds )
-    """
-    success = success and RPAs.timeout( 2 )
-    """
-        Adding lowerTester address to the White List
-    """
-    addresses = [[ SimpleAddressType.PUBLIC, lowerAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-    success = success and RPAs.enable() and RPAs_lower.enable()
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address(lowerAddrType, lowerAddr)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    initiatorAddress = Address( lowerAddrType )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, upperAddr ))
-    """
-        Setting upper tester's resolvable address
-    """
-    success = success and preamble_set_random_address(transport, upperTester, upperAddr, trace)
-    success = success and preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
     """
         Start advertising and attempt to connect...
     """
-    success = success and advertiser.enable()
-    success = success and not initiator.connect()
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and not connected;
     if not success:
-        initiator.disconnect(0x13)
+        initiator.disconnect(0x13);
     else:
-        success = success and advertiser.disable()
+        success = advertiser.disable() and success;
 
-    return success
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
+
+    return success;
 
 """
     LINK/SEC/ADV/17-C [Directed Connectable Advertising using local and remote IRK, Ignore Identity Address]
@@ -5551,50 +5516,38 @@ def link_sec_adv_16_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_17_c(transport, upperTester, lowerTester, trace):
 
     """
-        Configure RPAs for use in address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ))
-
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL), upperIRK)
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Adding device identity of lower tester to the whitelist
+        Add Identity Addresses to Resolving Lists
     """
-    addresses = [[ ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-    """
-        Enable RPAs...
-    """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    lowerAddrType = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddrType, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x456789ABCDEFL ))
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    success = success and preamble_set_random_address(transport, upperTester, 0x456789ABCDEFL, trace)
-    success = success and preamble_set_public_address(transport, lowerTester, 0x123456789ABCL, trace)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
 
-    success = success and setPrivacyMode(transport, upperTester, Address( SimpleAddressType.PUBLIC, 0x023456789ABCL ), PrivacyMode.NETWORK_PRIVACY, trace);
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
-    success = success and advertiser.enable()
-    connected = initiator.connect()
-    success = success and not connected
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and not connected;
     if not success:
-        initiator.disconnect(0x13)
+        initiator.disconnect(0x13);
     else:
-        success = success and advertiser.disable()
-        initiator.disconnect(0x13)
+        success = advertiser.disable() and success;
 
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
     return success
 
@@ -5603,60 +5556,50 @@ def link_sec_adv_17_c(transport, upperTester, lowerTester, trace):
 """
 def link_sec_adv_18_c(transport, upperTester, lowerTester, trace):
 
-    lowerAddr = 0x123456789ABCL
-    upperAddr = 0x456789ABCDEFL
     """
-        Configure RPAs to use the upperIRK for address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr ))
-        
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace )
-    success = RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  upperAddr ), upperIRK )
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
     """
-        Set resolvable private address timeout in seconds ( two seconds )
+        Add Identity Addresses to Resolving Lists
     """
-    success = success and RPAs.timeout( 2 )
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
+
+    success = success and setPrivacyMode(transport, upperTester, identityAddresses[lowerTester], PrivacyMode.DEVICE_PRIVACY, trace);
     """
-        Adding lowerTester address to the White List
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
     """
-    addresses = [[ SimpleAddressType.PUBLIC, lowerAddr ]]
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace)
-        
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
-    """
-        Enable device privacy mode...
-    """
-    peerAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, lowerAddr )
-    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
+
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20)
-    preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
-    preamble_set_public_address(transport, upperTester, upperAddr, trace)
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20, 1);
 
-    success = success and advertiser.enable()
+    success = success and advertiser.enable();
 
-    success = success and scanner.enable()
-    scanner.monitor()
-    success = success and scanner.qualifyReports(10)
-    success = success and scanner.qualifyResponses(1)
-    success = success and scanner.disable()
+    success = success and scanner.enable();
+    scanner.monitor();
+    success = success and scanner.qualifyReports(20);
+    success = success and scanner.qualifyResponses(1);
+    success = success and scanner.disable();
 
-    success = success and advertiser.disable()
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = advertiser.disable() and success; 
 
-    return success
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
+
+    return success;
 
 """
     LINK/SEC/ADV/19-C [Undirected Connectable Advertising with Local IRK and Peer IRK, accept Identity Address]
@@ -5664,57 +5607,49 @@ def link_sec_adv_18_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_19_c(transport, upperTester, lowerTester, trace):
 
     """
-        Retrieving random addresses and forcing it to be private resolvable
+        Configure RPAs to use the IRKs for address resolutions
     """
-    upperAddr = (toNumber(upperRandomAddress) | 0x400000000000L) & 0x7FFFFFFFFFFFL
-    lowerAddrType = SimpleAddressType.PUBLIC
-    lowerAddr = 0x456789ABCDEFL
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs = ResolvableAddresses( transport, upperTester, trace, upperIRK )
-    success = RPAs.clear()
-    success = success and RPAs.add( Address( SimpleAddressType.PUBLIC,  lowerAddr ))
-        
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace )
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC,  upperAddr ), upperIRK )
+    success = success and setPrivacyMode(transport, upperTester, identityAddresses[lowerTester], PrivacyMode.DEVICE_PRIVACY, trace);
     """
-        Set resolvable private address timeout in seconds ( two seconds )
+        Add Identity Address of lower Tester to White List to enable responding to Scan Requests
     """
-    success = success and RPAs.timeout( 2 )
-    """
-        Adding lowerTester address to the White List
-    """
-    addresses = [[ SimpleAddressType.PUBLIC, lowerAddr ]]
-    success = success and preamble_specific_white_listed(transport, upperTester, addresses, trace)
-        
-    success = success and RPAs.enable() and RPAs_lower.enable()
+    success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    peerAddress = Address(lowerAddrType, lowerAddr)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
+    success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 2 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    initiatorAddress = Address( lowerAddrType )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, upperAddr ))
-    """
-        Setting upper tester's resolvable address
-    """
-    success = success and preamble_set_random_address(transport, upperTester, upperAddr, trace)
-    success = success and preamble_set_public_address(transport, lowerTester, lowerAddr, trace)
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
     """
         Start advertising and attempt to connect...
     """
-    success = success and advertiser.enable()
-    success = success and initiator.connect()
-    if success:
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
+    if connected:
+        transport.wait(2000);
         initiator.disconnect(0x13)
     else:
-        advertiser.disable()
-        success = False
+        success = advertiser.disable() and success;
 
-    return success
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
+
+    return success;
 
 """
     LINK/SEC/ADV/20-C [Directed Connectable Advertising with resolvable private address; Connect to Identity Address]
@@ -5722,50 +5657,41 @@ def link_sec_adv_19_c(transport, upperTester, lowerTester, trace):
 def link_sec_adv_20_c(transport, upperTester, lowerTester, trace):
 
     """
-        Configure RPAs for use in address resolutions
+        Configure RPAs to use the IRKs for address resolutions
     """
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
-    ownAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-       
-    RPAs = ResolvableAddresses( transport, upperTester, trace )
-    success = RPAs.clear()
-    success = success and RPAs.add( peerAddress, lowerIRK)
+    RPAs = [ ResolvableAddresses( transport, upperTester, trace, upperIRK ), ResolvableAddresses( transport, lowerTester, trace, lowerIRK ) ];
+    success = RPAs[upperTester].clear() and RPAs[lowerTester].clear();
+    """
+        Add Identity Addresses to Resolving Lists
+    """
+    identityAddresses = [ Address( IdentityAddressType.PUBLIC, 0x123456789ABCL ), Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ) ];
+    success = success and RPAs[upperTester].add( identityAddresses[lowerTester], lowerIRK );
+    success = success and RPAs[lowerTester].add( identityAddresses[upperTester], upperIRK );
 
-    RPAs_lower = ResolvableAddresses( transport, lowerTester, trace)
-    success = success and RPAs_lower.clear()
-    success = success and RPAs_lower.add( ownAddress)
-    """
-        Enabling device privacy mode...
-    """
-    success = success and setPrivacyMode(transport, upperTester, peerAddress, PrivacyMode.DEVICE_PRIVACY, trace);
-    """
-        Enable RPAs...
-    """
-    success = success and RPAs.timeout( 2 )
-    success = success and RPAs.enable()
-    success = success and RPAs_lower.enable()
+    success = success and setPrivacyMode(transport, upperTester, identityAddresses[lowerTester], PrivacyMode.DEVICE_PRIVACY, trace);
 
-    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL )
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL)
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    lowerAddrType = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
-    initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddrType, Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC, 0x123456789ABCL ))
+    success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
+    success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    success = success and advertiser.enable()
-    connected = initiator.connect()
-    success = success and connected
+    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    peerAddress = identityAddresses[lowerTester];
+    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = identityAddresses[upperTester];
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
-    if success:
-        initiator.disconnect(0x13)
+    success = success and advertiser.enable();
+    connected = initiator.connect();
+    success = success and connected;
+
+    if connected:
+        transport.wait(200);
+        success = initiator.disconnect(0x13) and success;
     else:
-        success = False
-        advertiser.disable()
-        RPAs.disable()
-        RPAs_lower.disable()
+        success = advertiser.disable() and success;
 
-    success = success and RPAs.disable()
-    success = success and RPAs_lower.disable()
+    success = RPAs[upperTester].disable() and RPAs[lowerTester].disable() and success;
 
     return success
 
@@ -5875,17 +5801,18 @@ __tests__ = {
     "LINK/SEC/ADV/5-C":  [ link_sec_adv_5_c,  "Scannable Undirected Advertising with resolvable private address" ],
     "LINK/SEC/ADV/6-C":  [ link_sec_adv_6_c,  "Connecting with Undirected Connectable Advertiser using non-resolvable private address" ],
     "LINK/SEC/ADV/7-C":  [ link_sec_adv_7_c,  "Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK" ],
+#   "LINK/SEC/ADV/7-X":  [ link_sec_adv_7_x,  "Connecting with Undirected Connectable Advertiser with Local IRK but no Peer IRK" ],
     "LINK/SEC/ADV/8-C":  [ link_sec_adv_8_c,  "Connecting with Undirected Connectable Advertiser with both Local and Peer IRK" ],
     "LINK/SEC/ADV/9-C":  [ link_sec_adv_9_c,  "Connecting with Undirected Connectable Advertiser with no Local IRK but peer IRK" ],
-    "LINK/SEC/ADV/10-C": [ link_sec_adv_10_c, "Connecting with Undirected Connectable Advertiser where Peer Device Identity address not in White List" ],
+    "LINK/SEC/ADV/10-C": [ link_sec_adv_10_c, "Connecting with Undirected Connectable Advertiser where no match for Peer Device Identity" ],
     "LINK/SEC/ADV/11-C": [ link_sec_adv_11_c, "Connecting with Directed Connectable Advertiser using local and remote IRK" ],
     "LINK/SEC/ADV/12-C": [ link_sec_adv_12_c, "Connecting with Directed Connectable Advertising with local IRK but without remote IRK" ],
 #   "LINK/SEC/ADV/13-C": [ link_sec_adv_13_c, "Directed Connectable Advertising without local IRK but with remote IRK" ],
-#   "LINK/SEC/ADV/14-C": [ link_sec_adv_14_c, "Directed Connectable Advertising using Resolving List and Peer Device Identity not in the List" ],
+    "LINK/SEC/ADV/14-C": [ link_sec_adv_14_c, "Directed Connectable Advertising using Resolving List and Peer Device Identity not in the List" ],
     "LINK/SEC/ADV/15-C": [ link_sec_adv_15_c, "Scannable Advertising with resolvable private address, no Scan Response to Identity Address" ],
     "LINK/SEC/ADV/16-C": [ link_sec_adv_16_c, "Undirected Connectable Advertising with resolvable private address; no Connection to Identity Address" ],
-#   "LINK/SEC/ADV/17-C": [ link_sec_adv_17_c, "Directed Connectable Advertising using local and remote IRK, Ignore Identity Address" ],
-#   "LINK/SEC/ADV/18-C": [ link_sec_adv_18_c, "Scannable Advertising with resolvable private address, accept Identity Address" ],
+    "LINK/SEC/ADV/17-C": [ link_sec_adv_17_c, "Directed Connectable Advertising using local and remote IRK, Ignore Identity Address" ],
+    "LINK/SEC/ADV/18-C": [ link_sec_adv_18_c, "Scannable Advertising with resolvable private address, accept Identity Address" ],
 #   "LINK/SEC/ADV/19-C": [ link_sec_adv_19_c, "Undirected Connectable Advertising with Local IRK and Peer IRK, accept Identity Address" ],
     "LINK/SEC/ADV/20-C": [ link_sec_adv_20_c, "Directed Connectable Advertising with resolvable private address; Connect to Identity Address" ]
 };
