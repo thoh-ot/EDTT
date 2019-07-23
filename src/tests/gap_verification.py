@@ -22,9 +22,9 @@ from components.test_spec import TestSpec;
 global lowerIRK, upperIRK, lowerRandomAddress, upperRandomAddress;
 
 """
-    GAP/DMP/NDM/1-C [Non-discoverable Mode and Non-Connectable Mode]
+    GAP/DISC/NONM/BV-01-C [Non-discoverable Mode and Non-Connectable Mode]
 """
-def gap_dmp_ndm_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_nonm_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -52,9 +52,9 @@ def gap_dmp_ndm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/NDM/2-C [Non-discoverable Mode and Undirected Connectable Mode]
+    GAP/DISC/NONM/BV-02-C [Non-discoverable Mode and Undirected Connectable Mode]
 """
-def gap_dmp_ndm_2_c(transport, upperTester, lowerTester, trace):
+def gap_disc_nonm_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -82,9 +82,9 @@ def gap_dmp_ndm_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDM/1-C [Limited Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration]
+    GAP/DISC/LIMM/BV-01-C [Limited Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration]
 """
-def gap_dmp_ldm_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limm_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -111,9 +111,9 @@ def gap_dmp_ldm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDM/2-C [Limited Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration]
+    GAP/DISC/LIMM/BV-02-C [Limited Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration]
 """
-def gap_dmp_ldm_2_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limm_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -140,9 +140,9 @@ def gap_dmp_ldm_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDM/3-C [Limited Discoverable Mode and Non-Connectable Mode in LE Only configuration]
+    GAP/DISC/LIMM/BV-03-C [Limited Discoverable Mode and Non-Connectable Mode in LE Only configuration]
 """
-def gap_dmp_ldm_3_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limm_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -169,9 +169,9 @@ def gap_dmp_ldm_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDM/4-C [Limited Discoverable Mode and Undirected Connectable Mode in LE Only configuration]
+    GAP/DISC/LIMM/BV-04-C [Limited Discoverable Mode and Undirected Connectable Mode in LE Only configuration]
 """
-def gap_dmp_ldm_4_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limm_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -198,9 +198,9 @@ def gap_dmp_ldm_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDM/1-C [General Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration]
+    GAP/DISC/GENM/BV-01-C [General Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration]
 """
-def gap_dmp_gdm_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genm_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -227,9 +227,9 @@ def gap_dmp_gdm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDM/2-C [General Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration]
+    GAP/DISC/GENM/BV-02-C [General Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration]
 """
-def gap_dmp_gdm_2_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genm_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -256,9 +256,9 @@ def gap_dmp_gdm_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDM/3-C [General Discoverable Mode and Non-Connectable Mode in LE Only configuration]
+    GAP/DISC/GENM/BV-03-C [General Discoverable Mode and Non-Connectable Mode in LE Only configuration]
 """
-def gap_dmp_gdm_3_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genm_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -285,9 +285,9 @@ def gap_dmp_gdm_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDM/4-C [General Discoverable Mode and Undirected Connectable Mode in LE Only configuration]
+    GAP/DISC/GENM/BV-04-C [General Discoverable Mode and Undirected Connectable Mode in LE Only configuration]
 """
-def gap_dmp_gdm_4_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genm_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -314,9 +314,9 @@ def gap_dmp_gdm_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDP/1-C [Limited Discovery finding Limited Discoverable Device]
+    GAP/DISC/LIMP/BV-01-C [Limited Discovery finding Limited Discoverable Device]
 """
-def gap_dmp_ldp_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limp_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -342,9 +342,9 @@ def gap_dmp_ldp_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDP/2-C [Limited Discovery not finding General Discoverable Device]
+    GAP/DISC/LIMP/BV-02-C [Limited Discovery not finding General Discoverable Device]
 """
-def gap_dmp_ldp_2_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limp_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -370,9 +370,9 @@ def gap_dmp_ldp_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDP/4-C [Limited Discovery not finding Undirected Connectable device]
+    GAP/DISC/LIMP/BV-04-C [Limited Discovery not finding Undirected Connectable device]
 """
-def gap_dmp_ldp_4_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limp_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -399,9 +399,9 @@ def gap_dmp_ldp_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/LDP/5-C [Limited Discovery not finding Directed Connectable device]
+    GAP/DISC/LIMP/BV-05-C [Limited Discovery not finding Directed Connectable device]
 """
-def gap_dmp_ldp_5_c(transport, upperTester, lowerTester, trace):
+def gap_disc_limp_bv_05_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -429,9 +429,9 @@ def gap_dmp_ldp_5_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDP/1-C [General Discovery finding General Discoverable Device]
+    GAP/DISC/GENP/BV-01-C [General Discovery finding General Discoverable Device]
 """
-def gap_dmp_gdp_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genp_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -456,9 +456,9 @@ def gap_dmp_gdp_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDP/2-C [General Discovery finding Limited Discoverable Device]
+    GAP/DISC/GENP/BV-02-C [General Discovery finding Limited Discoverable Device]
 """
-def gap_dmp_gdp_2_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genp_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -483,9 +483,9 @@ def gap_dmp_gdp_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDP/4-C [General Discovery not finding Undirected Connectable device]
+    GAP/DISC/GENP/BV-04-C [General Discovery not finding Undirected Connectable device]
 """
-def gap_dmp_gdp_4_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genp_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -512,9 +512,9 @@ def gap_dmp_gdp_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/GDP/5-C [General Discovery not finding Directed Connectable device]
+    GAP/DISC/GENP/BV-05-C [General Discovery not finding Directed Connectable device]
 """
-def gap_dmp_gdp_5_c(transport, upperTester, lowerTester, trace):
+def gap_disc_genp_bv_05_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -542,9 +542,9 @@ def gap_dmp_gdp_5_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/DMP/RPA/1-C [Find Discoverable Device using Resolvable Private Address]
+    GAP/DISC/RPA/BV-01-C [Find Discoverable Device using Resolvable Private Address]
 """
-def gap_dmp_rpa_1_c(transport, upperTester, lowerTester, trace):
+def gap_disc_rpa_bv_01_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -588,9 +588,9 @@ def gap_dmp_rpa_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/NCM/1-C [Non-Connectable Mode]
+    GAP/CONN/NCON/BV-01-C [Non-Connectable Mode]
 """
-def gap_cmp_ncm_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ncon_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -614,9 +614,9 @@ def gap_cmp_ncm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/NCM/2-C [Non-Connectable Mode and  General Discoverable Mode]
+    GAP/CONN/NCON/BV-02-C [Non-Connectable Mode and  General Discoverable Mode]
 """
-def gap_cmp_ncm_2_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ncon_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -651,9 +651,9 @@ def gap_cmp_ncm_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/NCM/3-C [Non-Connectable Mode and  Limited Discoverable Mode]
+    GAP/CONN/NCON/BV-03-C [Non-Connectable Mode and  Limited Discoverable Mode]
 """
-def gap_cmp_ncm_3_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ncon_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -688,9 +688,9 @@ def gap_cmp_ncm_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/DCM/1-C [Directed Connectable Mode]
+    GAP/CONN/DCON/BV-01-C [Directed Connectable Mode]
 """
-def gap_cmp_dcm_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_dcon_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -726,9 +726,9 @@ def gap_cmp_dcm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/UCM/1-C [Undirected Connectable Mode and Non-Discoverable Mode]
+    GAP/CONN/UCON/BV-01-C [Undirected Connectable Mode and Non-Discoverable Mode]
 """
-def gap_cmp_ucm_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ucon_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -769,9 +769,9 @@ def gap_cmp_ucm_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/UCM/2-C [Undirected Connectable Mode and General Discoverable Mode]
+    GAP/CONN/UCON/BV-02-C [Undirected Connectable Mode and General Discoverable Mode]
 """
-def gap_cmp_ucm_2_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ucon_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -812,9 +812,9 @@ def gap_cmp_ucm_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/UCM/3-C [Undirected Connectable Mode and Limited Discoverable Mode]
+    GAP/CONN/UCON/BV-03-C [Undirected Connectable Mode and Limited Discoverable Mode]
 """
-def gap_cmp_ucm_3_c(transport, upperTester, lowerTester, trace):
+def gap_conn_ucon_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -855,9 +855,9 @@ def gap_cmp_ucm_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/ACEP/1-C [Auto Connection Establishment with Directed Connectable Mode]
+    GAP/CONN/ACEP/BV-01-C [Auto Connection Establishment with Directed Connectable Mode]
 """
-def gap_cmp_acep_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_acep_bv_01_c(transport, upperTester, lowerTester, trace):
 
     """
         Place Public address of lowerTester in the White List for the Scanner
@@ -889,9 +889,9 @@ def gap_cmp_acep_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/ACEP/3-C [Auto Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
+    GAP/CONN/ACEP/BV-03-C [Auto Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
 """
-def gap_cmp_acep_3_c(transport, upperTester, lowerTester, trace):
+def gap_conn_acep_bv_03_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -938,9 +938,9 @@ def gap_cmp_acep_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/ACEP/4-C [Auto Connection Establishment with Undirected Connectable Mode, Resolvable Private Address]
+    GAP/CONN/ACEP/BV-04-C [Auto Connection Establishment with Undirected Connectable Mode, Resolvable Private Address]
 """
-def gap_cmp_acep_4_c(transport, upperTester, lowerTester, trace):
+def gap_conn_acep_bv_04_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -987,9 +987,9 @@ def gap_cmp_acep_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/GCEP/1-C [General Connection Establishment with Directed Connectable Mode]
+    GAP/CONN/GCEP/BV-01-C [General Connection Establishment with Directed Connectable Mode]
 """
-def gap_cmp_gcep_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_gcep_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -1012,9 +1012,9 @@ def gap_cmp_gcep_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/GCEP/2-C [General Connection Establishment with Undirected Connectable Mode]
+    GAP/CONN/GCEP/BV-02-C [General Connection Establishment with Undirected Connectable Mode]
 """
-def gap_cmp_gcep_2_c(transport, upperTester, lowerTester, trace):
+def gap_conn_gcep_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
@@ -1037,9 +1037,9 @@ def gap_cmp_gcep_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/GCEP/5-C [General Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
+    GAP/CONN/GCEP/BV-05-C [General Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution]
 """
-def gap_cmp_gcep_5_c(transport, upperTester, lowerTester, trace):
+def gap_conn_gcep_bv_05_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -1078,9 +1078,9 @@ def gap_cmp_gcep_5_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/GCEP/6-C [General Connection Establishment with Undirected Connectable Mode, Resolvable Private Address]
+    GAP/CONN/GCEP/BV-06-C [General Connection Establishment with Undirected Connectable Mode, Resolvable Private Address]
 """
-def gap_cmp_gcep_6_c(transport, upperTester, lowerTester, trace):
+def gap_conn_gcep_bv_06_c(transport, upperTester, lowerTester, trace):
 
     """
         Add Public address of lowerTester to upperTesters Resolving List
@@ -1119,9 +1119,9 @@ def gap_cmp_gcep_6_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/CMP/CPUP/1-C [Successful Peripheral initiated Connection Parameter Update]
+    GAP/CONN/CPUP/BV-01-C [Successful Peripheral initiated Connection Parameter Update]
 """
-def gap_cmp_cpup_1_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -1164,9 +1164,9 @@ def gap_cmp_cpup_1_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/CMP/CPUP/2-C [Timeout during Peripheral initiated Connection Parameter Update]
+    GAP/CONN/CPUP/BV-02-C [Timeout during Peripheral initiated Connection Parameter Update]
 """
-def gap_cmp_cpup_2_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -1207,9 +1207,9 @@ def gap_cmp_cpup_2_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/CMP/CPUP/3-C [Invalid Parameters in Peripheral initiated Connection Parameter Update]
+    GAP/CONN/CPUP/BV-03-C [Invalid Parameters in Peripheral initiated Connection Parameter Update]
 """
-def gap_cmp_cpup_3_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL )
@@ -1250,9 +1250,9 @@ def gap_cmp_cpup_3_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/CMP/CPUP/4-C [Successful Peripheral accepts Connection Parameter Update]
+    GAP/CONN/CPUP/BV-04-C [Successful Peripheral accepts Connection Parameter Update]
 """
-def gap_cmp_cpup_4_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
@@ -1293,9 +1293,9 @@ def gap_cmp_cpup_4_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/CMP/CPUP/5-C [Invalid Parameters in Peripheral receives Connection Parameter Update]
+    GAP/CONN/CPUP/BV-05-C [Invalid Parameters in Peripheral receives Connection Parameter Update]
 """
-def gap_cmp_cpup_5_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_05_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
@@ -1336,9 +1336,9 @@ def gap_cmp_cpup_5_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/CMP/CPUP/6-C [Successful Central initiated Connection Parameter Update]
+    GAP/CONN/CPUP/BV-06-C [Successful Central initiated Connection Parameter Update]
 """
-def gap_cmp_cpup_6_c(transport, upperTester, lowerTester, trace):
+def gap_conn_cpup_bv_06_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC )
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL )
@@ -1377,9 +1377,9 @@ def gap_cmp_cpup_6_c(transport, upperTester, lowerTester, trace):
     return success
 
 """
-    GAP/ASPD/1-C [Advertising with AD Type – Service UUID]
+    GAP/ADV/BV-01-C [Advertising with AD Type – Service UUID]
 """
-def gap_aspd_1_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1417,9 +1417,9 @@ def gap_aspd_1_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/2-C [Advertising with AD Type - Local Name]
+    GAP/ADV/BV-02-C [Advertising with AD Type - Local Name]
 """
-def gap_aspd_2_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_02_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1444,9 +1444,9 @@ def gap_aspd_2_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/3-C [Advertising with AD Type – Flags]
+    GAP/ADV/BV-03-C [Advertising with AD Type – Flags]
 """
-def gap_aspd_3_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_03_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1471,9 +1471,9 @@ def gap_aspd_3_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/4-C [Advertising with AD Type – Manufacturer Specific Packet Data]
+    GAP/ADV/BV-04-C [Advertising with AD Type – Manufacturer Specific Packet Data]
 """
-def gap_aspd_4_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_04_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1498,9 +1498,9 @@ def gap_aspd_4_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/5-C [Advertising with AD Type – TX Power Level]
+    GAP/ADV/BV-05-C [Advertising with AD Type – TX Power Level]
 """
-def gap_aspd_5_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_05_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1525,9 +1525,9 @@ def gap_aspd_5_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/6-C [Advertising with AD Type – Slave Connection Interval Range]
+    GAP/ADV/BV-08-C [Advertising with AD Type – Slave Connection Interval Range]
 """
-def gap_aspd_6_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_08_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1552,9 +1552,9 @@ def gap_aspd_6_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/7-C [Advertising with AD Type - Service Solicitation]
+    GAP/ADV/BV-09-C [Advertising with AD Type - Service Solicitation]
 """
-def gap_aspd_7_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_09_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1579,9 +1579,9 @@ def gap_aspd_7_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/8-C [Advertising with AD Type – Service Packet Data]
+    GAP/ADV/BV-10-C [Advertising with AD Type – Service Packet Data]
 """
-def gap_aspd_8_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_10_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1606,9 +1606,9 @@ def gap_aspd_8_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/9-C [Advertising with AD Type – Appearance]
+    GAP/ADV/BV-11-C [Advertising with AD Type – Appearance]
 """
-def gap_aspd_9_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_11_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1633,9 +1633,9 @@ def gap_aspd_9_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/10-C [Advertising with AD Type – Public Target Address]
+    GAP/ADV/BV-12-C [Advertising with AD Type – Public Target Address]
 """
-def gap_aspd_10_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_12_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1660,9 +1660,9 @@ def gap_aspd_10_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/11-C [Advertising with AD Type – Random Target Address]
+    GAP/ADV/BV-13-C [Advertising with AD Type – Random Target Address]
 """
-def gap_aspd_11_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_13_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1687,9 +1687,9 @@ def gap_aspd_11_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/12-C [Advertising with AD Type – Advertising Interval]
+    GAP/ADV/BV-14-C [Advertising with AD Type – Advertising Interval]
 """
-def gap_aspd_12_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_14_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1714,9 +1714,9 @@ def gap_aspd_12_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/13-C [Advertising with AD Type – LE Bluetooth Device Address]
+    GAP/ADV/BV-15-C [Advertising with AD Type – LE Bluetooth Device Address]
 """
-def gap_aspd_13_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_15_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1741,9 +1741,9 @@ def gap_aspd_13_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/14-C [Advertising with AD Type – LE Role]
+    GAP/ADV/BV-16-C [Advertising with AD Type – LE Role]
 """
-def gap_aspd_14_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_16_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1768,9 +1768,9 @@ def gap_aspd_14_c(transport, upperTester, lowerTester, trace):
     return success;
 
 """
-    GAP/ASPD/15-C [Advertising with AD Type – URI]
+    GAP/ADV/BV-17-C [Advertising with AD Type – URI]
 """
-def gap_aspd_15_c(transport, upperTester, lowerTester, trace):
+def gap_adv_bv_17_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
@@ -1834,61 +1834,61 @@ def gap_conn_enc(transport, upperTester, lowerTester, trace):
     return success;
 
 __tests__ = {
-    "GAP/ASPD/1-C":     [ gap_aspd_1_c,     "Advertising with AD Type – Service UUID" ],
-    "GAP/ASPD/2-C":     [ gap_aspd_2_c,     "Advertising with AD Type - Local Name" ],
-    "GAP/ASPD/3-C":     [ gap_aspd_3_c,     "Advertising with AD Type – Flags" ],
-    "GAP/ASPD/4-C":     [ gap_aspd_4_c,     "Advertising with AD Type – Manufacturer Specific Packet Data" ],
-    "GAP/ASPD/5-C":     [ gap_aspd_5_c,     "Advertising with AD Type – TX Power Level" ],
-    "GAP/ASPD/6-C":     [ gap_aspd_6_c,     "Advertising with AD Type – Slave Connection Interval Range" ],
-    "GAP/ASPD/7-C":     [ gap_aspd_7_c,     "Advertising with AD Type - Service Solicitation" ],
-    "GAP/ASPD/8-C":     [ gap_aspd_8_c,     "Advertising with AD Type – Service Packet Data" ],
-    "GAP/ASPD/9-C":     [ gap_aspd_9_c,     "Advertising with AD Type – Appearance" ],
-    "GAP/ASPD/10-C":    [ gap_aspd_10_c,    "Advertising with AD Type – Public Target Address" ],
-    "GAP/ASPD/11-C":    [ gap_aspd_11_c,    "Advertising with AD Type – Random Target Address" ],
-    "GAP/ASPD/12-C":    [ gap_aspd_12_c,    "Advertising with AD Type – Advertising Interval" ],
-    "GAP/ASPD/13-C":    [ gap_aspd_13_c,    "Advertising with AD Type – LE Bluetooth Device Address" ],
-    "GAP/ASPD/14-C":    [ gap_aspd_14_c,    "Advertising with AD Type – LE Role" ],
-    "GAP/ASPD/15-C":    [ gap_aspd_15_c,    "Advertising with AD Type – URI" ],
-    "GAP/CMP/ACEP/1-C": [ gap_cmp_acep_1_c, "Auto Connection Establishment with Directed Connectable Mode" ],
-    "GAP/CMP/ACEP/3-C": [ gap_cmp_acep_3_c, "Auto Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution" ],
-    "GAP/CMP/ACEP/4-C": [ gap_cmp_acep_4_c, "Auto Connection Establishment with Undirected Connectable Mode, Resolvable Private Address" ],
-    "GAP/CMP/DCM/1-C":  [ gap_cmp_dcm_1_c,  "Directed Connectable Mode" ],
-#   "GAP/CONN/ENC":     [ gap_conn_enc,     "Testing encryption" ],
-    "GAP/CMP/GCEP/1-C": [ gap_cmp_gcep_1_c, "General Connection Establishment with Directed Connectable Mode" ],
-    "GAP/CMP/GCEP/2-C": [ gap_cmp_gcep_2_c, "General Connection Establishment with Undirected Connectable Mode" ],
-    "GAP/CMP/GCEP/5-C": [ gap_cmp_gcep_5_c, "General Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution" ],
-    "GAP/CMP/GCEP/6-C": [ gap_cmp_gcep_6_c, "General Connection Establishment with Undirected Connectable Mode, Resolvable Private Address" ],
-    "GAP/CMP/CPUP/1-C": [ gap_cmp_cpup_1_c, "Successful Peripheral initiated Connection Parameter Update" ],
-    "GAP/CMP/CPUP/2-C": [ gap_cmp_cpup_2_c, "Timeout during Peripheral initiated Connection Parameter Update" ],
-    "GAP/CMP/CPUP/3-C": [ gap_cmp_cpup_3_c, "Invalid Parameters in Peripheral initiated Connection Parameter Update" ],
-    "GAP/CMP/CPUP/4-C": [ gap_cmp_cpup_4_c, "Successful Peripheral accepts Connection Parameter Update" ],
-    "GAP/CMP/CPUP/5-C": [ gap_cmp_cpup_5_c, "Invalid Parameters in Peripheral receives Connection Parameter Update" ],
-    "GAP/CMP/CPUP/6-C": [ gap_cmp_cpup_6_c, "Successful Central initiated Connection Parameter Update" ],
-    "GAP/CMP/NCM/1-C":  [ gap_cmp_ncm_1_c,  "Non-Connectable Mode" ],
-    "GAP/CMP/NCM/2-C":  [ gap_cmp_ncm_2_c,  "Non-Connectable Mode and  General Discoverable Mode" ],
-    "GAP/CMP/NCM/3-C":  [ gap_cmp_ncm_3_c,  "Non-Connectable Mode and  Limited Discoverable Mode" ],
-    "GAP/CMP/UCM/1-C":  [ gap_cmp_ucm_1_c,  "Undirected Connectable Mode and Non-Discoverable Mode" ],
-    "GAP/CMP/UCM/2-C":  [ gap_cmp_ucm_2_c,  "Undirected Connectable Mode and General Discoverable Mode" ],
-    "GAP/CMP/UCM/3-C":  [ gap_cmp_ucm_3_c,  "Undirected Connectable Mode and Limited Discoverable Mode" ],
-    "GAP/DMP/GDM/1-C":  [ gap_dmp_gdm_1_c,  "General Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration" ],
-    "GAP/DMP/GDM/2-C":  [ gap_dmp_gdm_2_c,  "General Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration" ],
-    "GAP/DMP/GDM/3-C":  [ gap_dmp_gdm_3_c,  "General Discoverable Mode and Non-Connectable Mode in LE Only configuration" ],
-    "GAP/DMP/GDM/4-C":  [ gap_dmp_gdm_4_c,  "General Discoverable Mode and Undirected Connectable Mode in LE Only configuration" ],
-    "GAP/DMP/GDP/1-C":  [ gap_dmp_gdp_1_c,  "General Discovery finding General Discoverable Device" ],
-    "GAP/DMP/GDP/2-C":  [ gap_dmp_gdp_2_c,  "General Discovery finding Limited Discoverable Device" ],
-    "GAP/DMP/GDP/4-C":  [ gap_dmp_gdp_4_c,  "General Discovery not finding Undirected Connectable device" ],
-    "GAP/DMP/GDP/5-C":  [ gap_dmp_gdp_5_c,  "General Discovery not finding Directed Connectable device" ],
-    "GAP/DMP/LDM/1-C":  [ gap_dmp_ldm_1_c,  "Limited Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration" ],
-    "GAP/DMP/LDM/2-C":  [ gap_dmp_ldm_2_c,  "Limited Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration" ],
-    "GAP/DMP/LDM/3-C":  [ gap_dmp_ldm_3_c,  "Limited Discoverable Mode and Non-Connectable Mode in LE Only configuration" ],
-    "GAP/DMP/LDM/4-C":  [ gap_dmp_ldm_4_c,  "Limited Discoverable Mode and Undirected Connectable Mode in LE Only configuration" ],
-    "GAP/DMP/LDP/1-C":  [ gap_dmp_ldp_1_c,  "Limited Discovery finding Limited Discoverable Device" ],
-    "GAP/DMP/LDP/2-C":  [ gap_dmp_ldp_2_c,  "Limited Discovery not finding General Discoverable Device" ],
-    "GAP/DMP/LDP/4-C":  [ gap_dmp_ldp_4_c,  "Limited Discovery not finding Undirected Connectable device" ],
-    "GAP/DMP/LDP/5-C":  [ gap_dmp_ldp_5_c,  "Limited Discovery not finding Directed Connectable device" ],
-    "GAP/DMP/NDM/1-C":  [ gap_dmp_ndm_1_c,  "Non-discoverable Mode and Non-Connectable Mode" ],
-    "GAP/DMP/NDM/2-C":  [ gap_dmp_ndm_2_c,  "Non-discoverable Mode and Undirected Connectable Mode" ],
-    "GAP/DMP/RPA/1-C":  [ gap_dmp_rpa_1_c,  "Find Discoverable Device using Resolvable Private Address" ]
+    "GAP/ADV/BV-01-C":       [ gap_adv_bv_01_c,       "Advertising with AD Type – Service UUID" ],
+    "GAP/ADV/BV-02-C":       [ gap_adv_bv_02_c,       "Advertising with AD Type - Local Name" ],
+    "GAP/ADV/BV-03-C":       [ gap_adv_bv_03_c,       "Advertising with AD Type – Flags" ],
+    "GAP/ADV/BV-04-C":       [ gap_adv_bv_04_c,       "Advertising with AD Type – Manufacturer Specific Packet Data" ],
+    "GAP/ADV/BV-05-C":       [ gap_adv_bv_05_c,       "Advertising with AD Type – TX Power Level" ],
+    "GAP/ADV/BV-08-C":       [ gap_adv_bv_08_c,       "Advertising with AD Type – Slave Connection Interval Range" ],
+    "GAP/ADV/BV-09-C":       [ gap_adv_bv_09_c,       "Advertising with AD Type - Service Solicitation" ],
+    "GAP/ADV/BV-10-C":       [ gap_adv_bv_10_c,       "Advertising with AD Type – Service Packet Data" ],
+    "GAP/ADV/BV-11-C":       [ gap_adv_bv_11_c,       "Advertising with AD Type – Appearance" ],
+    "GAP/ADV/BV-12-C":       [ gap_adv_bv_12_c,       "Advertising with AD Type – Public Target Address" ],
+    "GAP/ADV/BV-13-C":       [ gap_adv_bv_13_c,       "Advertising with AD Type – Random Target Address" ],
+    "GAP/ADV/BV-14-C":       [ gap_adv_bv_14_c,       "Advertising with AD Type – Advertising Interval" ],
+    "GAP/ADV/BV-15-C":       [ gap_adv_bv_15_c,       "Advertising with AD Type – LE Bluetooth Device Address" ],
+    "GAP/ADV/BV-16-C":       [ gap_adv_bv_16_c,       "Advertising with AD Type – LE Role" ],
+    "GAP/ADV/BV-17-C":       [ gap_adv_bv_17_c,       "Advertising with AD Type – URI" ],
+    "GAP/CONN/ACEP/BV-01-C": [ gap_conn_acep_bv_01_c, "Auto Connection Establishment with Directed Connectable Mode" ],
+    "GAP/CONN/ACEP/BV-03-C": [ gap_conn_acep_bv_03_c, "Auto Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution" ],
+    "GAP/CONN/ACEP/BV-04-C": [ gap_conn_acep_bv_04_c, "Auto Connection Establishment with Undirected Connectable Mode, Resolvable Private Address" ],
+    "GAP/CONN/DCON/BV-01-C": [ gap_conn_dcon_bv_01_c, "Directed Connectable Mode" ],
+#   "GAP/CONN/ENC":          [ gap_conn_enc,          "Testing encryption" ],
+    "GAP/CONN/GCEP/BV-01-C": [ gap_conn_gcep_bv_01_c, "General Connection Establishment with Directed Connectable Mode" ],
+    "GAP/CONN/GCEP/BV-02-C": [ gap_conn_gcep_bv_02_c, "General Connection Establishment with Undirected Connectable Mode" ],
+    "GAP/CONN/GCEP/BV-05-C": [ gap_conn_gcep_bv_05_c, "General Connection Establishment with Directed Connectable Mode, Resolvable Private Address, Central Address Resolution" ],
+    "GAP/CONN/GCEP/BV-06-C": [ gap_conn_gcep_bv_06_c, "General Connection Establishment with Undirected Connectable Mode, Resolvable Private Address" ],
+    "GAP/CONN/CPUP/BV-01-C": [ gap_conn_cpup_bv_01_c, "Successful Peripheral initiated Connection Parameter Update" ],
+    "GAP/CONN/CPUP/BV-02-C": [ gap_conn_cpup_bv_02_c, "Timeout during Peripheral initiated Connection Parameter Update" ],
+    "GAP/CONN/CPUP/BV-03-C": [ gap_conn_cpup_bv_03_c, "Invalid Parameters in Peripheral initiated Connection Parameter Update" ],
+    "GAP/CONN/CPUP/BV-04-C": [ gap_conn_cpup_bv_04_c, "Successful Peripheral accepts Connection Parameter Update" ],
+    "GAP/CONN/CPUP/BV-05-C": [ gap_conn_cpup_bv_05_c, "Invalid Parameters in Peripheral receives Connection Parameter Update" ],
+    "GAP/CONN/CPUP/BV-06-C": [ gap_conn_cpup_bv_06_c, "Successful Central initiated Connection Parameter Update" ],
+    "GAP/CONN/NCON/BV-01-C": [ gap_conn_ncon_bv_01_c, "Non-Connectable Mode" ],
+    "GAP/CONN/NCON/BV-02-C": [ gap_conn_ncon_bv_02_c, "Non-Connectable Mode and  General Discoverable Mode" ],
+    "GAP/CONN/NCON/BV-03-C": [ gap_conn_ncon_bv_03_c, "Non-Connectable Mode and  Limited Discoverable Mode" ],
+    "GAP/CONN/UCON/BV-01-C": [ gap_conn_ucon_bv_01_c, "Undirected Connectable Mode and Non-Discoverable Mode" ],
+    "GAP/CONN/UCON/BV-02-C": [ gap_conn_ucon_bv_02_c, "Undirected Connectable Mode and General Discoverable Mode" ],
+    "GAP/CONN/UCON/BV-03-C": [ gap_conn_ucon_bv_03_c, "Undirected Connectable Mode and Limited Discoverable Mode" ],
+    "GAP/DISC/GENM/BV-01-C": [ gap_disc_genm_bv_01_c, "General Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration" ],
+    "GAP/DISC/GENM/BV-02-C": [ gap_disc_genm_bv_02_c, "General Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration" ],
+    "GAP/DISC/GENM/BV-03-C": [ gap_disc_genm_bv_03_c, "General Discoverable Mode and Non-Connectable Mode in LE Only configuration" ],
+    "GAP/DISC/GENM/BV-04-C": [ gap_disc_genm_bv_04_c, "General Discoverable Mode and Undirected Connectable Mode in LE Only configuration" ],
+    "GAP/DISC/GENP/BV-01-C": [ gap_disc_genp_bv_01_c, "General Discovery finding General Discoverable Device" ],
+    "GAP/DISC/GENP/BV-02-C": [ gap_disc_genp_bv_02_c, "General Discovery finding Limited Discoverable Device" ],
+    "GAP/DISC/GENP/BV-04-C": [ gap_disc_genp_bv_04_c, "General Discovery not finding Undirected Connectable device" ],
+    "GAP/DISC/GENP/BV-05-C": [ gap_disc_genp_bv_05_c, "General Discovery not finding Directed Connectable device" ],
+    "GAP/DISC/LIMM/BV-01-C": [ gap_disc_limm_bv_01_c, "Limited Discoverable Mode and Non-Connectable Mode in BR/EDR/LE configuration" ],
+    "GAP/DISC/LIMM/BV-02-C": [ gap_disc_limm_bv_02_c, "Limited Discoverable Mode and Undirected Connectable Mode in BR/EDR/LE configuration" ],
+    "GAP/DISC/LIMM/BV-03-C": [ gap_disc_limm_bv_03_c, "Limited Discoverable Mode and Non-Connectable Mode in LE Only configuration" ],
+    "GAP/DISC/LIMM/BV-04-C": [ gap_disc_limm_bv_04_c, "Limited Discoverable Mode and Undirected Connectable Mode in LE Only configuration" ],
+    "GAP/DISC/LIMP/BV-01-C": [ gap_disc_limp_bv_01_c, "Limited Discovery finding Limited Discoverable Device" ],
+    "GAP/DISC/LIMP/BV-02-C": [ gap_disc_limp_bv_02_c, "Limited Discovery not finding General Discoverable Device" ],
+    "GAP/DISC/LIMP/BV-04-C": [ gap_disc_limp_bv_04_c, "Limited Discovery not finding Undirected Connectable device" ],
+    "GAP/DISC/LIMP/BV-05-C": [ gap_disc_limp_bv_05_c, "Limited Discovery not finding Directed Connectable device" ],
+    "GAP/DISC/NONM/BV-01-C": [ gap_disc_nonm_bv_01_c, "Non-discoverable Mode and Non-Connectable Mode" ],
+    "GAP/DISC/NONM/BV-02-C": [ gap_disc_nonm_bv_02_c, "Non-discoverable Mode and Undirected Connectable Mode" ],
+    "GAP/DISC/RPA/BV-01-C":  [ gap_disc_rpa_bv_01_c,  "Find Discoverable Device using Resolvable Private Address" ]
 };
 
 _maxNameLength = max([ len(key) for key in __tests__ ]);
