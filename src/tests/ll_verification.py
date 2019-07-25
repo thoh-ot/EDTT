@@ -16,6 +16,7 @@ from components.resolvable import *;
 from components.advertiser import *;
 from components.scanner import *;
 from components.initiator import *;
+from components.addata import *; 
 from components.preambles import *;
 from components.test_spec import TestSpec;
 
@@ -238,33 +239,66 @@ def hasReadRemoteVersionInformationCompleteEvent(transport, idx, trace):
     ========================================================================================================================
 """
 
+def matchingReportType(advertiseType):
+
+    if   advertiseType == Advertising.CONNECTABLE_UNDIRECTED:
+        reportType = AdvertisingReport.ADV_IND;
+    elif advertiseType == Advertising.CONNECTABLE_HDC_DIRECTED or advertiseType == Advertising.CONNECTABLE_LDC_DIRECTED:
+        reportType = AdvertisingReport.ADV_DIRECT_IND;
+    elif advertiseType == Advertising.SCANNABLE_UNDIRECTED:
+        reportType = AdvertisingReport.ADV_SCAN_IND;
+    elif advertiseType == Advertising.NON_CONNECTABLE_UNDIRECTED:
+        reportType = AdvertisingReport.ADV_NONCONN_IND;
+    else:
+        reportType = AdvertisingReport.ADV_IND;
+    return reportType;
+
+def setPassiveScanning(transport, advertiserId, scannerId, trace, advertiseType, advertiseReports=100, \
+                       advertiseFilter=AdvertisingFilterPolicy.FILTER_NONE, advertiseChannels=AdvertiseChannel.ALL_CHANNELS, \
+                       scanFilter=ScanningFilterPolicy.FILTER_NONE):
+
+    advertiserAddress = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL if advertiserId == 0 else 0x123456789ABCL );
+
+    advertiser = Advertiser(transport, advertiserId, trace, advertiseChannels, advertiseType, advertiserAddress, peerAddress, advertiseFilter);
+
+    scannerAddress = Address( ExtendedAddressType.PUBLIC );
+    scanner = Scanner(transport, scannerId, trace, ScanType.PASSIVE, matchingReportType(advertiseType), scannerAddress, scanFilter, advertiseReports);
+
+    return advertiser, scanner;
+
+def setActiveScanning(transport, advertiserId, scannerId, trace, advertiseType, advertiseReports=1, advertiseResponses=1, \
+                      advertiseFilter=AdvertisingFilterPolicy.FILTER_NONE, advertiseChannels=AdvertiseChannel.ALL_CHANNELS, \
+                      scanFilter=ScanningFilterPolicy.FILTER_NONE):
+
+    advertiserAddress = Address( ExtendedAddressType.PUBLIC );
+    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL if advertiserId == 0 else 0x123456789ABCL );
+
+    advertiser = Advertiser(transport, advertiserId, trace, advertiseChannels, advertiseType, advertiserAddress, peerAddress, advertiseFilter);
+
+    scannerAddress = Address( ExtendedAddressType.PUBLIC );
+    scanner = Scanner(transport, scannerId, trace, ScanType.ACTIVE, matchingReportType(advertiseType), scannerAddress, scanFilter, advertiseReports, advertiseResponses);
+
+    return advertiser, scanner;
+
 """
     LL/DDI/ADV/BV-01-C [Non-Connectable Advertising Packets on one channel]
 """
 def ll_ddi_adv_bv_01_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.NON_CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.NON_CONNECTABLE_UNDIRECTED, 100, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
         
     advertising = advertiser.enable(); 
     success = advertising;
             
-    success = success and scanner.enable();
-    scanner.monitor();
-    success = success and scanner.disable();
-    success = success and scanner.qualifyReports( 100, None, advertiser.advertiseData );
-        
     if advertising:
-        advertising = not advertiser.disable();    
-        success = success and not advertising;
+        success = scanner.enable() and success;
+        scanner.monitor();
+        success = scanner.disable() and success;
+        success = success and scanner.qualifyReports( 100, None, advertiser.advertiseData );
+        
+        success = advertiser.disable() and success;
 
     return success
 
@@ -273,28 +307,19 @@ def ll_ddi_adv_bv_01_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_02_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 100, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
         
     advertising = advertiser.enable(); 
     success = advertising;
             
-    success = success and scanner.enable();
-    scanner.monitor();
-    success = success and scanner.disable();
-    success = success and scanner.qualifyReports( 100, None, advertiser.advertiseData );
-        
     if advertising:
-        advertising = not advertiser.disable();    
-        success = success and not advertising;
+        success = scanner.enable() and success;
+        scanner.monitor();
+        success = scanner.disable() and success;
+        success = success and scanner.qualifyReports( 100, None, advertiser.advertiseData );
+        
+        success = advertiser.disable() and success;
 
     return success
 
@@ -303,16 +328,8 @@ def ll_ddi_adv_bv_02_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.NON_CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 50);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.NON_CONNECTABLE_UNDIRECTED, 50, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     success = True;
         
     for dataLength in [ 1, 0, 31, 0 ]:
@@ -322,14 +339,13 @@ def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
         advertising = advertiser.enable(); 
         success = success and advertising;
                 
-        success = success and scanner.enable();
-        scanner.monitor();
-        success = success and scanner.disable();
-        success = success and scanner.qualifyReports( 50, None, advertiser.advertiseData );
-            
         if advertising:
-            advertising = not advertiser.disable();    
-            success = success and not advertising;
+            success = scanner.enable() and success;
+            scanner.monitor();
+            success = scanner.disable() and success;
+            success = success and scanner.qualifyReports( 50, None, advertiser.advertiseData );
+            
+            success = advertiser.disable() and success;
 
     return success
 
@@ -338,18 +354,10 @@ def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 50);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 50, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     success = True;
-        
+    
     for dataLength in [ 1, 0, 31, 0 ]:
         trace.trace(7, '-'*80);
             
@@ -357,14 +365,13 @@ def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
         advertising = advertiser.enable(); 
         success = success and advertising;
                 
-        success = success and scanner.enable();
-        scanner.monitor();
-        success = success and scanner.disable();
-        success = success and scanner.qualifyReports( 50, None, advertiser.advertiseData );
-            
         if advertising:
-            advertising = not advertiser.disable();    
-            success = success and not advertising;
+            success = scanner.enable() and success;
+            scanner.monitor();
+            success = scanner.disable() and success;
+            success = success and scanner.qualifyReports( 50, None, advertiser.advertiseData );
+            
+            success = advertiser.disable() and success;    
 
     return success
 
@@ -373,18 +380,9 @@ def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 1, 1);
+    advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED);
     success = True;
-        
+    
     for address in [ 0x456789ABCDEFL, address_scramble_OUI( 0x456789ABCDEFL ), address_exchange_OUI_LAP( 0x456789ABCDEFL ) ]:
         for dataLength in [ 0, 31 ]:
             trace.trace(7, '-'*80);
@@ -396,15 +394,14 @@ def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
             trace.trace(6, "\nUsing scanner address: %s SCAN_RSP data length: %d\n" % (formatAddress( toArray(address, 6), SimpleAddressType.PUBLIC), dataLength) ); 
             success = success and preamble_set_public_address( transport, lowerTester, address, trace );
                 
-            success = success and scanner.enable();
-            scanner.monitor();
-            success = success and scanner.disable();
-            success = success and scanner.qualifyReports( 1 );
-            success = success and scanner.qualifyResponses( 1, advertiser.responseData );
-                
             if advertising:
-                advertising = not advertiser.disable();    
-                success = success and not advertising;
+                success = scanner.enable() and success;
+                scanner.monitor();
+                success = scanner.disable() and success;
+                success = success and scanner.qualifyReports( 1 );
+                success = success and scanner.qualifyResponses( 1, advertiser.responseData );
+                
+                success = advertiser.disable() and success;
 
     return success
 
@@ -413,18 +410,10 @@ def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 1);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 1);
     success = True;
+
+    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
 
     for address in [ 0x456789ABCDEFL, address_scramble_OUI( 0x456789ABCDEFL ), address_scramble_LAP( 0x456789ABCDEFL ), address_exchange_OUI_LAP( 0x456789ABCDEFL ) ]:
         trace.trace(7, '-'*80);
@@ -467,18 +456,11 @@ def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
+    advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED);
+    success = True;
+    
     advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 1, 1);
-        
     success = advertiser.enable();
     success = success and scanner.enable();
     scanner.monitor();
@@ -514,72 +496,79 @@ def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
 def ll_ddi_adv_bv_08_c(transport, upperTester, lowerTester, trace):
 
     """
-        Place Public address of lowerTester in the White List for the Advertiser
+        Place Public and static Random addresses of lowerTester in the White List for the Advertiser
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
+    peerAddresses = [ Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ), Address( IdentityAddressType.RANDOM, 0x456789ABCDEFL | 0xC00000000000L ) ];
+    success = addAddressesToWhiteList(transport, upperTester, peerAddresses, trace);
     """
         Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
     """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+                            ownAddress, peerAddresses[0], AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30);
+    scannerAddress = Address( ExtendedAddressType.PUBLIC );
+    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, scannerAddress, ScanningFilterPolicy.FILTER_NONE, 30);
         
+    adData = ADData();
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
+
     for filterPolicy in [ AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS ]:
         trace.trace(7, "\nTesting Advertising Filter Policy: %s" % filterPolicy.name);
         advertiser.filterPolicy = filterPolicy;
-        success = success and advertiser.enable();
 
-        for addressType in [ ExtendedAddressType.PUBLIC, ExtendedAddressType.RANDOM ]:
+        for addressType, peerAddress in zip([ ExtendedAddressType.PUBLIC, ExtendedAddressType.RANDOM ], [ peerAddresses[0], peerAddresses[1] ]):
+
+            advertiser.peerAddress = peerAddress;
+            success = success and advertiser.enable();
+
             for i in range(3):
+                useAddressType = addressType;
                 trace.trace(7, '-'*80);
                 if   i == 0:
                     """
                         Correct Address Type - scrambled Address
                     """
-                    if addressType == ExtendedAddressType.PUBLIC:
+                    if useAddressType == ExtendedAddressType.PUBLIC:
                         trace.trace(7, "-- (%s,%d) Using scrambled PUBLIC address..." % (addressType.name,i));
                         success = success and preamble_set_public_address( transport, lowerTester, address_scramble_LAP( 0x456789ABCDEFL ), trace );
                     else:
                         trace.trace(7, "-- (%s,%d) Using scrambled RANDOM static address..." % (addressType.name,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, address_scramble_LAP( 0x456789ABCDEFL | 0xC00000000000L ), trace );
+                        success = success and preamble_set_random_address( transport, lowerTester, address_scramble_LAP( 0x456789ABCDEFL ) | 0xC00000000000L, trace );
                 elif i == 1:
                     """
                         Incorrect Address Type - correct Address
                     """
-                    if addressType == ExtendedAddressType.PUBLIC:
-                        trace.trace(7, "-- (%s,%d) Using RANDOM static address..." % (addressType.name,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, 0x456789ABCDEFL | 0xC00000000000L, trace );
+                    useAddressType = ExtendedAddressType.RANDOM if addressType == ExtendedAddressType.PUBLIC else ExtendedAddressType.PUBLIC;
+                    if useAddressType == ExtendedAddressType.PUBLIC:
+                        trace.trace(7, "-- (%s,%d) Using incorrect PUBLIC address..." % (addressType.name,i));
+                        success = success and preamble_set_public_address( transport, lowerTester, toNumber(peerAddresses[1].address), trace );
                     else:
-                        trace.trace(7, "-- (%s,%d) Using PUBLIC address..." % (addressType.name,i));
-                        success = success and preamble_set_public_address( transport, lowerTester, 0x456789ABCDEFL, trace );
+                        trace.trace(7, "-- (%s,%d) Using incorrect RANDOM static address..." % (addressType.name,i));
+                        success = success and preamble_set_random_address( transport, lowerTester, toNumber(peerAddresses[0].address), trace );
                 else:
                     """
                         Correct Address Type - correct Address
                     """
-                    if addressType == ExtendedAddressType.PUBLIC:
+                    if useAddressType == ExtendedAddressType.PUBLIC:
                         trace.trace(7, "-- (%s,%d) Using PUBLIC address..." % (addressType.name,i));
-                        success = success and preamble_set_public_address( transport, lowerTester, 0x456789ABCDEFL, trace );
+                        success = success and preamble_set_public_address( transport, lowerTester, toNumber(peerAddresses[0].address), trace );
                     else:
                         trace.trace(7, "-- (%s,%d) Using RANDOM static address..." % (addressType.name,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, 0x456789ABCDEFL | 0xC00000000000L, trace );
+                        success = success and preamble_set_random_address( transport, lowerTester, toNumber(peerAddresses[1].address), trace );
 
-                scanner.ownAddress.type = addressType;
-                scanner.expectedReports = 5 if ((addressType == ExtendedAddressType.PUBLIC) and (i == 2)) else 30;
-                scanner.expectedResponses = 5 if ((addressType == ExtendedAddressType.PUBLIC) and (i == 2)) else None;
+                scanner.ownAddress.type = useAddressType;
+                scanner.expectedReports = 1 if (i == 2) else 30;
+                scanner.expectedResponses = 1 if (i == 2) else None;
+
                 success = success and scanner.enable();
                 scanner.monitor();
                 success = success and scanner.disable();
                 success = success and scanner.qualifyReports( scanner.expectedReports );
                 if not scanner.expectedResponses is None:
-                    success = success and scanner.qualifyResponses( 5, advertiser.responseData ); 
+                    success = success and scanner.qualifyResponses( 1, advertiser.responseData ); 
                     
-        advertiser.disable();
+            advertiser.disable();
 
     return success
 
@@ -589,119 +578,102 @@ def ll_ddi_adv_bv_08_c(transport, upperTester, lowerTester, trace):
 def ll_ddi_adv_bv_09_c(transport, upperTester, lowerTester, trace):
 
     """
-        Place Public address of lowerTester in the White List for the Advertiser
+        Place Public address and Random static address of lowerTester in the White List for the Advertiser
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
+    peerAddresses = [ Address( IdentityAddressType.PUBLIC, 0x456789ABCDEFL ), Address( IdentityAddressType.RANDOM, 0x456789ABCDEFL | 0xC00000000000L ) ];
+    success = addAddressesToWhiteList(transport, upperTester, peerAddresses, trace);
     """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
+        Initialize Advertiser with Connectable Undirected advertising using a Public Address
     """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+                            ownAddress, peerAddresses[0], AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30);
-        
+    adData = ADData();
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
+
     for filterPolicy in [ AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS, AdvertisingFilterPolicy.FILTER_CONNECTION_REQUESTS, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS ]:
         trace.trace(7, "\nTesting Advertising Filter Policy: %s" % filterPolicy.name);
         advertiser.filterPolicy = filterPolicy;
-        success = success and advertiser.enable();
 
-        for j in range(2):
+        for addressType, peerAddress in zip([ ExtendedAddressType.PUBLIC, ExtendedAddressType.RANDOM ], peerAddresses):
+
+            advertiser.peerAddress = peerAddress;
+
             for i in range(3):
-                scanner.expectedReports = 1;
-                success = success and scanner.enable();
-                scanner.monitor();
-                success = success and scanner.disable();
-                success = success and scanner.qualifyReports( 1 );
-
+                useAddressType = addressType;
+                success = success and advertiser.enable();
+                trace.trace(7, '-'*80);
                 if   i == 0:
-                    if j == 0:
-                        trace.trace(7, "-- (%d,%d) Using scrambled PUBLIC address..." % (j,i));
+                    """
+                        Correct Address Type - scrambled Address
+                    """
+                    if useAddressType == ExtendedAddressType.PUBLIC:
+                        trace.trace(7, "-- (%s,%d) Using scrambled PUBLIC address..." % (addressType.name,i));
                         success = success and preamble_set_public_address( transport, lowerTester, address_scramble_OUI( 0x456789ABCDEFL ), trace );
                     else:
-                        trace.trace(7, "-- (%d,%d) Using scrambled RANDOM static address..." % (j,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, address_scramble_OUI( 0x456789ABCDEFL | 0xC00000000000L ), trace );
+                        trace.trace(7, "-- (%s,%d) Using scrambled RANDOM static address..." % (addressType.name,i));
+                        success = success and preamble_set_random_address( transport, lowerTester, address_scramble_OUI( 0x456789ABCDEFL ) | 0xC00000000000L, trace );
                 elif i == 1:
-                    if j == 0:
-                        trace.trace(7, "-- (%d,%d) Using correct PUBLIC address..." % (j,i));
-                        success = success and preamble_set_public_address( transport, lowerTester, 0x456789ABCDEFL, trace );
+                    """
+                        Incorrect Address Type - correct Address
+                    """
+                    useAddressType = ExtendedAddressType.RANDOM if addressType == ExtendedAddressType.PUBLIC else ExtendedAddressType.PUBLIC;
+                    if useAddressType == ExtendedAddressType.PUBLIC:
+                        trace.trace(7, "-- (%s,%d) Using incorrect PUBLIC address..." % (addressType.name,i));
+                        success = success and preamble_set_public_address( transport, lowerTester, toNumber(peerAddresses[1].address), trace );
                     else:
-                        trace.trace(7, "-- (%d,%d) Using RANDOM static address..." % (j,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, 0x456789ABCDEFL | 0xC00000000000L, trace );
+                        trace.trace(7, "-- (%s,%d) Using incorrect RANDOM static address..." % (addressType.name,i));
+                        success = success and preamble_set_random_address( transport, lowerTester, toNumber(peerAddresses[0].address), trace );
                 else:
-                    if j == 0:
-                        trace.trace(7, "-- (%d,%d) Using correct PUBLIC address..." % (j,i));
-                        success = success and preamble_set_public_address( transport, lowerTester, 0x456789ABCDEFL, trace );
+                    """
+                        Correct Address Type - correct Address
+                    """
+                    if useAddressType == ExtendedAddressType.PUBLIC:
+                        trace.trace(7, "-- (%s,%d) Using correct PUBLIC address..." % (addressType.name,i));
+                        success = success and preamble_set_public_address( transport, lowerTester, toNumber(peerAddresses[0].address), trace );
                     else:
-                        trace.trace(7, "-- (%d,%d) Using RANDOM static address..." % (j,i));
-                        success = success and preamble_set_random_address( transport, lowerTester, 0x456789ABCDEFL | 0xC00000000000L, trace );
+                        trace.trace(7, "-- (%s,%d) Using correct RANDOM static address..." % (addressType.name,i));
+                        success = success and preamble_set_random_address( transport, lowerTester, toNumber(peerAddresses[1].address), trace );
 
-                trace.trace(7, "-- Using correct address TYPE..." if i != 1 else "-- Using wrong address TYPE");
-                initiatorAddress = Address( ExtendedAddressType.PUBLIC if i != 1 else ExtendedAddressType.RANDOM );
+                initiatorAddress = Address( useAddressType );
                 initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ));
-                connected = initiator.connect();
-                """
-                    Setting the Initiators address type to PUBLIC, cause the Initiator to use the PUBLIC address, regardless of the address set!
-                """
-                if filterPolicy != AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS:
-                    success = success and (connected if (i == 2) or ((j == 1) and (i == 0)) else not connected);
-                else:
-                    success = success and connected;
+                
+                for j in range(30):
+                    connected = initiator.connect();
+                    success = success and (connected if (i == 2 or filterPolicy == AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS) else not connected);
                        
-                if connected:
-                    """
-                        If a connection was established Advertising should have seized...
-                    """
-                    disconnected = initiator.disconnect(0x3E);
-                    success = success and disconnected;
-                    if not ((j == 1) and (i == 2)):
-                        success = success and advertiser.enable();
-                else:
-                    """
-                        If a connection wasn't established Advertising should continue...
-                    """
-                    scanner.expectedReports = 30;
-                    success = success and scanner.enable();
-                    if success:
-                        scanner.monitor();
-                    success = success and scanner.disable();
-                    success = success and scanner.qualifyReports( 30 );
-                    
-        if not connected:
-            success = success and advertiser.disable();
+                    if connected:
+                        """
+                            If a connection was established - disconnect...
+                        """
+                        success = initiator.disconnect(0x3E) and success;
+                        break;
+
+                if not connected:    
+                    success = advertiser.disable() and success;
 
     return success
 
 """
-    LL/DDI/ADV/BV-11-C [High Duty Cycle Connectable Directed Advertising on one channel]
+    LL/DDI/ADV/BV-11-C [High Duty Cycle Connectable Directed Advertising on all channels]
 """
 def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
 
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_HDC_DIRECTED, 30, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     """
         Place Public address of lowerTester in the White List
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_DIRECT_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30);
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
         
     success = success and scanner.enable();
     success = success and advertiser.enable();
     scanner.monitor(True);
-    success = success and scanner.disable();
     success = success and advertiser.timeout();
+    success = success and scanner.disable();
         
     success = success and scanner.qualifyReportTime( 30, 1280 );
 
@@ -712,8 +684,8 @@ def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
     success = success and scanner.disable();
 
     success = success and scanner.qualifyReports( 1 );
-
-    initiator = Initiator(transport, lowerTester, upperTester, trace, Address( ExtendedAddressType.PUBLIC ), Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ));
+    
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ));
     success = success and initiator.connect();
     if success:
         success = success and initiator.disconnect(0x3E);
@@ -725,21 +697,13 @@ def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_15_c(transport, upperTester, lowerTester, trace):
 
+    advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 100, None, \
+                                            AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     """
         Place Public address of lowerTester in the White List
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
         
     success = success and scanner.enable();
     success = success and advertiser.enable();
@@ -755,12 +719,7 @@ def ll_ddi_adv_bv_15_c(transport, upperTester, lowerTester, trace):
 """    
 def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, ownAddress, peerAddress);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 50);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 50);
 
     success = True;
     for i in range(3):
@@ -785,15 +744,7 @@ def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
 
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, ownAddress, peerAddress);
-
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30, 5);
+    advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 30, 5);
 
     success = True;
     for i in range(3):
@@ -823,28 +774,23 @@ def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
 
+    advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 30, None, \
+                                            AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     """
         Place Public address of lowerTester in the White List
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
+        
     advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];            
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 30);
-        
     success = success and advertiser.enable();
 
     for i in range(3):
         if   i == 0:
             success = success and preamble_set_public_address( transport, lowerTester, address_scramble_LAP( 0x456789ABCDEFL ), trace);
+            scanner.ownAddress = Address( ExtendedAddressType.PUBLIC );
         elif i == 1:
             success = success and preamble_set_random_address( transport, lowerTester, 0x456789ABCDEFL | 0xC00000000000L, trace );
             scanner.ownAddress = Address( ExtendedAddressType.RANDOM );
@@ -868,41 +814,30 @@ def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_19_c(transport, upperTester, lowerTester, trace):
 
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_LDC_DIRECTED, 100, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     """
         Place Public address of lowerTester in the White List
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_LDC_DIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_DIRECT_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
         
-    success = advertiser.enable();
-    success = success and scanner.enable();
+    success = advertiser.enable() and success;
+
+    success = scanner.enable() and success;
     scanner.monitor();
-    success = success and scanner.disable();
+    success = scanner.disable() and success;
     success = success and scanner.qualifyReports( 100 );
 
-    initiatorAddress = Address( ExtendedAddressType.PUBLIC );
-    initiator = Initiator(transport, lowerTester, upperTester, trace, initiatorAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ));
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, Address( ExtendedAddressType.PUBLIC, 0x123456789ABCL ));
     connected = initiator.connect();
-    """
-        Setting the Initiators address type to PUBLIC, cause the Initiator to use the PUBLIC address, regardless of the address set!
-    """
     success = success and connected;
            
     if connected:
-        """
-            If a connection was established Advertising should have seized...
-        """
-        disconnected = initiator.disconnect(0x3E);
-        success = success and disconnected;
+        success = initiator.disconnect(0x3E) and success;
+    else:
+        success = advertiser.disable() and success;
 
     return success
 
@@ -927,9 +862,10 @@ def ll_ddi_adv_bv_20_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
+
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
         
     success = scanner.enable();
@@ -1024,8 +960,9 @@ def ll_ddi_scn_bv_01_c(transport, upperTester, lowerTester, trace):
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20);
         
     success = scanner.enable();
@@ -1066,8 +1003,9 @@ def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20);
         
     success = scanner.enable();
@@ -1101,8 +1039,9 @@ def ll_ddi_scn_bv_03_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20, 1);
         
     success = scanner.enable();
@@ -1147,8 +1086,9 @@ def ll_ddi_scn_bv_04_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20, 1);
         
     success = scanner.enable();
@@ -1186,35 +1126,39 @@ def ll_ddi_scn_bv_05_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    scanner = Scanner(transport, upperTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20);
+ 
+    scanner = Scanner(transport, upperTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE);
         
     success = scanner.enable();
+    adData = ADData();
 
-    for advertiseType, reportType, channel, i in zip([ Advertising.NON_CONNECTABLE_UNDIRECTED, Advertising.SCANNABLE_UNDIRECTED, Advertising.CONNECTABLE_HDC_DIRECTED ],
-                                                     [ AdvertisingReport.ADV_NONCONN_IND, AdvertisingReport.ADV_SCAN_IND, AdvertisingReport.ADV_DIRECT_IND],
-                                                     [ AdvertiseChannel.CHANNEL_37, AdvertiseChannel.CHANNEL_38, AdvertiseChannel.CHANNEL_39 ], range(3)):
+    for advertiseType, reportType, channel, reports, i in zip([ Advertising.NON_CONNECTABLE_UNDIRECTED, Advertising.SCANNABLE_UNDIRECTED, Advertising.CONNECTABLE_HDC_DIRECTED ],
+                                                              [ AdvertisingReport.ADV_NONCONN_IND, AdvertisingReport.ADV_SCAN_IND, AdvertisingReport.ADV_DIRECT_IND],
+                                                              [ AdvertiseChannel.CHANNEL_37, AdvertiseChannel.CHANNEL_38, AdvertiseChannel.CHANNEL_39 ], 
+                                                              [ 20, 30, 15 ],
+                                                                range(3)):
         if   i == 0:
             success = success and preamble_set_public_address(transport, lowerTester, address_scramble_OUI(0x456789ABCDEFL), trace);
-            scanner.expectedResponses = None;
         elif i == 1:
             success = success and preamble_set_public_address(transport, lowerTester, address_scramble_LAP(0x456789ABCDEFL), trace);
-            scanner.expectedResponses = 1;
         else:
-            success = success and preamble_set_random_address(transport, lowerTester, address_exchange_OUI_LAP(0x456789ABCDEFL), trace);
-            scanner.expectedResponses = None;
-            
+            success = success and preamble_set_public_address(transport, lowerTester, address_exchange_OUI_LAP(0x456789ABCDEFL), trace);
+
         advertiser.channels = channel;
         advertiser.advertiseType = advertiseType;
-        advertiser.advertiseData = [ i + 1 ];
-        advertiser.responseData = [ 0x03, 0x09 ] + [ ord(char) for char in "IX" ];            
+        advertiser.advertiseData = adData.encode( ADType.FLAGS, ADFlag.BR_EDR_NOT_SUPPORTED ); # [ i + 1 ];
+        advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IX' );          # [ 0x03, 0x09 ] + [ ord(char) for char in "IX" ];            
+
+        scanner.expectedReports = reports; 
+        scanner.expectedResponses = 1 if i == 1 else None;
 
         success = success and advertiser.enable();
         scanner.reportType = reportType;
         scanner.monitor();
         success = success and advertiser.disable();
-        success = success and scanner.qualifyReports( 1 if i == 1 else 20 );
+        success = success and scanner.qualifyReports( reports );
         success = success and scanner.qualifyResponses( 1 if i == 1 else 0, advertiser.responseData if i == 1 else None );
             
     success = success and scanner.disable();
@@ -1231,8 +1175,9 @@ def ll_ddi_scn_bv_10_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20);
         
     success = scanner.enable();
@@ -1271,8 +1216,9 @@ def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
     """ 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.CONNECTABLE_LDC_DIRECTED, ownAddress, peerAddress);
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
+
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_DIRECT_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20);
         
     success = success and scanner.enable();
@@ -1311,7 +1257,9 @@ def ll_ddi_scn_bv_12_c(transport, upperTester, lowerTester, trace):
     """
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = Address( SimpleAddressType.RANDOM, 0x123456789ABCL );
+
     advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.SCANNABLE_UNDIRECTED, ownAddress, peerAddress);
+
     ownAddress = Address( ExtendedAddressType.RANDOM );
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20);
 
@@ -3132,7 +3080,7 @@ def ll_con_sla_bv_26_c(transport, upperTester, lowerTester, trace):
         """
         success = success and initiator.rejectUpdate(errCode);
 
-	initiator.resetRoles();
+        initiator.resetRoles();
         """
             Request an update of the connection parameters - sends an LL_CONNECTION_PARAM_REQ...
         """
@@ -3147,7 +3095,7 @@ def ll_con_sla_bv_26_c(transport, upperTester, lowerTester, trace):
         updated = initiator.updated();
         success = success and not updated and (initiator.status == errCode);
 
-	initiator.resetRoles();
+        initiator.resetRoles();
         """
             Accept the LE Remote Connection Parameter Request Event by issuing a LL_CONNECTION_PARAM_RSP...
         """
@@ -3206,7 +3154,7 @@ def ll_con_sla_bv_27_c(transport, upperTester, lowerTester, trace):
         """
         success = success and not initiator.updated() and initiator.status == errCode;
 
-	initiator.resetRoles();
+        initiator.resetRoles();
 
         transport.wait(int(4 * interval * 1.25));
 
@@ -4806,12 +4754,12 @@ def ll_sec_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     """
         Set advertiser and scanner to use non-resolvable Private addresses
     """
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
     peerAddress = nrpAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
 
-    ownAddress  = Address( ExtendedAddressType.RANDOM );
+    ownAddress = Address( ExtendedAddressType.RANDOM );
     scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100, 1);
 
     success = success and advertiser.enable();
@@ -4853,9 +4801,9 @@ def ll_sec_adv_bv_05_c(transport, upperTester, lowerTester, trace):
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS);
 
     scanner = Scanner(transport, lowerTester, trace, ScanType.ACTIVE, AdvertisingReport.ADV_SCAN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20, 1);
@@ -4898,7 +4846,7 @@ def ll_sec_adv_bv_06_c(transport, upperTester, lowerTester, trace):
     for i, lowerAddress in enumerate(lowerAddresses):
         advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                                 upperAddress, lowerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-        initiator  = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, upperAddress);
+        initiator = Initiator(transport, lowerTester, upperTester, trace, lowerAddress, upperAddress);
         if i == 0:
             """
                 Set lower tester to use Public Address
@@ -5002,12 +4950,12 @@ def ll_sec_adv_bv_07_x(transport, upperTester, lowerTester, trace):
     """
     success = success and addAddressesToWhiteList(transport, upperTester, [ identityAddresses[lowerTester] ], trace);
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_CONNECTION_REQUESTS);
 
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
@@ -5055,9 +5003,9 @@ def ll_sec_adv_bv_08_c(transport, upperTester, lowerTester, trace):
 
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
 
@@ -5105,11 +5053,11 @@ def ll_sec_adv_bv_09_c(transport, upperTester, lowerTester, trace):
 
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, 
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_RANDOM );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
@@ -5205,7 +5153,7 @@ def ll_sec_adv_bv_11_c(transport, upperTester, lowerTester, trace):
     ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                             ownAddress, identityAddresses[lowerTester], AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    initiator  = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
+    initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, identityAddresses[upperTester]);
 
     success = success and advertiser.enable();
 
@@ -5312,11 +5260,11 @@ def ll_sec_adv_bv_13_c(transport, upperTester, lowerTester, trace):
 
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
@@ -5384,11 +5332,11 @@ def ll_sec_adv_bv_14_c(transport, upperTester, lowerTester, trace):
 
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
     peerAddress = identityAddresses[lowerTester]
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC )
     peerAddress = identityAddresses[upperTester]
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress)
 
@@ -5440,9 +5388,9 @@ def ll_sec_adv_bv_15_c(transport, upperTester, lowerTester, trace):
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_SCAN_REQUESTS);
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
@@ -5487,12 +5435,12 @@ def ll_sec_adv_bv_16_c(transport, upperTester, lowerTester, trace):
 
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
     """
@@ -5530,12 +5478,12 @@ def ll_sec_adv_bv_17_c(transport, upperTester, lowerTester, trace):
     success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS)
 
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
@@ -5579,9 +5527,9 @@ def ll_sec_adv_bv_18_c(transport, upperTester, lowerTester, trace):
     """
         Setting up scanner and advertiser (filter-policy: scan requests)
     """ 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.SCANNABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
 
     ownAddress = Address( ExtendedAddressType.PUBLIC );
@@ -5627,12 +5575,12 @@ def ll_sec_adv_bv_19_c(transport, upperTester, lowerTester, trace):
     success = success and RPAs[upperTester].timeout( 2 ) and RPAs[lowerTester].timeout( 2 );
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
 
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
     """
@@ -5673,11 +5621,11 @@ def ll_sec_adv_bv_20_c(transport, upperTester, lowerTester, trace):
     success = success and RPAs[upperTester].timeout( 60 ) and RPAs[lowerTester].timeout( 60 );
     success = success and RPAs[upperTester].enable() and RPAs[lowerTester].enable();
 
-    ownAddress  = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
+    ownAddress = Address( ExtendedAddressType.RESOLVABLE_OR_PUBLIC );
     peerAddress = identityAddresses[lowerTester];
-    advertiser  = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
+    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, 
                              ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-    ownAddress  = Address( ExtendedAddressType.PUBLIC );
+    ownAddress = Address( ExtendedAddressType.PUBLIC );
     peerAddress = identityAddresses[upperTester];
     initiator = Initiator(transport, lowerTester, upperTester, trace, ownAddress, peerAddress);
 
@@ -5770,7 +5718,7 @@ __tests__ = {
     "LL/DDI/ADV/BV-07-C": [ ll_ddi_adv_bv_07_c, "Scan Request/Response followed by Connection Request" ],
     "LL/DDI/ADV/BV-08-C": [ ll_ddi_adv_bv_08_c, "Advertiser Filtering Scan requests" ],
     "LL/DDI/ADV/BV-09-C": [ ll_ddi_adv_bv_09_c, "Advertiser Filtering Connection requests" ],
-    "LL/DDI/ADV/BV-11-C": [ ll_ddi_adv_bv_11_c, "High Duty Cycle Connectable Directed Advertising on one channel" ],
+    "LL/DDI/ADV/BV-11-C": [ ll_ddi_adv_bv_11_c, "High Duty Cycle Connectable Directed Advertising on all channels" ],
     "LL/DDI/ADV/BV-15-C": [ ll_ddi_adv_bv_15_c, "Discoverable Undirected Advertising on all channels" ],
     "LL/DDI/ADV/BV-16-C": [ ll_ddi_adv_bv_16_c, "Discoverable Undirected Advertising with Data on all channels" ],
     "LL/DDI/ADV/BV-17-C": [ ll_ddi_adv_bv_17_c, "Discoverable Undirected Advertising with Scan Request/Response" ],
