@@ -164,7 +164,7 @@ class Scanner:
     def __monitorReports(self):
         
         prevTime = 0;
-        while max(self.reports, self.directReports, self.counts) < self.expectedReports:
+        while max(self.reports, self.directReports, self.counts/2) < self.expectedReports:
 
             if has_event(self.transport, self.idx, 100):
                 prevTime = self.__handleReport(prevTime);
@@ -176,7 +176,7 @@ class Scanner:
     def __monitorResponses(self):
         
         prevTime = 0;
-        while (max(self.reports, self.directReports, self.counts) < self.expectedReports) or \
+        while (max(self.reports, self.directReports, self.counts/2) < self.expectedReports) or \
               (max(self.responses, self.reports/5, self.counts) < self.expectedResponses):
 
             if has_event(self.transport, self.idx, 100):
@@ -195,7 +195,7 @@ class Scanner:
         prevTime = 0;
         while self.lastTime == 0:
 
-            if has_event(self.transport, self.idx, 100):
+            if has_event(self.transport, self.idx, 99):
                 prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
