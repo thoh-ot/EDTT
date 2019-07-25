@@ -30,6 +30,46 @@ from components.address import *;
 #     LE_Channel_Selection_Algorithm_Event           = 1<<19
 #     LE_Events_All                                  = (1<<20)-1
 
+def __verifyAndShowEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (event == expectedEvent);
+
+def __verifyAndShowMetaEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (subEvent == expectedEvent);
+
+def __verifyAndFetchEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (event == expectedEvent), eventData;
+
+def __verifyAndFetchMetaEvent(transport, idx, expectedEvent, trace):
+
+    event, subEvent, eventData = get_event(transport, idx, 100)[1:];
+    showEvent(event, eventData, trace);
+    return (subEvent == expectedEvent), eventData;
+
+def __getCommandCompleteEvent(transport, idx, trace):
+
+    return __verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_CMD_COMPLETE, trace);
+    
+def __random(transport, idx, trace):
+    status, rand = le_rand(transport, idx, 100);
+    trace.trace(6, "LE Rand Command returns status: 0x%02X; rand: 0x%016X" % (status, toNumber(rand)));
+    success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+    return success, rand;
+
+def __encrypt(transport, idx, key, plaintext, trace):
+    status, encrypted = le_encrypt(transport, idx, key, plaintext, 2000);
+    trace.trace(6, "LE Encrypt Command returns status: 0x%02X" % status);
+    success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
+    return success, encrypted;
+
 """
     Prepare for testing, by
     - Resetting the DUT
@@ -48,29 +88,20 @@ def preamble_standby(transport, idx, trace):
         
         status = reset(transport, idx, 100);
         trace.trace(6, "Reset Command returns status: 0x%02X" % status);
-        success = (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
         if not success:
-            trace.trace(6, "Didn't get correct event after RESET - event: %d" % event);
-        showEvent(event, eventData, trace);
+            trace.trace(6, "RESET command not confirmed!");
         
         status, features = read_local_supported_features(transport, idx, 100);
         trace.trace(6, "Read Local Supported Features Command returns status: 0x%02X" % status);
         """
             Check that features 'BR/EDR Not Supported' and 'LE Supported (Controller)' are both enabled
         """
-        success = success and (status == 0) and ((features[4] & 0x60) == 0x60);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and ((features[4] & 0x60) == 0x60) and success;
 
         status, features = le_read_local_supported_features(transport, idx, 100);
         trace.trace(6, "LE Read Local Supported Features Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
         """
             Bit Parameter Description
              0 Inquiry Complete Event
@@ -147,10 +178,7 @@ def preamble_standby(transport, idx, trace):
         
         status = set_event_mask(transport, idx, events, 100);
         trace.trace(6, "Set Event Mask Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
         """
             Bit LE Subevent Types
              0 LE Connection Complete Event
@@ -183,10 +211,7 @@ def preamble_standby(transport, idx, trace):
         
         status = le_set_event_mask(transport, idx, events, 100);
         trace.trace(6, "LE Set Event Mask Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
         """
             0x00 00 00 00 00 00 00 00 ~ Default.
         """
@@ -194,31 +219,12 @@ def preamble_standby(transport, idx, trace):
         
         status = set_event_mask_page_2(transport, idx, events, 100);
         trace.trace(6, "Set Event Mask Page2 Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
     except Exception as e: 
         trace.trace(3, "Standby preamble steps failed: %s" % str(e));
         success = False;
 
     return success;
-
-def __random(transport, idx):
-    status, rand = le_rand(transport, idx, 100);
-    # trace.trace(6, "LE Rand Command returns status: 0x%02X; rand: 0x%016X" % (status, toNumber(rand)));
-    success = status == 0;
-    event = get_event(transport, idx, 100)[1];
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    return success, rand;
-
-def __encrypt(transport, idx, key, plaintext):
-    status, encrypted = le_encrypt(transport, idx, key, plaintext, 2000);
-    # trace.trace(6, "LE Encrypt Command returns status: 0x%02X; irk: 0x%032X" % (status, toNumber(irk)));
-    success = status == 0;
-    event = get_event(transport, idx, 100)[1];
-    success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-    return success, encrypted;
 
 """
     Calculates a Random Private Address based on the IR (passed to the function)
@@ -232,32 +238,22 @@ def preamble_random_address_calculated(transport, idx, key, trace):
     trace.trace(4, "Random Address Calculated preamble steps...");
     
     try:
-        status, rand = le_rand(transport, idx, 100);
-        trace.trace(6, "LE Rand Command returns status: 0x%02X; rand: 0x%016X" % (status, toNumber(rand)));
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success, rand = __random(transport, idx, trace);
 
         plaintext = [0x01 if i == 0 else 0x00 for i in range(16)];
         
-        status, irk = le_encrypt(transport, idx, key, plaintext, 2000);
-        trace.trace(6, "LE Encrypt Command returns status: 0x%02X; irk: 0x%032X" % (status, toNumber(irk)));
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, irk = __encrypt(transport, idx, key, plaintext, trace);        
+        trace.trace(7, "IRK: 0x%032X" % toNumber(irk));
+        success = success and _success;
 
         prand = toArray(toNumber(rand) << 13, 16);
         
-        status, encData = le_encrypt(transport, idx, irk, prand, 2000);
-        trace.trace(6, "LE Encrypt Command returns status: 0x%02X; encoded data: 0x%032X" % (status, toNumber(encData)));
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, encData = __encrypt(transport, idx, irk, prand, trace);
+        success = success and _success;
 
         address = toArray((toNumber(rand) << 3) | (toNumber(encData) >> 13), 6);
+
+        trace.trace(7, "Random address: 0x%012X" % toNumber(address));
         
     except Exception as e: 
         trace.trace(3, "Random Address Calculated preamble failed: %s" % str(e));
@@ -277,42 +273,21 @@ def preamble_excryption_keys_calculated(transport, idx, trace):
     trace.trace(4, "Encryption Keys Calculated preamble steps...");
     
     try:
-        status, div = le_rand(transport, idx, 100);
-        trace.trace(6, "LE Rand Command returns status: 0x%02X; div: 0x%016X" % (status, toNumber(div)));
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success, div = __random(transport, idx, trace);
 
-        status, rand = le_rand(transport, idx, 100);
-        trace.trace(6, "LE Rand Command returns status: 0x%02X; rand: 0x%016X" % (status, toNumber(rand)));
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, rand = __random(transport, idx, trace);
+        success = success and _success;
         
         ir = er = 0x112233445566778899AABBCCDDEEFF00L;        
 
-        status, dhk = le_encrypt(transport, idx, toArray(ir, 16), toArray(0x02L, 16), 2000);
-        trace.trace(6, "LE Encrypt Command returns status: 0x%02X; dhk: 0x%032X" % (status, toNumber(dhk)));
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, dhk = _-encrypt(transport, idx, toArray(ir, 16), toArray(0x02L, 16), trace);
+        success = success and _success;
 
-        status, y = le_encrypt(transport, idx, dhk, rand, 2000);
-        trace.trace(6, "LE Encrypt Command returns status: 0x%02X; y: 0x%032X" % (status, toNumber(y)));
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, y   = __encrypt(transport, idx, dhk, rand, trace);
+        success = success and _success;
 
-        status, ltk = le_encrypt(transport, idx, toArray(er, 16), div, 2000);
-        trace.trace(6, "LE Encrypt Command returns status: 0x%02X; ltk: 0x%032X" % (status, toNumber(ltk)));
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        _success, ltk = __encrypt(transport, idx, toArray(er, 16), div, trace);
+        success = success and _success;
 
         ediv = toArray(toNumber(y) ^ toNumber(div), 16);
 
@@ -331,10 +306,7 @@ def preamble_set_public_address(transport, idx, address, trace):
     try:
         status = write_bd_addr(transport, idx, toArray(address, 6), 100);
         trace.trace(6, "Write BD_ADDR Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Set Public Address preamble failed: %s" % str(e));
         success = False;
@@ -372,10 +344,7 @@ def preamble_set_random_address(transport, idx, address, trace):
     try:
         status = le_set_random_address(transport, idx, toArray(address, 6), 100);
         trace.trace(6, "LE Set Random Address Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Set Random Address preamble failed: %s" % str(e));
         success = False;
@@ -465,20 +434,14 @@ def preamble_specific_white_listed(transport, idx, addresses, trace):
     try:
         status = le_clear_white_list(transport, idx, 100);
         trace.trace(6, "LE Clear White List Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
 
         for i in range(len(addresses)):
             address = toArray(addresses[i][1], 6);
             trace.trace(7, "Addding Device to White List %s" % formatAddress(address, addresses[i][0]));
             status = le_add_device_to_white_list(transport, idx, addresses[i][0], address, 100);
             trace.trace(6, "LE Add Device to White List Command returns status: 0x%02X" % status);
-            success = success and (status == 0);
-            eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, trace);
+            success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
     except Exception as e: 
         trace.trace(3, "Specific White Listed preamble failed: %s" % str(e));
         success = False;
@@ -491,18 +454,12 @@ def preamble_buffer_size_read(transport, idx, trace):
     try:
         status, LeMaxLen, LeMaxNum = le_read_buffer_size(transport, idx, 100);
         trace.trace(6, "LE Read Buffer Size Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
 
         if LeMaxLen == 0 and LeMaxNum == 0:
             status, AclMaxLen, ScoMaxLen, AclMaxNum, ScoMaxNum = read_buffer_size(transport, idx, 100);
             trace.trace(6, "Read Buffer Size Command returns status: 0x%02X" % status);
-            success = success and (status == 0);
-            eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-            success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-            showEvent(event, eventData, trace);
+            success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
         """
             0x90 88 01 00 00 80 00 20 ~ 0x2000800000018890
         """
@@ -510,10 +467,7 @@ def preamble_buffer_size_read(transport, idx, trace):
         
         status = set_event_mask(transport, idx, events, 100);
         trace.trace(6, "Set Event Mask Command returns status: 0x%02X" % status);
-        success = success and (status == 0);
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0) and success;
     except Exception as e: 
         trace.trace(3, "Buffer Size Read preamble failed: %s" % str(e));
         success = False;
@@ -524,12 +478,10 @@ def preamble_ext_advertising_parameters_set(transport, idx, Handle, Properties, 
     trace.trace(5, "Extended Advertising Parameters Set preamble steps...");
 
     try:
-        status = le_set_extended_advertising_parameters(transport, idx, Handle, Properties, PrimMinInterval, PrimMaxInterval, PrimChannelMap, OwnAddrType, PeerAddrType, PeerAddress, FilterPolicy, TxPower, PrimAdvPhy, SecAdvMaxSkip, SecAdvPhy, Sid, ScanReqNotifyEnable, 100);
+        status = le_set_extended_advertising_parameters(transport, idx, Handle, Properties, PrimMinInterval, PrimMaxInterval, PrimChannelMap, OwnAddrType, PeerAddrType, \
+                                                        PeerAddress, FilterPolicy, TxPower, PrimAdvPhy, SecAdvMaxSkip, SecAdvPhy, Sid, ScanReqNotifyEnable, 100);
         trace.trace(6, "LE Set Extended Advertising Parameters Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Extended Advertising Parameters Set preamble failed: %s" % str(e));
         success = False;
@@ -547,10 +499,7 @@ def preamble_ext_advertising_data_set(transport, idx, Handle, Operation, FragPre
 
         status = le_set_extended_advertising_data(transport, idx, Handle, Operation, FragPreference, dataSize, advertiseData, 100);
         trace.trace(6, "LE Set Extended Advertising Data Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Extended Advertising Data Set preamble failed: %s" % str(e));
         success = False;
@@ -571,10 +520,7 @@ def preamble_ext_advertise_enable(transport, idx, enable, SHandle, SDuration, SM
             
         status = le_set_extended_advertising_enable(transport, idx, enable, NumberOfSets, SHandle, SDuration, SMaxExtAdvEvts, 100);
         trace.trace(6, "LE Set Extended Advertising Enable Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Extended Advertising " + "Enable" if enable else "Disable" + " preamble failed: %s" % str(e));
         success = False;
@@ -587,10 +533,7 @@ def preamble_scan_parameters_set(transport, idx, scanType, scanInterval, scanWin
     try:
         status = le_set_scan_parameters(transport, idx, scanType, scanInterval, scanWindow, addrType, filterPolicy, 100);
         trace.trace(6, "LE Set Scan Parameters Command returns status: 0x%02X" % status);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Scan Parameters Set preamble failed: %s" % str(e));
         success = False;
@@ -603,14 +546,9 @@ def preamble_scan_enable(transport, idx, enable, filterDuplicate, trace):
     try:
         status = le_set_scan_enable(transport, idx, enable, filterDuplicate, 100);
         trace.trace(6, "LE Set Scan Enable Command returns status: 0x%02X" % status);
-        success = status == 0;
-        event = Events.BT_HCI_EVT_NONE;
-        while event != Events.BT_HCI_EVT_CMD_COMPLETE:
-            if has_event(transport, idx, 100):
-                eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-                showEvent(event, eventData, trace);
-            else:
-                event = Events.BT_HCI_EVT_CMD_COMPLETE;
+        success = (status == 0);
+        while not __getCommandCompleteEvent(transport, idx, trace):
+            pass;
     except Exception as e: 
         trace.trace(3, "Scanning " + ("Enable" if enable else "Disable") + " preamble failed: %s" % str(e));
         success = False;
@@ -629,10 +567,7 @@ def preamble_default_physical_channel(transport, idx, AllPhys, TxPhys, RxPhys, t
 
     try:
         status = le_set_default_phy(transport, idx, AllPhys, TxPhys, RxPhys, 100);
-        success = status == 0;
-        eventTime, event, subEvent, eventData = get_event(transport, idx, 100);
-        success = success and (event == Events.BT_HCI_EVT_CMD_COMPLETE);
-        showEvent(event, eventData, trace);
+        success = __getCommandCompleteEvent(transport, idx, trace) and (status == 0);
     except Exception as e: 
         trace.trace(3, "Default physical channels preamble failed: %s" % str(e));
         success = False;
