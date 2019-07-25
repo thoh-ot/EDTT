@@ -2790,15 +2790,15 @@ def has_event(transport, idx, to):
         transport.send(idx, cmd);
         
         packet = transport.recv(idx, 5, 100);
-        
+    
         if ( 5 != len(packet) ):
             raise Exception("Has Event command failed: Response too short (Expected %i bytes got %i bytes)" % (5, len(packet)));
-        
+    
         RespCmd, RespLen, empty = struct.unpack('<HHB', packet);
         
         if ( RespCmd != Commands.CMD_HAS_EVENT_RSP ):
             raise Exception("Has Event command failed: Inappropriate command response received");
-        
+    
         if ( RespLen != 1 ):
             raise Exception("Has Event command failed: Response length field corrupted (%i)" % RespLen);
         
