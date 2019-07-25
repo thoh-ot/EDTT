@@ -27,6 +27,11 @@ def parse_arguments():
                         'Options are: A real test name, "all", "randomize",'
                         'or a file name containing a list of test names (default "all")')
 
+    parser.add_argument("-S","--stop_on_failure", required=False,
+                        action='store_true',
+                        help="Stop as soon as any test fails, instead of "
+                        "continuing with the remaining tests")
+
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
     return parser.parse_known_args()
@@ -87,6 +92,8 @@ def run_tests(args, xtra_args, transport, trace):
             result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec, nameLen);
             passed += 1 if result == 0 else 0;
             total += 1;
+            if result != 0 and args.stop_on_failure:
+                break;
 
     elif t in test_specs:
         result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
@@ -103,6 +110,8 @@ def run_tests(args, xtra_args, transport, trace):
                 result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
                 passed += 1 if result == 0 else 0;
                 total += 1;
+                if result != 0 and args.stop_on_failure:
+                    break;
             else:
                 print("unkown test " + t + ". Skipping")
         file.close();
