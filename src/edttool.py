@@ -23,9 +23,23 @@ def parse_arguments():
                         " src/tests, or a file path (relative or absolute)");
 
     parser.add_argument("-C", "--case", required=False,
+                        default="all",
                         help='Which testcase to run in that module.'
                         'Options are: A real test name, "all", "randomize",'
                         'or a file name containing a list of test names (default "all")')
+
+    parser.add_argument("--shuffle", required=False,
+                        action='store_true',
+                        help='Shuffle test order. '
+                        'The order will be dependent on the random seed. '
+                        'If <case> was set to all, this is equivalent to setting <case> to "randomize". '
+                        'If <case> was a file name, this will shuffle the lines in the file. '
+                        'If <case> was 1 particular testcase, this option has no effect.')
+
+    parser.add_argument("-S","--stop_on_failure", required=False,
+                        action='store_true',
+                        help="Stop as soon as any test fails, instead of "
+                        "continuing with the remaining tests")
 
     parser.add_argument("--seed", required=False, default=0x1234, help='Random generator seed (0x1234 by default)')
 
@@ -76,17 +90,19 @@ def run_tests(args, xtra_args, transport, trace):
     test_specs = test_mod.get_tests_specs();
     nameLen = max([ len(test_specs[key].name) for key in test_specs ]); 
 
-    t = "all" if args.case is None else args.case
+    t = args.case
 
     if t.lower() == "all" or t.lower() == "randomize":
         tests_list = list(test_specs.iteritems());
-        if t.lower() == "randomize":
+        if t.lower() == "randomize" or args.shuffle:
             random.shuffle(tests_list)
 
         for _,test_spec in tests_list:
             result = run_one_test(args, xtra_args, transport, trace, test_mod, test_spec, nameLen);
             passed += 1 if result == 0 else 0;
             total += 1;
+            if result != 0 and args.stop_on_failure:
+                break;
 
     elif t in test_specs:
         result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
@@ -95,7 +111,12 @@ def run_tests(args, xtra_args, transport, trace):
 
     elif os.path.isfile(t):
         file = open(t, "r");
-        for line in file:
+        lines = file.readlines();
+
+        if args.shuffle:
+            random.shuffle(lines);
+
+        for line in lines:
             t = line.strip().upper();
             if (t[0] == "#"): #Skip commented lines
                 continue
@@ -103,6 +124,8 @@ def run_tests(args, xtra_args, transport, trace):
                 result = run_one_test(args, xtra_args, transport, trace, test_mod, test_specs[t], nameLen);
                 passed += 1 if result == 0 else 0;
                 total += 1;
+                if result != 0 and args.stop_on_failure:
+                    break;
             else:
                 print("unkown test " + t + ". Skipping")
         file.close();
