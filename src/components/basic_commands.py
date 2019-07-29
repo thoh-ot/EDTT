@@ -2794,7 +2794,7 @@ def has_event(transport, idx, to):
         if ( 5 != len(packet) ):
             raise Exception("Has Event command failed: Response too short (Expected %i bytes got %i bytes)" % (5, len(packet)));
     
-        RespCmd, RespLen, empty = struct.unpack('<HHB', packet);
+        RespCmd, RespLen, count = struct.unpack('<HHB', packet);
         
         if ( RespCmd != Commands.CMD_HAS_EVENT_RSP ):
             raise Exception("Has Event command failed: Inappropriate command response received");
@@ -2802,46 +2802,62 @@ def has_event(transport, idx, to):
         if ( RespLen != 1 ):
             raise Exception("Has Event command failed: Response length field corrupted (%i)" % RespLen);
         
-        if empty != 1:
+        if count > 0:
             break;
         
         to -= 100;
         if to >= 0:
             transport.wait(100);
         
-    return empty != 1;
+    return count > 0, count;
 
 """
-    Get event from the events queue
+    Get event(s) from the events queue
 """
-def get_event(transport, idx, to):
+def get_event(transport, idx, to, multiple=False):
     
-    cmd = struct.pack('<HH', Commands.CMD_GET_EVENT_REQ, 0);
+    cmd = struct.pack('<HHB', Commands.CMD_GET_EVENT_REQ, 1, 1 if multiple else 0);
     transport.send(idx, cmd);
     
-    packet = transport.recv(idx, 10, to);
+    nBytes = 3 if multiple else 10;
+    packet = transport.recv(idx, nBytes, to);
     
-    if ( 10 != len(packet) ):
-        raise Exception("Get Event command failed: Response too short (Expected %i bytes got %i bytes)" % (10, len(packet)));
+    if nBytes != len(packet):
+        raise Exception("Get Event command failed: Response too short (Expected %i bytes got %i bytes)" % (nBytes, len(packet)));
     
-    RespCmd, RespLen, time, event, eventLen = struct.unpack('<HHIBB', packet[:10]);
-    if RespLen > 6:
-        data = transport.recv(idx, RespLen - 6, to);
+    if multiple:
+        RespCmd, count = struct.unpack('<HB', packet);
+        if RespCmd != Commands.CMD_GET_EVENT_RSP:
+            raise Exception("Get Event command failed: Inappropriate command response received");
+
+        events = [];
+        while count > 0:
+            packet = transport.recv(idx, 8, to);
+            RespLen, time, event, eventLen = struct.unpack('<HIBB', packet);
+            data = "" if RespLen <= 6 else transport.recv(idx, RespLen - 6, to);
+
+            if RespLen != (6 + eventLen):
+                raise Exception("Get Event command failed: Response length field corrupted (%i)" % RespLen);
+    
+            subevent = 0 if (event != Events.BT_HCI_EVT_LE_META_EVENT) or (eventLen == 0) else struct.unpack('<B', data[:1])[0];
+     
+            events += [[ time, event, subevent, data ]];
+            count -= 1;
+
+        return events;
     else:
-        data = "";
+        RespCmd, RespLen, time, event, eventLen = struct.unpack('<HHIBB', packet[:10]);
+        data = "" if RespLen <= 6 else transport.recv(idx, RespLen - 6, to);
     
-    if ( RespCmd != Commands.CMD_GET_EVENT_RSP ):
-        raise Exception("Get Event command failed: Inappropriate command response received");
+        if RespCmd != Commands.CMD_GET_EVENT_RSP:
+            raise Exception("Get Event command failed: Inappropriate command response received");
     
-    if ( RespLen != 6 + eventLen ):
-        raise Exception("Get Event command failed: Response length field corrupted (%i)" % RespLen);
+        if RespLen != 6 + eventLen:
+            raise Exception("Get Event command failed: Response length field corrupted (%i)" % RespLen);
     
-    if (event == Events.BT_HCI_EVT_LE_META_EVENT) and (eventLen > 0):
-        subevent = struct.unpack('<B', data[:1])[0];
-    else:
-        subevent = 0;
+        subevent = 0 if (event != Events.BT_HCI_EVT_LE_META_EVENT) or (eventLen == 0) else struct.unpack('<B', data[:1])[0];
     
-    return time, event, subevent, data;
+        return time, event, subevent, data;
 
 """
     Flush the Data queue
