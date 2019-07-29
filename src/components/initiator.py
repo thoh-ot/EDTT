@@ -78,7 +78,7 @@ class Initiator:
         handle, role, interval = -1, -1, -1;
         localRPA = [0 for _ in range(6)];
 
-        success = has_event(self.transport, idx, timeout); 
+        success = has_event(self.transport, idx, timeout)[0]; 
         if success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE);
@@ -95,7 +95,7 @@ class Initiator:
 
         handle, reason = -1, -1;
 
-        success = has_event(self.transport, idx, timeout);
+        success = has_event(self.transport, idx, timeout)[0];
         if success:        
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = (event == Events.BT_HCI_EVT_DISCONN_COMPLETE);
@@ -113,7 +113,7 @@ class Initiator:
         
         txPhys, rxPhys = -1, -1;
 
-        success = has_event(self.transport, idx, timeout);
+        success = has_event(self.transport, idx, timeout)[0];
         if success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = subEvent == MetaEvents.BT_HCI_EVT_LE_PHY_UPDATE_COMPLETE;
@@ -131,7 +131,7 @@ class Initiator:
 
         handle, minInterval, maxInterval, latency, supervisionTimeout = -1, -1, -1, -1, -1;
 
-        success = has_event(self.transport, idx, timeout); 
+        success = has_event(self.transport, idx, timeout)[0]; 
         while success:
             eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
             success = subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_PARAM_REQ;
@@ -145,7 +145,7 @@ class Initiator:
                     We could receive a LE Connection Parameter Update Complete Event instead - save it!
                 """
                 self.__savedEvent[idx] = { 'Time': eventTime, 'Event': event, 'Meta': subEvent, 'Data': eventData };
-                success = has_event(self.transport, idx, timeout);
+                success = has_event(self.transport, idx, timeout)[0];
 
         return success, handle, minInterval, maxInterval, latency, supervisionTimeout;
 
@@ -161,7 +161,7 @@ class Initiator:
                                                     self.__savedEvent[idx]['Meta'], self.__savedEvent[idx]['Data'];
             self.__savedEvent[idx] = None;
         else:
-            success = has_event(self.transport, idx, timeout);
+            success = has_event(self.transport, idx, timeout)[0];
             if success:
                 eventTime, event, subEvent, eventData = get_event(self.transport, idx, 100);
 
@@ -201,7 +201,7 @@ class Initiator:
 
         try:
             disconnect(self.transport, self.initiator, self.handles[0], reason, 100);
-            more = has_event(self.transport, self.initiator, 100);
+            more = has_event(self.transport, self.initiator, 100)[0];
             while more:
                 eventTime, event, subEvent, eventData = get_event(self.transport, self.initiator, 100);
                 if event == Events.BT_HCI_EVT_CMD_STATUS:
@@ -212,7 +212,7 @@ class Initiator:
                         success = self.status == 0;
                         break; 
                 showEvent(event, eventData, self.trace);
-                more = has_event(self.transport, self.initiator, 100);
+                more = has_event(self.transport, self.initiator, 100)[0];
 
         except Exception as e: 
             self.trace.trace(3, "Disconnect Command failed: %s" % str(e));
