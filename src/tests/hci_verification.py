@@ -342,12 +342,12 @@ def hci_cco_bv_09_c(transport, upperTester, lowerTester, trace):
         """
             If parameters have changed - both upper- and lower-Tester will receive a LE Data Length Change event
         """
-        if has_event(transport, upperTester, 200):
+        if has_event(transport, upperTester, 200)[0]:
             eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
             success = success and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE);
             showEvent(event, eventData, trace);
         
-        if has_event(transport, lowerTester, 200):
+        if has_event(transport, lowerTester, 200)[0]:
             eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
             success = success and (subEvent == MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE);
             showEvent(event, eventData, trace);
@@ -858,14 +858,14 @@ def hci_dsu_bv_03_c(transport, upperTester, lowerTester, trace):
     """
        There might be pending disconnect events lying around...
     """
-    while has_event(transport, lowerTester, 200):
+    while has_event(transport, lowerTester, 200)[0]:
         eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
         showEvent(event, eventData, trace);
         if event == Events.BT_HCI_EVT_DISCONN_COMPLETE:
             status, handle, reason = disconnectComplete(eventData);
             success = success and (reason == 0x08); # Connection Timeout
 
-    while has_event(transport, upperTester, 200):
+    while has_event(transport, upperTester, 200)[0]:
         eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100);
         showEvent(event, eventData, trace);
         if event == Events.BT_HCI_EVT_DISCONN_COMPLETE:
