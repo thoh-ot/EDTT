@@ -167,7 +167,7 @@ class Advertiser:
     """
     def timeout(self):
         self.status = 0;
-        if has_event(self.transport, self.idx, 100):
+        if has_event(self.transport, self.idx, 100)[0]:
             event, subEvent, eventData = get_event(self.transport, self.idx, 100)[1:];
             showEvent(event, eventData, self.trace);
             if (subEvent == MetaEvents.BT_HCI_EVT_LE_CONN_COMPLETE) or (subEvent == MetaEvents.BT_HCI_EVT_LE_ENH_CONN_COMPLETE):
