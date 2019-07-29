@@ -147,7 +147,7 @@ def writeData(transport, idx, handle, pbFlags, txData, trace):
     trace.trace(6, "LE Data Write returns status: 0x%02X" % status);
     success = status == 0;
 
-    dataSent = has_event(transport, idx, 200);
+    dataSent = has_event(transport, idx, 200)[0];
     success = success and dataSent;
     if dataSent:
         dataSent = verifyAndShowEvent(transport, idx, Events.BT_HCI_EVT_NUM_COMPLETED_PACKETS, trace);
@@ -190,7 +190,7 @@ def readDataFragments(transport, idx, trace, timeout=100):
 
 def hasConnectionUpdateCompleteEvent(transport, idx, trace):
 
-    success, status = has_event(transport, idx, 100), -1;
+    success, status = has_event(transport, idx, 100)[0], -1;
     if success:
         success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_CONN_UPDATE_COMPLETE, trace);
         if success:
@@ -199,7 +199,7 @@ def hasConnectionUpdateCompleteEvent(transport, idx, trace):
 
 def hasChannelSelectionAlgorithmEvent(transport, idx, trace):
 
-    success, status, chSelAlgorithm = has_event(transport, idx, 100), -1, -1;
+    success, status, chSelAlgorithm = has_event(transport, idx, 100)[0], -1, -1;
     if success:
         success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_CHAN_SEL_ALGO, trace);
         if success:
@@ -208,7 +208,7 @@ def hasChannelSelectionAlgorithmEvent(transport, idx, trace):
 
 def hasDataLengthChangedEvent(transport, idx, trace):
 
-    success, handle, maxTxOctets, maxTxTime, maxRxOctets, maxRxTime = has_event(transport, idx, 200), -1, -1, -1, -1, -1;
+    success, handle, maxTxOctets, maxTxTime, maxRxOctets, maxRxTime = has_event(transport, idx, 200)[0], -1, -1, -1, -1, -1;
     if success:
         success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_DATA_LEN_CHANGE, trace);
         if success:
@@ -217,7 +217,7 @@ def hasDataLengthChangedEvent(transport, idx, trace):
 
 def hasReadRemoteFeaturesCompleteEvent(transport, idx, trace):
 
-    success, handle, features = has_event(transport, idx, 100), -1, [];
+    success, handle, features = has_event(transport, idx, 100)[0], -1, [];
     if success:
         success, eventData = verifyAndFetchMetaEvent(transport, idx, MetaEvents.BT_HCI_EVT_LE_REMOTE_FEAT_COMPLETE, trace);
         if success:
@@ -226,7 +226,7 @@ def hasReadRemoteFeaturesCompleteEvent(transport, idx, trace):
 
 def hasReadRemoteVersionInformationCompleteEvent(transport, idx, trace):
 
-    success, handle, version, manufacturer, subVersion = has_event(transport, idx, 100), -1, -1, -1, -1;
+    success, handle, version, manufacturer, subVersion = has_event(transport, idx, 100)[0], -1, -1, -1, -1;
     if success:
         success, eventData = verifyAndFetchEvent(transport, idx, Events.BT_HCI_EVT_REMOTE_VERSION_INFO, trace);
         if success:
@@ -331,11 +331,13 @@ def ll_ddi_adv_bv_03_c(transport, upperTester, lowerTester, trace):
     advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.NON_CONNECTABLE_UNDIRECTED, 50, \
                                              AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     success = True;
-        
+    adData = ADData();
+
     for dataLength in [ 1, 0, 31, 0 ]:
         trace.trace(7, '-'*80);
             
-        advertiser.advertiseData = [ ] if dataLength == 0 else [ 0x01 ] if dataLength == 1 else [ 0x1E, 0x09 ] + [ ord(char) for char in "THIS IS JUST A RANDOM NAME..." ];
+        advertiser.advertiseData = [ ] if dataLength == 0 else [ 0x01 ] if dataLength == 1 else \
+                                   adData.encode( ADType.COMPLETE_LOCAL_NAME, u'THIS IS JUST A RANDOM NAME...' );
         advertising = advertiser.enable(); 
         success = success and advertising;
                 
@@ -357,11 +359,13 @@ def ll_ddi_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 50, \
                                              AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     success = True;
+    adData = ADData();
     
     for dataLength in [ 1, 0, 31, 0 ]:
         trace.trace(7, '-'*80);
             
-        advertiser.advertiseData = [ ] if dataLength == 0 else [ 0x01 ] if dataLength == 1 else [ 0x1E, 0x09 ] + [ ord(char) for char in "THIS IS JUST A RANDOM NAME..." ];
+        advertiser.advertiseData = [ ] if dataLength == 0 else [ 0x01 ] if dataLength == 1 else \
+                                   adData.encode( ADType.COMPLETE_LOCAL_NAME, u'THIS IS JUST A RANDOM NAME...' );
         advertising = advertiser.enable(); 
         success = success and advertising;
                 
@@ -382,12 +386,13 @@ def ll_ddi_adv_bv_05_c(transport, upperTester, lowerTester, trace):
 
     advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED);
     success = True;
+    adData = ADData();
     
     for address in [ 0x456789ABCDEFL, address_scramble_OUI( 0x456789ABCDEFL ), address_exchange_OUI_LAP( 0x456789ABCDEFL ) ]:
         for dataLength in [ 0, 31 ]:
             trace.trace(7, '-'*80);
                 
-            advertiser.responseData = [ ] if dataLength == 0 else [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+            advertiser.responseData = [ ] if dataLength == 0 else adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
             advertising = advertiser.enable(); 
             success = success and advertising;
                     
@@ -412,8 +417,9 @@ def ll_ddi_adv_bv_06_c(transport, upperTester, lowerTester, trace):
 
     advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 1);
     success = True;
+    adData = ADData();
 
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
 
     for address in [ 0x456789ABCDEFL, address_scramble_OUI( 0x456789ABCDEFL ), address_scramble_LAP( 0x456789ABCDEFL ), address_exchange_OUI_LAP( 0x456789ABCDEFL ) ]:
         trace.trace(7, '-'*80);
@@ -458,8 +464,9 @@ def ll_ddi_adv_bv_07_c(transport, upperTester, lowerTester, trace):
 
     advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED);
     success = True;
-    
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
+    adData = ADData();
+
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
 
     success = advertiser.enable();
     success = success and scanner.enable();
@@ -678,8 +685,8 @@ def ll_ddi_adv_bv_11_c(transport, upperTester, lowerTester, trace):
     success = success and scanner.qualifyReportTime( 30, 1280 );
 
     scanner.expectedReports = 1;
-    success = success and scanner.enable();
     success = success and advertiser.enable();
+    success = success and scanner.enable();
     scanner.monitor();
     success = success and scanner.disable();
 
@@ -722,13 +729,10 @@ def ll_ddi_adv_bv_16_c(transport, upperTester, lowerTester, trace):
     advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 50);
 
     success = True;
+    adData = ADData();
+
     for i in range(3):
-        if   i == 0:
-            advertiser.advertiseData = [ 0x01 ];
-        elif i == 1:
-            advertiser.advertiseData = [ ];
-        else:
-            advertiser.advertiseData = [ 0x1E, 0x09 ] + [ ord(char) for char in "DATA:DATA:DATA:DATA:DATA:DATA" ]
+        advertiser.advertiseData = [ ] if i == 1 else [ 0x01 ] if i == 0 else adData.encode( ADType.COMPLETE_LOCAL_NAME, u'DATA:DATA:DATA:DATA:DATA:DATA' );
                 
         success = success and advertiser.enable();
         success = success and scanner.enable();
@@ -747,10 +751,12 @@ def ll_ddi_adv_bv_17_c(transport, upperTester, lowerTester, trace):
     advertiser, scanner = setActiveScanning(transport, upperTester, lowerTester, trace, Advertising.SCANNABLE_UNDIRECTED, 30, 5);
 
     success = True;
+    adData = ADData();
+
     for i in range(3):
         for j in range(2):
-            advertiser.responseData = [ 0x01, 0x09 ] if j == 0 else [ 0x1E, 0x09 ] + [ ord(char) for char in "IUT:IUT:IUT:IUT:IUT:IUT:IUT:I" ];            
-                
+            advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'' ) if j == 0 else \
+                                      adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT:IUT:IUT:IUT:IUT:IUT:IUT:I' );            
             if   i == 0:
                 success = success and preamble_set_public_address( transport, lowerTester, 0x456789ABCDEFL, trace);
             elif i == 1:
@@ -783,7 +789,8 @@ def ll_ddi_adv_bv_18_c(transport, upperTester, lowerTester, trace):
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
         
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];            
+    adData = ADData();
+    advertiser.responseData = adData.encode( ADType.COMPLETE_LOCAL_NAME, u'IUT' );
 
     success = success and advertiser.enable();
 
@@ -846,27 +853,17 @@ def ll_ddi_adv_bv_19_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_adv_bv_20_c(transport, upperTester, lowerTester, trace):
 
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.CONNECTABLE_UNDIRECTED, 100, \
+                                             AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
     """
         Place Public address of lowerTester in the White List
     """
-    addresses = [[ SimpleAddressType.PUBLIC, 0x456789ABCDEFL ]];
-    success = preamble_specific_white_listed(transport, upperTester, addresses, trace);
+    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
+    success = addAddressesToWhiteList(transport, upperTester, [ peerAddress ], trace);
 
-    AllPhys = 0;
-    TxPhys = PreferredPhysicalChannel.LE_2M;
-    RxPhys = PreferredPhysicalChannel.LE_2M;
+    AllPhys, TxPhys, RxPhys = 0, PreferredPhysicalChannel.LE_2M, PreferredPhysicalChannel.LE_2M;
 
     success = success and preamble_default_physical_channel(transport, upperTester, AllPhys, TxPhys, RxPhys, trace);
-    """
-        Scan interval should be three times the average Advertise interval. Scan window should be the maximum possible.
-    """ 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
-
-    advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_UNDIRECTED, \
-                            ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_BOTH_REQUESTS);
-
-    scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
         
     success = scanner.enable();
     success = success and advertiser.enable();
@@ -930,7 +927,7 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
         deltas = [];
         reports = 0;
         while reports < 50:
-            if has_event(transport, lowerTester, 100):
+            if has_event(transport, lowerTester, 100)[0]:
                 eventTime, event, subEvent, eventData = get_event(transport, lowerTester, 100);
                 # showEvent(event, eventData, trace);
                 isReport = (event == Events.BT_HCI_EVT_LE_META_EVENT) and (subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT);
@@ -958,12 +955,7 @@ def ll_ddi_adv_bv_21_c(transport, upperTester, lowerTester, trace):
 """
 def ll_ddi_scn_bv_01_c(transport, upperTester, lowerTester, trace):
 
-    ownAddress = Address( ExtendedAddressType.PUBLIC );
-    peerAddress = Address( SimpleAddressType.PUBLIC, 0x123456789ABCL );
-
-    advertiser = Advertiser(transport, lowerTester, trace, AdvertiseChannel.CHANNEL_37, Advertising.NON_CONNECTABLE_UNDIRECTED, ownAddress, peerAddress);
-
-    scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 20);
+    advertiser, scanner = setPassiveScanning(transport, upperTester, lowerTester, trace, Advertising.NON_CONNECTABLE_UNDIRECTED, 20);
         
     success = scanner.enable();
 
@@ -1008,7 +1000,7 @@ def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
 
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_NONCONN_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20);
         
-    success = scanner.enable();
+    success = success and scanner.enable();
 
     for i in range(4):
         if   i == 1:
@@ -1024,7 +1016,7 @@ def ll_ddi_scn_bv_02_c(transport, upperTester, lowerTester, trace):
         scanner.monitor();
         success = success and advertiser.disable();
         success = success and scanner.qualifyReports( 20 if i == 0 else 0 );
-          
+
     success = success and scanner.disable();
 
     return success
@@ -1222,7 +1214,7 @@ def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
     scanner = Scanner(transport, upperTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_DIRECT_IND, ownAddress, ScanningFilterPolicy.FILTER_WHITE_LIST, 20);
         
     success = success and scanner.enable();
-        
+
     for channel, i in zip([ AdvertiseChannel.CHANNEL_37, AdvertiseChannel.CHANNEL_38, AdvertiseChannel.CHANNEL_39 ], range(3)):
         if i < 2:
             success = success and preamble_set_public_address(transport, lowerTester, 0x456789ABCDEFL + i, trace);
@@ -1237,7 +1229,7 @@ def ll_ddi_scn_bv_11_c(transport, upperTester, lowerTester, trace):
         scanner.monitor();
         success = success and advertiser.disable();
         success = success and scanner.qualifyReports( 20 if i == 0 else 0 );
-           
+
     success = success and scanner.disable();
 
     return success
@@ -1668,7 +1660,6 @@ def ll_con_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     peerAddress = Address( SimpleAddressType.PUBLIC, 0x456789ABCDEFL );
     advertiser = Advertiser(transport, upperTester, trace, AdvertiseChannel.ALL_CHANNELS, Advertising.CONNECTABLE_HDC_DIRECTED, \
                             ownAddress, peerAddress, AdvertisingFilterPolicy.FILTER_NONE);
-    advertiser.responseData = [ 0x04, 0x09 ] + [ ord(char) for char in "IUT" ];
     ownAddress = Address( ExtendedAddressType.PUBLIC );
     scanner = Scanner(transport, lowerTester, trace, ScanType.PASSIVE, AdvertisingReport.ADV_DIRECT_IND, ownAddress, ScanningFilterPolicy.FILTER_NONE, 100);
     initiatorAddress = Address( ExtendedAddressType.PUBLIC );
@@ -1679,9 +1670,9 @@ def ll_con_adv_bv_04_c(transport, upperTester, lowerTester, trace):
     """        
     success = success and scanner.enable();
     success = success and advertiser.enable();
-    scanner.monitor();
+    scanner.monitor(True);
     success = success and scanner.disable();
-    success = success and not scanner.qualifyReportTime( 100, 1280 );
+    success = success and not scanner.qualifyReportTime( 100, 1200 );
     success = success and advertiser.timeout();
 
     success = success and advertiser.enable();
@@ -2791,7 +2782,7 @@ def ll_con_sla_bv_13_c(transport, upperTester, lowerTester, trace):
 
     if connected:   # Terminate connection if devices are connected
         transport.wait(3200)
-        if has_event(transport, upperTester, 3200):
+        if has_event(transport, upperTester, 3200)[0]:
             eventTime, event, subEvent, eventData = get_event(transport, upperTester, 100)
             showEvent(event, eventData, trace)
         else:
@@ -4819,8 +4810,8 @@ def ll_sec_adv_bv_05_c(transport, upperTester, lowerTester, trace):
         success = success and scanner.qualifyResponses(1);
         addressRead, resolvableAddresses[n] = readLocalResolvableAddress(transport, upperTester, identityAddresses[lowerTester], trace);
         trace.trace(6, "AdvA: %s" % formatAddress(resolvableAddresses[n]));
-        if n == 1:
-            transport.wait(2000); # Wait for RPA timeout
+        if n == 0:
+            transport.wait(2010); # Wait for RPA timeout
 
     success = advertiser.disable() and success;
     success = success and toNumber(resolvableAddresses[0]) != toNumber(resolvableAddresses[1]);
