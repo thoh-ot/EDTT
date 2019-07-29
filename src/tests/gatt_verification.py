@@ -34,7 +34,7 @@ def attRequest(transport, initiator, txData, trace):
     dataSent = False;
 
     while success and not dataSent:
-        dataSent = has_event(transport, initiator.initiator, 200);
+        dataSent = has_event(transport, initiator.initiator, 200)[0];
         success = success and dataSent;
         if dataSent:
             event, subEvent, eventData = get_event(transport, initiator.initiator, 100)[1:];
