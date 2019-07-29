@@ -45,7 +45,7 @@ class Pairing:
         dataSent = False;
 
         while success and not dataSent:
-            dataSent = has_event(self.transport, idx, 100);
+            dataSent = has_event(self.transport, idx, 100)[0];
             success = success and dataSent;
             if dataSent:
                 event, subEvent, eventData = get_event(self.transport, idx, 100)[1:];
@@ -434,7 +434,7 @@ class Pairing:
         while success:
 
             if not self.initiator.peer is None:
-                success = has_event(self.transport, self.initiator.peer, 100);
+                success = has_event(self.transport, self.initiator.peer, 100)[0];
                 while success:
                     event, subEvent, eventData = get_event(self.transport, self.initiator.peer, 100)[1:];
                     showEvent(event, eventData, self.trace);
@@ -451,7 +451,7 @@ class Pairing:
                     success = event == Events.BT_HCI_EVT_CMD_COMPLETE;
                     if not success:
                         break;
-                    success = has_event(self.transport, self.initiator.peer, 1000);
+                    success = has_event(self.transport, self.initiator.peer, 1000)[0];
                     if not success:
                         break;
                     event, subEvent, eventData = get_event(self.transport, self.initiator.peer, 100)[1:];
@@ -469,7 +469,7 @@ class Pairing:
 
             if not success:
                 break;
-            success = has_event(self.transport, self.initiator.initiator, 1000);
+            success = has_event(self.transport, self.initiator.initiator, 1000)[0];
             if not success:
                 break;
             event, subEvent, eventData = get_event(self.transport, self.initiator.initiator, 100)[1:];
