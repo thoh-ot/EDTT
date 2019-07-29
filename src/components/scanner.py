@@ -125,10 +125,6 @@ class Scanner:
         flush_events(self.transport, self.idx, 100);
         return self.__scan_enable(Scan.DISABLE);
 
-    def __quantify_deltas(self):
-        pivot = self.deltas[0] if self.deltas[0] != 0 else statistics.mean(self.deltas);
-        self.deltas[ : ] = [ x for x in self.deltas if x < (pivot + pivot) ];
-    
     def __updateDeltas(self, count, thisTime, prevTime):
         if count > 1:
             self.deltas += [thisTime - prevTime];
@@ -136,28 +132,30 @@ class Scanner:
             self.firstTime = thisTime;
 
     def __handleReport(self, prevTime):
-        eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
 
-        if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
+        for _event in get_event(self.transport, self.idx, 100, True):
+            eventTime, event, subEvent, eventData = _event;
 
-            eventType = advertiseReport(eventData)[1];
-            if   eventType == self.reportType:
-                self.reports += 1;
-                self.reportData = eventData[ : ];
-                self.__updateDeltas(self.reports, eventTime, prevTime);
-                prevTime = eventTime;
-            elif eventType == AdvertisingReport.SCAN_RSP:
-                self.responses += 1;
-                self.responseData = eventData[ : ];
+            if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
 
-        elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
+                eventType = advertiseReport(eventData)[1];
+                if   eventType == self.reportType:
+                    self.reports += 1;
+                    self.reportData = eventData[ : ];
+                    self.__updateDeltas(self.reports, eventTime, prevTime);
+                    prevTime = eventTime;
+                elif eventType == AdvertisingReport.SCAN_RSP:
+                    self.responses += 1;
+                    self.responseData = eventData[ : ];
 
-            eventType = directedAdvertiseReport(eventData)[1];
-            if eventType == self.reportType:
-                self.directReports += 1;
-                self.reportData = eventData[ : ];
-                self.__updateDeltas(self.directReports, eventTime, prevTime);
-                prevTime = eventTime;
+            elif subEvent == MetaEvents.BT_HCI_EVT_LE_DIRECT_ADV_REPORT:
+
+                eventType = directedAdvertiseReport(eventData)[1];
+                if eventType == self.reportType:
+                    self.directReports += 1;
+                    self.reportData = eventData[ : ];
+                    self.__updateDeltas(self.directReports, eventTime, prevTime);
+                    prevTime = eventTime;
 
         return prevTime;
 
@@ -166,7 +164,7 @@ class Scanner:
         prevTime = 0;
         while max(self.reports, self.directReports, self.counts/2) < self.expectedReports:
 
-            if has_event(self.transport, self.idx, 100):
+            if has_event(self.transport, self.idx, 100)[0]:
                 prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
@@ -179,7 +177,7 @@ class Scanner:
         while (max(self.reports, self.directReports, self.counts/2) < self.expectedReports) or \
               (max(self.responses, self.reports/5, self.counts) < self.expectedResponses):
 
-            if has_event(self.transport, self.idx, 100):
+            if has_event(self.transport, self.idx, 100)[0]:
                 prevTime = self.__handleReport(prevTime);
             else:
                 if self.lastTime == 0:
@@ -189,17 +187,17 @@ class Scanner:
     def __monitorReportTime(self):
         """
             Advertising with connectable high duty cycle directed advertising packages (ADV_DIRECT_IND, high duty cycle) is time limited.
-            Advertising should stop after approx. 1280 ms. When Advertsing stops a LE Connection Complete Event with status := 0x3C is generated on the Advertiser side.
+            Advertising should stop after approx. 1280 ms. 
+            When Advertsing stops a LE Connection Complete Event with status := 0x3C is generated on the Advertiser side.
             Status 0x3C means 'directed advertising timeout'.
         """
         prevTime = 0;
         while self.lastTime == 0:
 
-            if has_event(self.transport, self.idx, 99):
+            if has_event(self.transport, self.idx, 99)[0]:
                 prevTime = self.__handleReport(prevTime);
             else:
-                if self.lastTime == 0:
-                    self.lastTime = prevTime;
+                self.lastTime = prevTime;
         
     """
         Monitor advertising reports / responses
@@ -221,7 +219,7 @@ class Scanner:
             self.__monitorResponses();
         
         flush_events(self.transport, self.idx, 100);
-    
+   
     """
         Qualify advertising reports received; count, from address and content
     """
@@ -229,7 +227,6 @@ class Scanner:
         if self.reports > 0:
             self.trace.trace(7, "Received %d %s Advertise reports." % (self.reports, self.reportType.name) );
             if (self.reports > 1):
-                self.__quantify_deltas();
                 self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % \
                                     (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             success = True
@@ -253,7 +250,6 @@ class Scanner:
         if self.directReports > 0:
             self.trace.trace(7, "Received %d %s directed Advertise reports." % (self.directReports, self.reportType.name) );
             if (self.directReports > 1):
-                self.__quantify_deltas();
                 self.trace.trace(7, "Mean distance between directed Advertise Events %d ms., std. deviation %.1f ms." % \
                                     (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             success = True
@@ -296,11 +292,11 @@ class Scanner:
         if self.reports > 0:
             self.trace.trace(7, "Received %d %s Advertise reports." % (self.reports, self.reportType.name) );
             if (self.reports > 1):
-                self.__quantify_deltas();
+                # self.__quantify_deltas();
                 self.trace.trace(7, "Mean distance between Advertise Events %d ms., std. deviation %.1f ms." % \
                                     (statistics.mean(self.deltas), statistics.pstdev(self.deltas)));
             self.trace.trace(7, "Advertising stopped after %d ms." % (self.lastTime - self.firstTime) );
-            success = time > (self.lastTime - self.firstTime);
+            success = time >= (self.lastTime - self.firstTime);
         else:
             self.trace.trace(7, "Received no %s Advertise reports." % self.reportType.name);
             success = True;
@@ -313,7 +309,7 @@ class Scanner:
         if success:
             prevTime = deltaTime = 0;
             while deltaTime < time:
-                if has_event(self.transport, self.idx, 100):
+                if has_event(self.transport, self.idx, 100)[0]:
                     eventTime, event, subEvent, eventData = get_event(self.transport, self.idx, 100);
                     
                     if subEvent == MetaEvents.BT_HCI_EVT_LE_ADVERTISING_REPORT:
